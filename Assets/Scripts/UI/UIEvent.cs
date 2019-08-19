@@ -62,8 +62,14 @@ public static class UIEvent{
     public const int SET_OVER_PANEL_MESSAGE = 121;
 
 
+
     /// <summary>
     /// 设置其他玩家的信息
     /// </summary>
     public const int SET_OTHER_PLAYER_INFO = 122;
+
+    /// <summary>
+    /// 显示种族选择面板
+    /// </summary>
+    public const int SHOW_SELECT_RACE_PANEL = 123;
 }

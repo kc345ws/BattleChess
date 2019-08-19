@@ -28,7 +28,7 @@ public class FightHandler : HandlerBase
         switch (subcode)
         {
 
-            case FightCode.DEAL_SRES:
+            /*case FightCode.DEAL_SRES:
                 processDealSres((bool)message);
                 break;
 
@@ -58,11 +58,19 @@ public class FightHandler : HandlerBase
 
             case FightCode.GAME_OVER_SBOD:
                 processGameOver(message as OverDto);
+                break;*/
+            case FightCode.SELECT_RACE_SBOD:
+                processSelectRaceSBOD();
                 break;
-
         }
     }
 
+    private void processSelectRaceSBOD()
+    {
+        Dispatch(AreoCode.UI, UIEvent.SHOW_SELECT_RACE_PANEL, true);
+    }
+
+    #region 其他代码
     /// <summary>
     /// 处理游戏结束
     /// </summary>
@@ -104,15 +112,15 @@ public class FightHandler : HandlerBase
         }*/
         //将手牌显示在桌面上
         Dispatch(AreoCode.CHARACTER, CharacterEvent.UPDATE_SHOW_dESK, dealDto.SelectCards);
-        
+
         //播放音效
-        if(dealDto.Type == CardType.SINGLE)
+        /*if (dealDto.Type == CardType.SINGLE)
         {
-            if(dealDto.Weight == CardWeight.THREE)
+            if (dealDto.Weight == CardWeight.THREE)
             {
                 Dispatch(AreoCode.AUDIO, AudioEvent.PLAY_EFFECT_AUDIO, "Fight/Woman_3");
             }
-            else if(dealDto.Weight == CardWeight.FOUR)
+            else if (dealDto.Weight == CardWeight.FOUR)
             {
                 Dispatch(AreoCode.AUDIO, AudioEvent.PLAY_EFFECT_AUDIO, "Fight/Woman_4");
             }
@@ -169,9 +177,9 @@ public class FightHandler : HandlerBase
                 Dispatch(AreoCode.AUDIO, AudioEvent.PLAY_EFFECT_AUDIO, "Fight/Woman_200");
             }
         }
-        else if(dealDto.Type == CardType.DOUBLE)
+        else if (dealDto.Type == CardType.DOUBLE)
         {
-            if(dealDto.Weight == CardWeight.THREE * 2)
+            if (dealDto.Weight == CardWeight.THREE * 2)
             {
                 Dispatch(AreoCode.AUDIO, AudioEvent.PLAY_EFFECT_AUDIO, "Fight/Woman_dui3");
             }
@@ -251,7 +259,7 @@ public class FightHandler : HandlerBase
         }
         else if (dealDto.Type == CardType.THREE)
         {
-            if(dealDto.Weight == CardWeight.THREE * 3)
+            if (dealDto.Weight == CardWeight.THREE * 3)
             {
                 Dispatch(AreoCode.AUDIO, AudioEvent.PLAY_EFFECT_AUDIO, "Fight/Woman_tuple3");
             }
@@ -303,9 +311,9 @@ public class FightHandler : HandlerBase
             {
                 Dispatch(AreoCode.AUDIO, AudioEvent.PLAY_EFFECT_AUDIO, "Fight/Woman_tuple15");
             }
-            else if(dealDto.Type == CardType.BOOM)
-            {  
-                    Dispatch(AreoCode.AUDIO, AudioEvent.PLAY_EFFECT_AUDIO, "Fight/Woman_zhadan");
+            else if (dealDto.Type == CardType.BOOM)
+            {
+                Dispatch(AreoCode.AUDIO, AudioEvent.PLAY_EFFECT_AUDIO, "Fight/Woman_zhadan");
             }
             else if (dealDto.Type == CardType.JOKER_BOOM)
             {
@@ -328,7 +336,7 @@ public class FightHandler : HandlerBase
     /// <param name="uid"></param>
     private void processTurnDeal(int uid)
     {
-        if(uid == GameModles.Instance.userDto.ID)
+        if (uid == GameModles.Instance.userDto.ID)
         {
             Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_BUTTON, true);
         }
@@ -379,7 +387,7 @@ public class FightHandler : HandlerBase
             Dispatch(AreoCode.AUDIO, AudioEvent.PLAY_EFFECT_AUDIO, "Fight/Woman_NoOrder");
         }
 
-        if(uid == GameModles.Instance.userDto.ID)
+        if (uid == GameModles.Instance.userDto.ID)
         {
             Dispatch(AreoCode.UI, UIEvent.SHOW_GRAB_BUTTON, true);
         }
@@ -393,5 +401,5 @@ public class FightHandler : HandlerBase
         Dispatch(AreoCode.CHARACTER, CharacterEvent.INIT_LEFT_CARDLIST, "初始化左边");
         Dispatch(AreoCode.CHARACTER, CharacterEvent.INIT_RIGHT_CARDLIST, "初始化右边");
     }
-
+    #endregion   
 }

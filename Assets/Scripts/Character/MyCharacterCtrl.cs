@@ -39,7 +39,7 @@ public class MyCharacterCtrl : CharacterBase
         DealDto dealDto = new DealDto(GameModles.Instance.userDto.ID, getSelectedCard());
         if (dealDto.isRegular)
         {          
-            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_CREQ, dealDto);
+            //socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_CREQ, dealDto);
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
         }
         else
@@ -79,7 +79,7 @@ public class MyCharacterCtrl : CharacterBase
 
         foreach (var item in CardCtrllist)
         {
-            CardWeight.SortCard(ref myCardList);
+            //CardWeight.SortCard(ref myCardList);
             item.Init(restcardList[index], true, index);
             index++;
             
@@ -91,7 +91,7 @@ public class MyCharacterCtrl : CharacterBase
 
         for(int i = index; i < CardCtrllist.Count; i++)
         {
-            CardWeight.SortCard(ref myCardList);
+            //CardWeight.SortCard(ref myCardList);
             if (CardCtrllist[i]!=null && CardCtrllist[i].gameObject != null)
             {
                 CardCtrllist[i].IsSelected = false;
@@ -132,7 +132,7 @@ public class MyCharacterCtrl : CharacterBase
         {
             myCardList.Add(item);
         }
-        CardWeight.SortCard(ref myCardList);
+        //CardWeight.SortCard(ref myCardList);
 
         //复用先前创建的牌
         for(int i = 0; i < 17; i++)
