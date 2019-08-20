@@ -16,19 +16,50 @@ public class MyCharacterCtrl : CharacterBase
     private GameObject cardPrefab;
 
     private SocketMsg socketMsg;
+    private CardCtrl LastSelectCard;//上一次选择的卡牌
     // Start is called before the first frame update
     void Start()
     {
         Bind(CharacterEvent.INIT_MY_CARDLIST);
-        Bind(CharacterEvent.ADD_MY_TABLECARDS);
+        //Bind(CharacterEvent.ADD_MY_TABLECARDS);
         Bind(CharacterEvent.DEAL_CARD);
         Bind(CharacterEvent.REMOVE_MY_CARDS);
 
         myCardList = new List<CardDto>();
         CardCtrllist = new List<CardCtrl>();
         cardTransformParent = transform.Find("CardPoint");
-        cardPrefab = Resources.Load<GameObject>("Card/MyCard");
+        cardPrefab = Resources.Load<GameObject>("Prefabs/Card/MyCard");
         socketMsg = new SocketMsg();
+    }
+
+    /// <summary>
+    /// 每次只有一张牌被选择
+    /// </summary>
+    /// <param name="selectCard"></param>
+    /// <returns></returns>
+    public bool IsCanSelece(CardCtrl selectCard)
+    {
+        if(LastSelectCard == null)
+        {
+            //第一次点击
+            LastSelectCard = selectCard;
+            return true;
+        }
+        else if(LastSelectCard != selectCard)
+        {
+            //和上次点击的不一样
+            LastSelectCard.IsSelected = false;
+            LastSelectCard.transform.localPosition -= new Vector3(0, 0, 1f);
+
+            LastSelectCard = selectCard;
+            return true;
+        }
+        else
+        {
+            //和上次点击的一样
+            LastSelectCard = null;
+            return false;
+        }
     }
 
     /// <summary>
@@ -106,7 +137,7 @@ public class MyCharacterCtrl : CharacterBase
     /// <returns></returns>
     private IEnumerator initPlayerCard(List<CardDto> cardList)
     {
-        for(int i = 0; i < 17; i++)
+        for(int i = 0; i < 14; i++)
         {
             createCard(cardList[i], i);
             yield return new WaitForSeconds(0.1f);
@@ -116,9 +147,11 @@ public class MyCharacterCtrl : CharacterBase
     private void createCard(CardDto cardDto, int index)
     {
         GameObject card = GameObject.Instantiate(cardPrefab, cardTransformParent);
-        card.transform.localPosition = new Vector2(index * 0.2f, 0);
-        card.name = cardDto.Name;
+        //card.transform.localPosition = new Vector2(index * 1f, 0);
+        card.transform.localPosition = new Vector3(index * 1f, index * 0.01f, 0);
+        //card.name = cardDto.Name;
         CardCtrl cardCtrl = card.GetComponent<CardCtrl>();
+        cardCtrl.CardMouseDownEvent = IsCanSelece;
         cardCtrl.Init(cardDto, true, index);
 
         myCardList.Add(cardDto);
@@ -145,7 +178,7 @@ public class MyCharacterCtrl : CharacterBase
         {
             GameObject card = GameObject.Instantiate(cardPrefab, cardTransformParent);
             card.transform.localPosition = new Vector2(index * 0.2f, 0);
-            card.name = myCardList[i].Name;
+            //card.name = myCardList[i].Name;
             CardCtrl cardCtrl = card.GetComponent<CardCtrl>();
             cardCtrl.Init(myCardList[i], true, index);
 

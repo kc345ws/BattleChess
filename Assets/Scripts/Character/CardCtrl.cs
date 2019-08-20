@@ -1,4 +1,5 @@
-﻿using Protocol.Dto.Fight;
+﻿using Protocol.Constants;
+using Protocol.Dto.Fight;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +13,9 @@ public class CardCtrl : MonoBehaviour
     private SpriteRenderer spriteRenderer;//卡牌的图片
     private bool IsMine;//是否是自己的牌
     public bool IsSelected { get; set; }//卡牌是否被选中
+
+    public delegate bool CardMouseDownDelegate(CardCtrl cardCtrl);
+    public CardMouseDownDelegate CardMouseDownEvent;
 
     /// <summary>
     /// 初始化卡牌
@@ -31,24 +35,47 @@ public class CardCtrl : MonoBehaviour
         if (IsSelected)
         {
             IsSelected = false;
-            transform.localPosition -= new Vector3(0, 0.3f, 0);
+            transform.localPosition -= new Vector3(0, 0, 1f);
         }
 
-        string path;
+        string path  ="";
         if (!ismine)
         {
-            path = "Poker/CardBack";
+            path = "Fight/CardBack";
             //不是自己的牌显示背面
+        }
+        else if(cardDto.Type == CardType.ORDERCARD)
+        {
+            //指令卡
+            path = "Fight/OrderCard/" + cardDto.Name;
+        }
+        else if (cardDto.Type == CardType.ARMYCARD)
+        {
+            //兵种卡
+            switch (cardDto.Race)
+            {
+                case RaceType.ORC:
+                    path = "Fight/Orc/ArmyCard/" + cardDto.Name;
+                    break;
+            }
         }
         else
         {
-            path = "Poker/" + cardDto.Name;
+            //非指令卡
+            switch (cardDto.Race)
+            {
+                case RaceType.ORC:
+                    path = "Fight/Orc/OtherCard/" + cardDto.Name;
+                    break;
+            }
         }
 
         Sprite sp = Resources.Load<Sprite>(path);
         spriteRenderer.sprite = sp;
         spriteRenderer.sortingOrder = index;
     }
+
+   
 
     private void OnMouseDown()
     {    
@@ -58,16 +85,31 @@ public class CardCtrl : MonoBehaviour
         }
         Debug.Log("被点击");
 
+
+        //如果是第一次点击或者和上次点击的不一样
+        if (CardMouseDownEvent.Invoke(this))
+        {
+            IsSelected = true;
+            transform.localPosition += new Vector3(0, 0, 1f);
+        }
+        else
+        {
+            //如果和上次点击的一样
+            IsSelected = false;
+            transform.localPosition -= new Vector3(0, 0, 1f);
+        }
+
+        /*
         if (!IsSelected)//如果没被选中且被点击了
         {
             IsSelected = true;
-            transform.localPosition += new Vector3(0, 0.3f, 0);
+            transform.localPosition += new Vector3(0, 0, 1f);
         }
         else
         {
             //如果被选中了
             IsSelected = false;
-            transform.localPosition -= new Vector3(0, 0.3f, 0);
-        }
+            transform.localPosition -= new Vector3(0, 0, 1f);
+        }*/
     }
 }

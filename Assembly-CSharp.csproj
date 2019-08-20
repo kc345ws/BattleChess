@@ -73,9 +73,8 @@
     <Compile Include="Assets\Scripts\Character\CharacterEvent.cs" />
     <Compile Include="Assets\Scripts\Character\CharacterManager.cs" />
     <Compile Include="Assets\Scripts\Character\DeskCtrl.cs" />
-    <Compile Include="Assets\Scripts\Character\LeftCharacterCtrl.cs" />
     <Compile Include="Assets\Scripts\Character\MyCharacterCtrl.cs" />
-    <Compile Include="Assets\Scripts\Character\RightCharacterCtrl.cs" />
+    <Compile Include="Assets\Scripts\Character\OtherCharacterCtrl.cs" />
     <Compile Include="Assets\Scripts\Framework\AreoCode.cs" />
     <Compile Include="Assets\Scripts\Framework\ManagerBase.cs" />
     <Compile Include="Assets\Scripts\Framework\MonoBase.cs" />

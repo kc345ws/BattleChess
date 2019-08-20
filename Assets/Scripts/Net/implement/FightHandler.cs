@@ -62,6 +62,10 @@ public class FightHandler : HandlerBase
             case FightCode.SELECT_RACE_SBOD:
                 processSelectRaceSBOD();
                 break;
+
+            case FightCode.GET_CARD_SRES://服务器给客户端发牌
+                processGetCard(message as List<CardDto>);
+                break;
         }
     }
 
@@ -398,8 +402,8 @@ public class FightHandler : HandlerBase
         //给自己创建牌
         Dispatch(AreoCode.CHARACTER, CharacterEvent.INIT_MY_CARDLIST, cardList);
 
-        Dispatch(AreoCode.CHARACTER, CharacterEvent.INIT_LEFT_CARDLIST, "初始化左边");
-        Dispatch(AreoCode.CHARACTER, CharacterEvent.INIT_RIGHT_CARDLIST, "初始化右边");
+        Dispatch(AreoCode.CHARACTER, CharacterEvent.INIT_OTHER_CARDLIST, "初始化其他玩家的手牌");
+        //Dispatch(AreoCode.CHARACTER, CharacterEvent.INIT_RIGHT_CARDLIST, "初始化右边");
     }
     #endregion   
 }

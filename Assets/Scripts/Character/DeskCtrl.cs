@@ -55,7 +55,7 @@ public class DeskCtrl : CharacterBase
             {
                 GameObject card = GameObject.Instantiate(cardPrefab, cardTransformParent);
                 card.transform.localPosition = new Vector2(i * 0.08f, 0);
-                card.name = cardlist[i].Name;
+                //card.name = cardlist[i].Name;
                 CardCtrl cardCtrl = card.GetComponent<CardCtrl>();
                 cardCtrl.Init(cardlist[i], true, i);
 
@@ -71,7 +71,7 @@ public class DeskCtrl : CharacterBase
             foreach (var item in deskCardCtrllist)
             {
                 item.Init(cardlist[index], true, index);
-                deskCardCtrllist[index].name = cardlist[index].Name;
+                //deskCardCtrllist[index].name = cardlist[index].Name;
                 index++;
 
                 if (index == cardlist.Count)

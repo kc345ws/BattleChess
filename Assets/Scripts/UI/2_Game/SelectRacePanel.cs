@@ -1,4 +1,5 @@
 ﻿using Protocol.Code;
+using Protocol.Constants;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,11 +48,11 @@ public class SelectRacePanel : UIBase
     }
 
     /// <summary>
-    /// 0兽族
+    /// 1兽族
     /// </summary>
     private void orcBtnClicker()
     {
-        socketMsg.Change(OpCode.FIGHT, FightCode.SELECT_RACE_CREQ, 0);
+        socketMsg.Change(OpCode.FIGHT, FightCode.SELECT_RACE_CREQ, RaceType.ORC);
         Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
         SetPanelActive(false);
     }
