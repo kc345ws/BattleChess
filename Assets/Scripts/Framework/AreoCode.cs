@@ -36,5 +36,10 @@ public class AreoCode{
     /// </summary>
     public const int SCENE = 305;
 
+    /// <summary>
+    /// 地图模块
+    /// </summary>
+    public const int MAP = 306;
+
 
 }

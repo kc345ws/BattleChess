@@ -16,7 +16,7 @@ public class MyCharacterCtrl : CharacterBase
     private GameObject cardPrefab;
 
     private SocketMsg socketMsg;
-    private CardCtrl LastSelectCard;//上一次选择的卡牌
+    public CardCtrl LastSelectCard { get; private set; }//上一次选择的卡牌
     // Start is called before the first frame update
     void Start()
     {
@@ -43,21 +43,33 @@ public class MyCharacterCtrl : CharacterBase
         {
             //第一次点击
             LastSelectCard = selectCard;
+            if(selectCard.cardDto.Type == CardType.ARMYCARD)
+            {
+                Dispatch(AreoCode.MAP, MapEvent.SELECT_ARMYCARD, selectCard.cardDto);
+                //如果选中的是兵种开
+            }
+            
             return true;
         }
         else if(LastSelectCard != selectCard)
         {
-            //和上次点击的不一样
-            LastSelectCard.IsSelected = false;
-            LastSelectCard.transform.localPosition -= new Vector3(0, 0, 1f);
+            //和上次点击的不一样,取消选中上一次选中的牌，选中当前的牌
+            LastSelectCard.transform.localPosition -= new Vector3(1f, 0, 0);
+            LastSelectCard.IsSelected = false;          
 
             LastSelectCard = selectCard;
+            if (selectCard.cardDto.Type == CardType.ARMYCARD)
+            {
+                Dispatch(AreoCode.MAP, MapEvent.SELECT_ARMYCARD, selectCard.cardDto);
+                //如果选中的是兵种卡
+            }
             return true;
         }
         else
         {
-            //和上次点击的一样
+            //和上次点击的一样，取消选中
             LastSelectCard = null;
+            Dispatch(AreoCode.MAP, MapEvent.CANCEL_SELECT_ARMYCARD, null);
             return false;
         }
     }
@@ -99,16 +111,58 @@ public class MyCharacterCtrl : CharacterBase
     /// <summary>
     /// 出牌成功时移除手牌
     /// </summary>
-    /// <param name="restcardList">出牌后的剩余手牌</param>
-    private void removeSelectCard(List<CardDto> restcardList)
+    private void removeSelectCard(CardDto removeCard)
     {
+        //剩余手牌
+        //List<CardDto> RestmyCardList = new List<CardDto>(myCardList);
+        List<CardCtrl> RestCardCtrllist = new List<CardCtrl>(CardCtrllist);
+
+        //int removeindex = -1;
+        for(int i = 0; i < RestCardCtrllist.Count; i++)
+        {
+            if(RestCardCtrllist[i].cardDto == removeCard)
+            {
+                RestCardCtrllist.RemoveAt(i);
+                //removeindex = i;
+                break;
+            }
+        }       
+        myCardList.Remove(removeCard);
+
         int index = 0;
+        foreach (var item in RestCardCtrllist)
+        {
+            CardCtrllist[index].Init(item.cardDto, true, index);
+
+            index++;
+
+            if(index == RestCardCtrllist.Count)
+            {
+                break;
+            }
+        }
+
+        for(int i = index; i < CardCtrllist.Count; i++)
+        {
+            CardCtrllist[i].IsSelected = false;
+            Destroy(CardCtrllist[i].gameObject);
+            CardCtrllist.RemoveAt(i);
+        }
+
+        //CardCtrllist = RestCardCtrllist;
+        
+
+        LastSelectCard = null;
+        Dispatch(AreoCode.MAP, MapEvent.CANCEL_SELECT_ARMYCARD, null);//清除上次选择的卡牌
+
+        //int index = 0;
+
         /*if(restcardList.Count == 0)
         {
             return;//如果剩余手牌为0
         }*/
 
-        foreach (var item in CardCtrllist)
+        /*foreach (var item in CardCtrllist)
         {
             //CardWeight.SortCard(ref myCardList);
             item.Init(restcardList[index], true, index);
@@ -118,9 +172,10 @@ public class MyCharacterCtrl : CharacterBase
             {
                 break;
             }
-        }
+        }*/
 
-        for(int i = index; i < CardCtrllist.Count; i++)
+
+        /*for (int i = index; i < CardCtrllist.Count; i++)
         {
             //CardWeight.SortCard(ref myCardList);
             if (CardCtrllist[i]!=null && CardCtrllist[i].gameObject != null)
@@ -128,7 +183,7 @@ public class MyCharacterCtrl : CharacterBase
                 CardCtrllist[i].IsSelected = false;
                 Destroy(CardCtrllist[i].gameObject);//销毁剩余卡牌之后的卡牌
             }           
-        }
+        }*/
     }
 
     /// <summary>
@@ -148,7 +203,7 @@ public class MyCharacterCtrl : CharacterBase
     {
         GameObject card = GameObject.Instantiate(cardPrefab, cardTransformParent);
         //card.transform.localPosition = new Vector2(index * 1f, 0);
-        card.transform.localPosition = new Vector3(index * 1f, index * 0.01f, 0);
+        card.transform.localPosition = new Vector3(0, index * 0.01f, index * -1f);
         //card.name = cardDto.Name;
         CardCtrl cardCtrl = card.GetComponent<CardCtrl>();
         cardCtrl.CardMouseDownEvent = IsCanSelece;
@@ -209,7 +264,8 @@ public class MyCharacterCtrl : CharacterBase
                 break;
 
             case CharacterEvent.REMOVE_MY_CARDS:
-                removeSelectCard(message as List<CardDto>);
+                //removeSelectCard(message as List<CardDto>);
+                removeSelectCard(message as CardDto);
                 break;
         }
     }

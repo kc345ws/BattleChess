@@ -79,6 +79,11 @@
     <Compile Include="Assets\Scripts\Framework\ManagerBase.cs" />
     <Compile Include="Assets\Scripts\Framework\MonoBase.cs" />
     <Compile Include="Assets\Scripts\Framework\MsgCenter.cs" />
+    <Compile Include="Assets\Scripts\Map\MapBase.cs" />
+    <Compile Include="Assets\Scripts\Map\MapBuilder.cs" />
+    <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
+    <Compile Include="Assets\Scripts\Map\MapManager.cs" />
+    <Compile Include="Assets\Scripts\Map\MapPointCtrl.cs" />
     <Compile Include="Assets\Scripts\Modles\GameModles.cs" />
     <Compile Include="Assets\Scripts\Net\ClientPeer.cs" />
     <Compile Include="Assets\Scripts\Net\EncodeTool.cs" />

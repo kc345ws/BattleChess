@@ -66,9 +66,25 @@ public class FightHandler : HandlerBase
             case FightCode.GET_CARD_SRES://服务器给客户端发牌
                 processGetCard(message as List<CardDto>);
                 break;
+
+            case FightCode.MAP_SET_ARMY_SBOD:
+                processMapSetArmySbod(message as MapPointDto);
+                break;
         }
     }
 
+    /// <summary>
+    /// 处理设置其他人兵种
+    /// </summary>
+    /// <param name="mapPointDto"></param>
+    private void processMapSetArmySbod(MapPointDto mapPointDto)
+    {
+        Dispatch(AreoCode.MAP, MapEvent.SET_OTHER_ARMY, mapPointDto);
+    }
+
+    /// <summary>
+    /// 处理选择种族
+    /// </summary>
     private void processSelectRaceSBOD()
     {
         Dispatch(AreoCode.UI, UIEvent.SHOW_SELECT_RACE_PANEL, true);

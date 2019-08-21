@@ -17,6 +17,18 @@ public class CardCtrl : MonoBehaviour
     public delegate bool CardMouseDownDelegate(CardCtrl cardCtrl);
     public CardMouseDownDelegate CardMouseDownEvent;
 
+    private static GameObject Lock;
+
+    private bool isPreview;//是否在预览
+
+    private bool isEnlarge;//是否在放大
+
+    private void Start()
+    {
+        Lock = new GameObject();
+        isPreview = false;
+        isEnlarge = false;
+    }
     /// <summary>
     /// 初始化卡牌
     /// </summary>
@@ -35,7 +47,7 @@ public class CardCtrl : MonoBehaviour
         if (IsSelected)
         {
             IsSelected = false;
-            transform.localPosition -= new Vector3(0, 0, 1f);
+            transform.localPosition -= new Vector3(1f, 0, 0);
         }
 
         string path  ="";
@@ -73,9 +85,44 @@ public class CardCtrl : MonoBehaviour
         Sprite sp = Resources.Load<Sprite>(path);
         spriteRenderer.sprite = sp;
         spriteRenderer.sortingOrder = index;
+
+
     }
 
-   
+    private void OnMouseDrag()
+    {
+        if (!isEnlarge)
+        {
+            transform.localPosition += new Vector3(6f, 0, 0);
+            transform.localScale *= 3;
+            isEnlarge = true;
+        }
+    }
+
+    private void OnMouseUp()
+    {
+        transform.localPosition -= new Vector3(6f, 0, 0);
+        transform.localScale /= 3;
+        isEnlarge = false;
+    }
+
+    private void OnMouseEnter()
+    {
+        if (!IsSelected)
+        {
+            isPreview = true;
+            transform.localPosition += new Vector3(0.5f, 0, 0);        
+        }   
+    }
+
+    private void OnMouseExit()
+    {
+        if (!IsSelected)
+        {
+            isPreview = false;
+            transform.localPosition -= new Vector3(0.5f, 0, 0);         
+        }       
+    }
 
     private void OnMouseDown()
     {    
@@ -86,17 +133,33 @@ public class CardCtrl : MonoBehaviour
         Debug.Log("被点击");
 
 
-        //如果是第一次点击或者和上次点击的不一样
+        //如果是第一次点击或者和上次点击的不一样,则将该张牌设为选中状态
         if (CardMouseDownEvent.Invoke(this))
         {
             IsSelected = true;
-            transform.localPosition += new Vector3(0, 0, 1f);
+            //transform.localPosition += new Vector3(0, 0, 1f);
+            if (isPreview)
+            {
+                transform.localPosition += new Vector3(0.5f, 0, 0);
+            }
+            else
+            {
+                transform.localPosition += new Vector3(1f, 0, 0);
+            }
+            
         }
         else
         {
-            //如果和上次点击的一样
+            //如果和上次点击的一样,则取消该张牌的选中状态
             IsSelected = false;
-            transform.localPosition -= new Vector3(0, 0, 1f);
+            if (isPreview)
+            {
+                transform.localPosition -= new Vector3(0.5f, 0, 0);
+            }
+            else
+            {
+                transform.localPosition -= new Vector3(1f, 0, 0);
+            }
         }
 
         /*

@@ -107,7 +107,8 @@ public class OtherCharacterCtrl : CharacterBase
     private void createCard(int index)
     {
         GameObject card = GameObject.Instantiate(cardPrefab, cardTransformParent);
-        card.transform.localPosition = new Vector2(index * 0.8f, 0);
+        //card.transform.localPosition = new Vector2(0, index * 0.8f);
+        card.transform.localPosition = new Vector3(0, 0, index * 0.8f);
         card.GetComponent<SpriteRenderer>().sortingOrder = index;
 
         OtherCardList.Add(card);
