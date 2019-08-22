@@ -13,7 +13,7 @@ public class MyCharacterCtrl : CharacterBase
     private List<CardDto> myCardList;
     private List<CardCtrl> CardCtrllist;//卡牌控制器集合
     private Transform cardTransformParent;//卡牌的父物体
-    private GameObject cardPrefab;
+    private GameObject cardPrefab;//卡牌预设体
 
     private SocketMsg socketMsg;
     public CardCtrl LastSelectCard { get; private set; }//上一次选择的卡牌

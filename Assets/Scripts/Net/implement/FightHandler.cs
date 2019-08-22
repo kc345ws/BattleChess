@@ -70,7 +70,16 @@ public class FightHandler : HandlerBase
             case FightCode.MAP_SET_ARMY_SBOD:
                 processMapSetArmySbod(message as MapPointDto);
                 break;
+
+            case FightCode.DEAL_CARD_SBOD:
+                processDealCard(message as ClientPeer);
+                break;
         }
+    }
+
+    private void processDealCard(ClientPeer clientPeer)
+    {
+        Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_OTHER_CARDS, 1);
     }
 
     /// <summary>

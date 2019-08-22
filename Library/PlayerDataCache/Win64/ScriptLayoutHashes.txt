@@ -192,3 +192,8 @@ d791aa6007fa3640be1164ea75bb087d Unity.TextMeshPro.dll:TMPro.TMP_StyleSheet
 3165968ba45c74472d279ba04455fccb Unity.TextMeshPro.dll:TMPro.TMP_ColorGradient
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MsgCenter
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.ArmyCtrl
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.ArmyBase
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.ArmyManager
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MyArmyCtrls
+81e70350ba7997e0815e5e62bbf648f8 Assembly-CSharp.dll:.MapMoveMessage

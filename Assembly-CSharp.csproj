@@ -62,6 +62,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\ArmsCard.cs" />
+    <Compile Include="Assets\Scripts\Army\ArmyBase.cs" />
+    <Compile Include="Assets\Scripts\Army\ArmyCtrl.cs" />
+    <Compile Include="Assets\Scripts\Army\ArmyEvent.cs" />
+    <Compile Include="Assets\Scripts\Army\ArmyManager.cs" />
+    <Compile Include="Assets\Scripts\Army\MyArmyCtrls.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioBase.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioEvent.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
@@ -83,6 +88,7 @@
     <Compile Include="Assets\Scripts\Map\MapBuilder.cs" />
     <Compile Include="Assets\Scripts\Map\MapEvent.cs" />
     <Compile Include="Assets\Scripts\Map\MapManager.cs" />
+    <Compile Include="Assets\Scripts\Map\MapMoveMessage.cs" />
     <Compile Include="Assets\Scripts\Map\MapPointCtrl.cs" />
     <Compile Include="Assets\Scripts\Modles\GameModles.cs" />
     <Compile Include="Assets\Scripts\Net\ClientPeer.cs" />

@@ -30,7 +30,7 @@ public class OtherCharacterCtrl : CharacterBase
                 break;
 
             case CharacterEvent.REMOVE_OTHER_CARDS:
-                removeSelectCard(message as List<CardDto>);
+                removeSelectCard();
                 break;
         }
     }
@@ -51,15 +51,18 @@ public class OtherCharacterCtrl : CharacterBase
     /// 出牌成功时移除手牌
     /// </summary>
     /// <param name="restcardList">出牌后的剩余手牌</param>
-    private void removeSelectCard(List<CardDto> restcardList)
+    private void removeSelectCard()
     {
-        int index = 0;
+        Destroy(OtherCardList[0].gameObject);
+        OtherCardList.RemoveAt(0);
+
+        //int index = 0;
         /*if (restcardList.Count == 0)
         {
             return;//如果剩余手牌为0
         }*/
 
-        foreach (var item in restcardList)
+        /*foreach (var item in restcardList)
         {
             index++;
 
@@ -75,7 +78,7 @@ public class OtherCharacterCtrl : CharacterBase
             {
                 Destroy(OtherCardList[i].gameObject);//销毁剩余卡牌之后的卡牌
             }
-        }
+        }*/
     }
 
         /// <summary>

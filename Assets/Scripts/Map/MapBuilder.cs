@@ -14,22 +14,32 @@ public class MapBuilder : MapBase
 
     private GameObject armyPrefab;//兵种预设体
 
-    private MyCharacterCtrl myCharacterCtrl;
+    private MyCharacterCtrl myCharacterCtrl;//卡牌控制
+
+    private MyArmyCtrls myArmyCtrls;//兵种控制
 
     private SocketMsg socketMsg;
 
-    private MapPointDto pointDto;
+    private MapPointDto pointDto;//地图点传输类
+
+    //public MapBuilder Instance;
 
     //private int OtherCardId = 0;
-
+    private void Awake()
+    {
+        //Instance = this;
+    }
     // Use this for initialization
     void Start()
     {
         Bind(MapEvent.SELECT_ARMYCARD);
         Bind(MapEvent.CANCEL_SELECT_ARMYCARD);
         Bind(MapEvent.SET_OTHER_ARMY);
+        Bind(MapEvent.MOVE_ARMY);
 
         myCharacterCtrl = GetComponent<MyCharacterCtrl>();
+        myArmyCtrls = GetComponent<MyArmyCtrls>();
+
         socketMsg = new SocketMsg();
         pointDto = new MapPointDto();
     }
@@ -56,6 +66,11 @@ public class MapBuilder : MapBase
 
             case MapEvent.SET_OTHER_ARMY:
                 processSetOtherArmy(message as MapPointDto);
+                break;
+
+            case MapEvent.MOVE_ARMY:
+                MapMoveMessage moveMessage = message as MapMoveMessage;
+                moveArmy(moveMessage.mapPointCtrl, moveMessage.cardDto, moveMessage.armyPrefab);
                 break;
         }
     }
@@ -131,12 +146,18 @@ public class MapBuilder : MapBase
                         //mapPointCtrl.LandArmyCard = selectArmyCard;
                         mapPointCtrl.LandArmyRace = selectArmyCard.Race;
                         mapPointCtrl.LandArmyName = selectArmyCard.Name;
+                        //向我的兵种控制器集合添加兵种管理器
+                        myArmyCtrls.Add(armyPrefab.GetComponent<ArmyCtrl>(), selectArmyCard, mapPointCtrl);
                         //移除卡牌
                         Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, selectArmyCard);
                         //向服务器发送消息
                         pointDto.Change(mapPointCtrl.mapPoint, mapPointCtrl.LandArmyRace, mapPointCtrl.LandArmyName, mapPointCtrl.SkyArmyRace, mapPointCtrl.SkyArmyName);
                         socketMsg.Change(OpCode.FIGHT, FightCode.MAP_SET_ARMY_CREQ, pointDto);
                         Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+                        //向发送发送出牌消息，让其他人消除卡牌
+                        socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_CARD_CREQ, "出牌请求");
+                        Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+                        
                     }
                     else if(!mapPointCtrl.HasSkyArmy() && selectArmyCard != null&&armyPrefab != null && selectArmyCard.CanFly)
                     {
@@ -145,18 +166,62 @@ public class MapBuilder : MapBase
                         //mapPointCtrl.SkyArmyCard = selectArmyCard;
                         mapPointCtrl.SkyArmyRace = selectArmyCard.Race;
                         mapPointCtrl.SkyArmyName = selectArmyCard.Name;
+                        //向我的兵种控制器集合添加兵种管理器
+                        myArmyCtrls.Add(armyPrefab.GetComponent<ArmyCtrl>(), selectArmyCard, mapPointCtrl);
                         //移除卡牌
                         Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, selectArmyCard);
                         //向服务器发送消息
                         pointDto.Change(mapPointCtrl.mapPoint, mapPointCtrl.LandArmyRace, mapPointCtrl.LandArmyName, mapPointCtrl.SkyArmyRace, mapPointCtrl.SkyArmyName);
                         socketMsg.Change(OpCode.FIGHT, FightCode.MAP_SET_ARMY_CREQ, pointDto);
                         Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+                        //向发送发送出牌消息，让其他人消除卡牌
+                        socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_CARD_CREQ, "出牌请求");
+                        Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+                        
                     }
                 }
             }
         }
     }
 
+    private void moveArmy(MapPointCtrl movepointctrl , CardDto armyCard , GameObject armyPrefab)
+    {
+        if (!armyCard.CanFly)
+        {
+            //如果是陆地单位
+            //设置陆地单位
+            movepointctrl.SetLandArmy(armyPrefab);
+            movepointctrl.LandArmyRace = armyCard.Race;
+            movepointctrl.LandArmyName = armyCard.Name;
+            //移除原来地块上的兵种
+            removeArmy(movepointctrl, armyCard);
+            //TODO 向服务器发送消息
+        }
+        else
+        {
+            //如果是飞行单位
+            //设置飞行单位
+            movepointctrl.SetSkyArmy(armyPrefab);
+            movepointctrl.SkyArmyRace = armyCard.Race;
+            movepointctrl.SkyArmyName = armyCard.Name;
+            //移除原来地块上的兵种
+            removeArmy(movepointctrl, armyCard);
+            //TODO 向服务器发送消息
+        }
+    }
+
+    private void removeArmy(MapPointCtrl movepointctrl, CardDto armyCard)
+    {
+        if (!armyCard.CanFly)
+        {
+            //陆地单位
+            movepointctrl.RemoveLandArmy();
+        }
+        else
+        {
+            movepointctrl.RemoveSkyArmy();
+        }
+    }
 
     private void setArmyPrefab()
     {

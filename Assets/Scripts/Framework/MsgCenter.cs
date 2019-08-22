@@ -21,6 +21,7 @@ public class MsgCenter : MonoBase {
         gameObject.AddComponent<CharacterManager>();
         gameObject.AddComponent<BgmManager>();
         gameObject.AddComponent<MapManager>();
+        gameObject.AddComponent<ArmyManager>();
 
         DontDestroyOnLoad(gameObject);
     }

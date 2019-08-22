@@ -12,6 +12,8 @@ public class MapPointCtrl : MapBase
     public GameObject SkyArmy { get; private set; }//飞行单位
     private Renderer renderer;//地图点所在地块的渲染器
 
+    private Color origanColor;//原本的颜色
+
     public MapPoint mapPoint { get; private set; }//地图点
 
     //public CardDto LandArmyCard { get; set; }
@@ -29,6 +31,7 @@ public class MapPointCtrl : MapBase
         mapPoint = new MapPoint(x, z);
 
         renderer = GetComponent<Renderer>();
+        origanColor = renderer.material.color;
 
         MapManager.mapPointCtrls.Add(this);
     }
@@ -37,6 +40,15 @@ public class MapPointCtrl : MapBase
     void Update()
     {
 
+    }
+
+    /// <summary>
+    /// 设置地块颜色
+    /// </summary>
+    /// <param name="color"></param>
+    public void SetColor(Color color)
+    {
+        renderer.material.color = color;
     }
 
     /// <summary>
@@ -69,12 +81,30 @@ public class MapPointCtrl : MapBase
         GameObject.Instantiate(landArmy, position, landArmy.transform.rotation);
     }
 
+    /// <summary>
+    /// 移除陆地单位
+    /// </summary>
+    public void RemoveLandArmy()
+    {
+        GameObject.Destroy(LandArmy.gameObject);
+        LandArmy = null;
+    }
+
     public void SetSkyArmy(GameObject skyarmy)
     {
         SkyArmy = skyarmy;
         Vector3 position = transform.transform.position;
         position.y = 1;
         GameObject.Instantiate(skyarmy, position, skyarmy.transform.rotation);
+    }
+
+    /// <summary>
+    /// 移除天空单位
+    /// </summary>
+    public void RemoveSkyArmy()
+    {
+        GameObject.Destroy(SkyArmy.gameObject);
+        SkyArmy = null;
     }
 
     private void OnMouseEnter()
