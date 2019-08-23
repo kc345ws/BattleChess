@@ -8,8 +8,15 @@ using UnityEngine;
 /// <summary>
 /// 地图移动消息类
 /// </summary>
-class MapMoveMessage:MapBase
+public class MapMoveMessage:MapBase
 {
+    /// <summary>
+    /// 原来
+    /// </summary>
+    public MapPointCtrl OriginalMappointCtral;
+    /// <summary>
+    /// 兵种想要移动到的地图点控制器
+    /// </summary>
     public MapPointCtrl mapPointCtrl;
     public CardDto cardDto;
     public GameObject armyPrefab;
@@ -23,8 +30,9 @@ class MapMoveMessage:MapBase
         this.armyPrefab = armyPrefab;
     }
 
-    public void Change(MapPointCtrl mapPointCtrl, CardDto cardDto, GameObject armyPrefab)
+    public void Change(MapPointCtrl originalPointctral, MapPointCtrl mapPointCtrl, CardDto cardDto, GameObject armyPrefab)
     {
+        OriginalMappointCtral = originalPointctral;
         this.mapPointCtrl = mapPointCtrl;
         this.cardDto = cardDto;
         this.armyPrefab = armyPrefab;

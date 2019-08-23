@@ -74,9 +74,26 @@ public class FightHandler : HandlerBase
             case FightCode.DEAL_CARD_SBOD:
                 processDealCard(message as ClientPeer);
                 break;
+
+            case FightCode.MAP_ARMY_MOVE_SBOD:
+                processArmyMove(message as MapMoveDto);
+                break;
         }
     }
+    
+    /// <summary>
+    /// 处理其他人的兵种移动
+    /// </summary>
+    /// <param name="mapMoveDto"></param>
+    private void processArmyMove(MapMoveDto mapMoveDto)
+    {
+        Dispatch(AreoCode.MAP, MapEvent.MOVE_OTHER_ARMY, mapMoveDto);
+    }
 
+    /// <summary>
+    /// 处理其他人的出牌
+    /// </summary>
+    /// <param name="clientPeer"></param>
     private void processDealCard(ClientPeer clientPeer)
     {
         Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_OTHER_CARDS, 1);

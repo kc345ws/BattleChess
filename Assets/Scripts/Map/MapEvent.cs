@@ -19,7 +19,12 @@ public class MapEvent : MonoBehaviour
     public const int SET_OTHER_ARMY = 2;
 
     /// <summary>
-    /// 移动地图上的兵种
+    /// 移动地图上我的的兵种
     /// </summary>
-    public const int MOVE_ARMY = 3;
+    public const int MOVE_MY_ARMY = 3;
+
+    /// <summary>
+    /// 移动地图上别人的兵种
+    /// </summary>
+    public const int MOVE_OTHER_ARMY = 4;
 }

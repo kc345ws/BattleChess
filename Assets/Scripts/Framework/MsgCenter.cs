@@ -62,6 +62,11 @@ public class MsgCenter : MonoBase {
             case AreoCode.MAP:
                 MapManager.Instance.Execute(eventcode, message);
                 break;
+
+            case AreoCode.ARMY:
+                ArmyManager.Instance.Execute(eventcode, message);
+                break;
+
         }
     }
 }

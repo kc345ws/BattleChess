@@ -41,5 +41,8 @@ public class AreoCode{
     /// </summary>
     public const int MAP = 306;
 
-
+    /// <summary>
+    /// 兵种模块
+    /// </summary>
+    public const int ARMY = 307;
 }

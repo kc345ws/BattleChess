@@ -5,15 +5,19 @@ using UnityEngine;
 
 public class OtherCharacterCtrl : CharacterBase
 {
+    //public OtherCharacterCtrl Instance = null;
+
     private Transform cardTransformParent;//卡牌的父物体
     private GameObject cardPrefab;
     private int Index = 0;
     private static Object Lock = new Object();
     private List<GameObject> OtherCardList;
 
+
+
     private void Awake()
     {
-        
+
     }
 
     public override void Execute(int eventcode, object message)

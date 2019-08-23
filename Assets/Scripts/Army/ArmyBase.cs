@@ -47,4 +47,9 @@ public class ArmyBase : MonoBase
     {
         MsgCenter.Instance.Dispatch(areaCode, eventCode, message);
     }
+
+    public void Dispatch(int areaCode, int eventCode, ref MapMoveMessage message)
+    {
+        MsgCenter.Instance.Dispatch(areaCode, eventCode, message);
+    }
 }

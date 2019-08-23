@@ -1637,6 +1637,7 @@ GameObject:
   m_Component:
   - component: {fileID: 279958318}
   - component: {fileID: 279958319}
+  - component: {fileID: 279958320}
   m_Layer: 0
   m_Name: OtherPoint
   m_TagString: Untagged
@@ -1669,6 +1670,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0dacf595123ddad478459e4fad0a8b7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &279958320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 279958317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac4921e6ddf251442b3d09be06d9a494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &287903227

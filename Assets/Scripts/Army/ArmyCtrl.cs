@@ -16,29 +16,49 @@ public class ArmyCtrl : ArmyBase
 
     private MapPoint mapPoint;//兵种所在地图点
 
-    private bool isSelect;//是否被选中
+    public bool isSelect;//是否被选中
 
     private MapMoveMessage moveMessage;//地图移动消息
 
-    // Start is called before the first frame update
-    void Start()
+    public delegate bool ArmySelectDelegate(ArmyCtrl armyCtrl);//兵种选择委托
+    public ArmySelectDelegate ArmySelectEvent;//兵种选择事件
+
+    private float Timer = 0;//计时器
+
+    //private Renderer renderer;
+
+    private void Awake()
     {
-        ArmyPrefab = gameObject;
         isSelect = false;
         moveMessage = new MapMoveMessage();
     }
+    // Start is called before the first frame update
+    void Start()
+    {
+        //ArmyPrefab = gameObject; 
+    }
 
-    public void Init(CardDto cardDto , MapPointCtrl mapPointCtrl)
+    public void Init(CardDto cardDto , MapPointCtrl mapPointCtrl ,GameObject armyPrefab)
     {
         ArmyCard = cardDto;
         ArmymapPointCtrl = mapPointCtrl;
 
         mapPoint = ArmymapPointCtrl.mapPoint;
+
+        ArmyPrefab = armyPrefab;
+
+        //renderer = ArmyPrefab.gameObject.GetComponent<Renderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (isSelect)
+        {
+            Timer += Time.deltaTime;
+            StartCoroutine(selectState());
+            //selectState();
+        }
         Move();
     }
 
@@ -49,7 +69,7 @@ public class ArmyCtrl : ArmyBase
         int x = mapPoint.X;
         int z = mapPoint.Z;
 
-        Color bluecolor = new Color(13 / 255, 175 / 255, 244 / 255);
+        Color bluecolor = new Color(13f / 255f, 175f / 255f, 244f / 255f);
         if (ArmyCard.Class == ArmyClassType.Ordinary)
         {
             //如果是普通兵种不能向后移动
@@ -66,8 +86,18 @@ public class ArmyCtrl : ArmyBase
                 {
                     if(item.X == mapPointCtrl.mapPoint.X && item.Z == mapPointCtrl.mapPoint.Z)
                     {
-                        canMoveMapPointCtrls.Add(mapPointCtrl);
-                        mapPointCtrl.SetColor(bluecolor);
+                        if (!ArmyCard.CanFly && mapPointCtrl.LandArmy == null)
+                        {
+                            //如果是陆地单位,且要移动到的地图点没有陆地单位
+                            canMoveMapPointCtrls.Add(mapPointCtrl);
+                            mapPointCtrl.SetColor(bluecolor);
+                        }
+                        else if (ArmyCard.CanFly && mapPointCtrl.SkyArmy == null)
+                        {
+                            //如果是飞行单位，且要移动到的地图点没有飞行单位
+                            canMoveMapPointCtrls.Add(mapPointCtrl);
+                            mapPointCtrl.SetColor(bluecolor);
+                        }                    
                         break;
                     }
                 }
@@ -91,8 +121,18 @@ public class ArmyCtrl : ArmyBase
                 {
                     if (item.X == mapPointCtrl.mapPoint.X && item.Z == mapPointCtrl.mapPoint.Z)
                     {
-                        canMoveMapPointCtrls.Add(mapPointCtrl);
-                        mapPointCtrl.SetColor(bluecolor);
+                        if (!ArmyCard.CanFly && mapPointCtrl.LandArmy == null)
+                        {
+                            //如果是陆地单位,且要移动到的地图点没有陆地单位
+                            canMoveMapPointCtrls.Add(mapPointCtrl);
+                            mapPointCtrl.SetColor(bluecolor);
+                        }
+                        else if (ArmyCard.CanFly && mapPointCtrl.SkyArmy == null)
+                        {
+                            //如果是飞行单位，且要移动到的地图点没有飞行单位
+                            canMoveMapPointCtrls.Add(mapPointCtrl);
+                            mapPointCtrl.SetColor(bluecolor);
+                        }
                         break;
                     }
                 }
@@ -124,12 +164,25 @@ public class ArmyCtrl : ArmyBase
                     {
                         //如果可以移动
                         //移动
-                        moveMessage.Change(movePointctrl, ArmyCard, ArmyPrefab);
-                        Dispatch(AreoCode.MAP, MapEvent.MOVE_ARMY, moveMessage);
+                        moveMessage.Change(ArmymapPointCtrl,movePointctrl, ArmyCard, ArmyPrefab);
+                        Dispatch(AreoCode.MAP, MapEvent.MOVE_MY_ARMY, ref moveMessage);
+                        //将颜色变为原来的
+                        setMappointCtrl(canMovePointCtrls);
+                        //改变所在所在地图点控制器
+                        ArmymapPointCtrl = movePointctrl;
+                        mapPoint = movePointctrl.mapPoint;
                     }
                 }
             }
         }     
+    }
+
+    private void setMappointCtrl(List<MapPointCtrl> canMovePointCtrls)
+    {
+        foreach (var item in canMovePointCtrls)
+        {
+            item.SetColor(item.origanColor);
+        }
     }
 
     /// <summary>
@@ -163,6 +216,63 @@ public class ArmyCtrl : ArmyBase
 
     private void OnMouseDown()
     {
-        isSelect = true;
+        //isSelect = true;
+        //transform.localScale *= 2;
+        if (ArmySelectEvent.Invoke(this))
+        {
+            //第一次选择或和上次选择不一样
+            //transform.localScale *= 2;
+            //StartCoroutine(selectState());
+        }
+        else
+        {
+            //StopCoroutine(selectState());
+            //和上次选择一样
+            //transform.localScale /= 2;
+        }
+    }
+
+    /// <summary>
+    /// 兵种选择状态
+    /// </summary>
+    /// <returns></returns>
+    /*private IEnumerator selectState()
+    {
+        Renderer renderer = GetComponent<Renderer>();
+        float r = renderer.material.color.r;
+        float g = renderer.material.color.g;
+        float b = renderer.material.color.b;
+        renderer.material.color = new Color(r, g, b, 0);    
+        yield return new WaitForSeconds(1f);
+        renderer.material.color = new Color(r, g, b, 1);
+    }*/
+
+    private IEnumerator selectState()
+    {
+        Renderer renderer = GetComponent<Renderer>();
+        float r = renderer.material.color.r;
+        float g = renderer.material.color.g;
+        float b = renderer.material.color.b;
+
+        renderer.material.color = new Color(r, g, b, 1);
+        if (Timer >= 0.5)
+        {
+            renderer.material.color = new Color(r, g, b, 0);
+            yield return new WaitForSeconds(0.5f);
+            Timer = 0f;
+        }
+        
+    }
+
+    public void CheckIsA()
+    {
+        Renderer renderer = GetComponent<Renderer>();
+        float r = renderer.material.color.r;
+        float g = renderer.material.color.g;
+        float b = renderer.material.color.b;
+        if (renderer.material.color.a == 0)
+        {
+            renderer.material.color = new Color(r, g, b, 1);
+        }
     }
 }

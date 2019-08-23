@@ -132,6 +132,7 @@ b8a5e8091ab0b8861d2add371082c5e0 Unity.TextMeshPro.dll:TMPro.TMP_SpriteAsset
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.CreatePanel
 b3ab2106268377ffe25dd18ac23dca28 Unity.TextMeshPro.dll:TMPro.TMP_Asset
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.StartPanel
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.ArmyManager
 71bb6a6b6c8f052f948db64c7dd3ca4f Unity.Analytics.Editor.dll:UnityEditor.Analytics.AnalyticsEventTrackerEditor
 71bb6a6b6c8f052f948db64c7dd3ca4f Unity.TextMeshPro.dll:TMPro.TMP_SpriteAnimator
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.CharacterManager
@@ -172,6 +173,8 @@ fb6a1ea36b4f6ef5948d283d93760765 UnityEngine.GoogleAudioSpatializer.dll:UnityEng
 fb6a1ea36b4f6ef5948d283d93760765 UnityEngine.GoogleAudioSpatializer.dll:UnityEngine.Experimental.Audio.Google.GvrAudioRoom
 5b0391b7e3d9ea9db6c0a8fbd0ca23f6 UnityEngine.GoogleAudioSpatializer.dll:UnityEngine.Experimental.Audio.Google.GvrAudioSoundfieldExtension
 5b0391b7e3d9ea9db6c0a8fbd0ca23f6 UnityEngine.GoogleAudioSpatializer.dll:UnityEngine.Experimental.Audio.Google.GvrAudioSourceExtension
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.ArmyBase
+0b62bef05c88eaebfe3be74ef421827c Assembly-CSharp.dll:.MapMoveMessage
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.DeskCtrl
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MapManager
 ee0cef6caaac8ae485bfa82f000f0f7b Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
@@ -185,15 +188,13 @@ d251bf88db6c95a6b1aa0b69298da9ef UnityEngine.SpatialTracking.dll:UnityEngine.Spa
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.ManagerBase
 d791aa6007fa3640be1164ea75bb087d Unity.TextMeshPro.dll:TMPro.TMP_StyleSheet
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.SceneMgr
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MyArmyCtrls
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.NetManager
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.AudioManager
+e8a598726541f632b9380825dc66fb95 Assembly-CSharp.dll:.ArmyCtrl
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.Test
 5372ed2ce39229b1ac910757999a8be2 Unity.TextMeshPro.dll:TMPro.TextMeshPro
 3165968ba45c74472d279ba04455fccb Unity.TextMeshPro.dll:TMPro.TMP_ColorGradient
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MsgCenter
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
-71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.ArmyCtrl
-71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.ArmyBase
-71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.ArmyManager
-71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MyArmyCtrls
-81e70350ba7997e0815e5e62bbf648f8 Assembly-CSharp.dll:.MapMoveMessage
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.OtherArmyCtrls
