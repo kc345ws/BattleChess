@@ -72,4 +72,19 @@ public static class UIEvent{
     /// 显示种族选择面板
     /// </summary>
     public const int SHOW_SELECT_RACE_PANEL = 123;
+
+    /// <summary>
+    /// 显示兵种功能面板
+    /// </summary>
+    public const int SHOW_ARMY_MENU_PANEL = 124;
+
+    /// <summary>
+    /// 显示兵种状态面板
+    /// </summary>
+    public const int SHOW_ARMY_STATE_PANEL = 125;
+
+    /// <summary>
+    /// 关闭兵种功能面板
+    /// </summary>
+    public const int CLOSE_ARMY_MENU_PANEL = 126;
 }

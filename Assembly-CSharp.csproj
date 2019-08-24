@@ -119,6 +119,8 @@
     <Compile Include="Assets\Scripts\UI\1_Main\InfoPanel.cs" />
     <Compile Include="Assets\Scripts\UI\1_Main\MatchPanel.cs" />
     <Compile Include="Assets\Scripts\UI\1_Main\SettingPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\2_Game\ArmyMenuPanel.cs" />
+    <Compile Include="Assets\Scripts\UI\2_Game\ArmyStatePanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\MyInfoPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\OtherInfoPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\SelectRacePanel.cs" />

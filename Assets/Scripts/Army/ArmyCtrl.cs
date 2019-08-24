@@ -1,5 +1,6 @@
 ﻿using Protocol.Constants;
 using Protocol.Constants.Map;
+using Protocol.Constants.Orc;
 using Protocol.Dto.Fight;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ public class ArmyCtrl : ArmyBase
 
     private float Timer = 0;//计时器
 
+    public ArmyCardBase armyState;//兵种属性
+
     //private Renderer renderer;
 
     private void Awake()
@@ -48,6 +51,57 @@ public class ArmyCtrl : ArmyBase
         ArmyPrefab = armyPrefab;
 
         //renderer = ArmyPrefab.gameObject.GetComponent<Renderer>();
+
+        setArmyState(cardDto);
+    }
+
+    /// <summary>
+    /// 设置兵种属性
+    /// </summary>
+    /// <param name="cardDto"></param>
+    private void setArmyState(CardDto cardDto)
+    {
+        switch (cardDto.Race)
+        {
+            case RaceType.ORC:
+
+                switch (cardDto.Name)
+                {
+                    case OrcArmyCardType.Infantry:
+                        armyState = new OrcInfantry();
+                        break;
+
+                    case OrcArmyCardType.Eagle_Riders:
+                        armyState = new OrcEagleRiders();
+                        break;
+
+                    case OrcArmyCardType.Black_Rats_Boomer:
+                        armyState = new OrcBlackRatsBoomer();
+                        break;
+
+                    case OrcArmyCardType.Giant_mouthed_Frog:
+                        armyState = new OrcGiantmouthedFrog();
+                        break;
+
+                    case OrcArmyCardType.Forest_Shooter:
+                        armyState = new OrcForestShooter();
+                        break;
+
+                    case OrcArmyCardType.Pangolin:
+                        armyState = new OrcPangolin();
+                        break;
+
+                    case OrcArmyCardType.Raven_Shaman:
+                        armyState = new OrcRavenShaman();
+                        break;
+
+                    case OrcArmyCardType.Hero:
+                        armyState = new OrcHero();
+                        break;
+                }
+
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -214,6 +268,11 @@ public class ArmyCtrl : ArmyBase
         return canmove;
     }
 
+    private void OnMouseDrag()
+    {
+        
+    }
+
     private void OnMouseDown()
     {
         //isSelect = true;
@@ -223,12 +282,14 @@ public class ArmyCtrl : ArmyBase
             //第一次选择或和上次选择不一样
             //transform.localScale *= 2;
             //StartCoroutine(selectState());
+            Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, armyState);
         }
         else
         {
             //StopCoroutine(selectState());
             //和上次选择一样
             //transform.localScale /= 2;
+            Dispatch(AreoCode.UI, UIEvent.CLOSE_ARMY_MENU_PANEL, "关闭面板");
         }
     }
 
