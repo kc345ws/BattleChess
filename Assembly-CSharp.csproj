@@ -66,8 +66,9 @@
     <Compile Include="Assets\Scripts\Army\ArmyCtrl.cs" />
     <Compile Include="Assets\Scripts\Army\ArmyEvent.cs" />
     <Compile Include="Assets\Scripts\Army\ArmyManager.cs" />
-    <Compile Include="Assets\Scripts\Army\MyArmyCtrls.cs" />
-    <Compile Include="Assets\Scripts\Army\OtherArmyCtrls.cs" />
+    <Compile Include="Assets\Scripts\Army\MyArmyCtrlManager.cs" />
+    <Compile Include="Assets\Scripts\Army\OtherArmyCtrl.cs" />
+    <Compile Include="Assets\Scripts\Army\OtherArmyCtrlManager.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioBase.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioEvent.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />

@@ -16,7 +16,7 @@ public class MapBuilder : MapBase
 
     private MyCharacterCtrl myCharacterCtrl;//卡牌控制
 
-    private MyArmyCtrls myArmyCtrls;//兵种控制
+    private MyArmyCtrlManager myArmyCtrls;//兵种控制
 
     private SocketMsg socketMsg;//套接字消息封装
 
@@ -41,7 +41,7 @@ public class MapBuilder : MapBase
         Bind(MapEvent.MOVE_OTHER_ARMY);
 
         myCharacterCtrl = GetComponent<MyCharacterCtrl>();
-        myArmyCtrls = GetComponent<MyArmyCtrls>();
+        myArmyCtrls = GetComponent<MyArmyCtrlManager>();
 
         socketMsg = new SocketMsg();
         pointDto = new MapPointDto();
@@ -124,7 +124,7 @@ public class MapBuilder : MapBase
             }
         }
 
-        foreach (var item in OtherArmyCtrls.ArmyList)
+        foreach (var item in OtherArmyCtrlManager.ArmyList)
         {
             if(item.transform.position.x == OtherOriginalx && item.transform.position.z == OtherOriginalz)
             {
@@ -151,6 +151,7 @@ public class MapBuilder : MapBase
     /// <param name="mapPointDto"></param>
     private void processSetOtherArmy(MapPointDto mapPointDto)
     {
+        
         //镜像对称
         int totalX = 12;
         int totalZ = 8;
@@ -176,6 +177,7 @@ public class MapBuilder : MapBase
         {
             if(mapPointDto.LandArmyRace != -1)
             {
+                //陆地单位
                 mapPointCtrl.mapPoint.X = otherx;
                 mapPointCtrl.mapPoint.Z = otherz;
                 mapPointCtrl.LandArmyRace = mapPointDto.LandArmyRace;
@@ -183,13 +185,15 @@ public class MapBuilder : MapBase
                 setArmyPrefab(mapPointCtrl.LandArmyRace, mapPointCtrl.LandArmyName, out prefab);
 
                 GameObject army= mapPointCtrl.SetLandArmy(prefab);
-
+                //初始化敌方兵种信息
+                army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.LandArmyRace, mapPointDto.LandArmyName) ;
 
                 //向其他人添加兵种
                 Dispatch(AreoCode.ARMY, ArmyEvent.ADD_OTHER_ARMY, army);
             }
             if(mapPointDto.SkyArmyRace != -1)
             {
+                //飞行单位
                 mapPointCtrl.mapPoint.X = otherx;
                 mapPointCtrl.mapPoint.Z = otherz;
                 mapPointCtrl.SkyArmyRace = mapPointDto.SkyArmyRace;
@@ -197,6 +201,9 @@ public class MapBuilder : MapBase
                 setArmyPrefab(mapPointCtrl.SkyArmyRace, mapPointCtrl.SkyArmyName, out prefab);
 
                 GameObject army = mapPointCtrl.SetSkyArmy(prefab);
+
+                //初始化敌方兵种信息
+                army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.SkyArmyRace, mapPointDto.SkyArmyName); 
 
                 Dispatch(AreoCode.ARMY, ArmyEvent.ADD_OTHER_ARMY, army);
             }
