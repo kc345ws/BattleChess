@@ -87,4 +87,10 @@ public static class UIEvent{
     /// 关闭兵种功能面板
     /// </summary>
     public const int CLOSE_ARMY_MENU_PANEL = 126;
+
+    /// <summary>
+    /// 设置光标
+    /// </summary>
+    public const int CURSOR_SET_NORMAL = 127;
+    public const int CURSOR_SET_ATTACK = 128;
 }

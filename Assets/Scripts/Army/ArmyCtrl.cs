@@ -1,4 +1,5 @@
-﻿using Protocol.Constants;
+﻿using Protocol.Code;
+using Protocol.Constants;
 using Protocol.Constants.Map;
 using Protocol.Constants.Orc;
 using Protocol.Dto.Fight;
@@ -28,6 +29,16 @@ public class ArmyCtrl : ArmyBase
 
     public ArmyCardBase armyState;//兵种属性
 
+    private List<MapPoint> canAttckPoint;//能够攻击到的点
+
+    private SocketMsg socketMsg;//套接字消息封装
+
+    private MapAttackDto attackDto;
+
+    public bool canAttack { get; private set; }//是否能攻击
+
+    public bool isAttack { get; private set; }//是否攻击过
+
     //private Renderer renderer;
 
     private void Awake()
@@ -39,6 +50,8 @@ public class ArmyCtrl : ArmyBase
     void Start()
     {
         //ArmyPrefab = gameObject; 
+        socketMsg = new SocketMsg();
+        attackDto = new MapAttackDto();
     }
 
     public void Init(CardDto cardDto , MapPointCtrl mapPointCtrl ,GameObject armyPrefab)
@@ -53,6 +66,23 @@ public class ArmyCtrl : ArmyBase
         //renderer = ArmyPrefab.gameObject.GetComponent<Renderer>();
 
         setArmyState(cardDto);
+
+        canAttckPoint = MapAttackType.Instance.GetAttakRange(armyState);
+
+        if(armyState.Class == ArmyClassType.Ordinary)
+        {
+            //如果是普通兵种
+            canAttack = true;
+            isAttack = false;
+
+            
+        }
+        else
+        {
+            //其他兵种
+            canAttack = false;
+            isAttack = false;
+        }
     }
 
     /// <summary>
@@ -282,7 +312,10 @@ public class ArmyCtrl : ArmyBase
             //第一次选择或和上次选择不一样
             //transform.localScale *= 2;
             //StartCoroutine(selectState());
-            Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, armyState);
+            //Dispatch(AreoCode.UI, UIEvent.SET_ARMY_METNU_VALUE, this);
+
+            //Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, armyState);
+            Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, this);
         }
         else
         {
@@ -308,6 +341,8 @@ public class ArmyCtrl : ArmyBase
         renderer.material.color = new Color(r, g, b, 1);
     }*/
 
+    
+      ///选择状态动画
     private IEnumerator selectState()
     {
         Renderer renderer = GetComponent<Renderer>();
@@ -325,6 +360,9 @@ public class ArmyCtrl : ArmyBase
         
     }
 
+    /// <summary>
+    /// 监测兵种是否处于动画透明状态
+    /// </summary>
     public void CheckIsA()
     {
         Renderer renderer = GetComponent<Renderer>();
@@ -335,5 +373,85 @@ public class ArmyCtrl : ArmyBase
         {
             renderer.material.color = new Color(r, g, b, 1);
         }
+    }
+
+    public bool Attack(MapPointCtrl defensemapPointCtrl ,OtherArmyCtrl defenseArmy)
+    {
+        /*if(armyState.Class == ArmyClassType.Ordinary)
+        {
+            //如果兵种是普通兵种
+            foreach (var item in canAttckPoint)
+            {
+                if(item.X == mapPointCtrl.mapPoint.X && item.Z == mapPointCtrl.mapPoint.Z)
+                {
+                    canAttack = true;
+                    break;
+                   
+                }
+            }
+            if (canAttack)
+            {
+                //TODO 播放攻击动画
+                //向服务器发送攻击消息
+                socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_ATTACK_CREQ, ArmymapPointCtrl);
+                Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+            }
+       
+        else
+        {
+            //TODO 其他兵种
+        }*/
+        bool canAttackPoint = false;//是否能攻击地图点上的兵种
+        int attackSpace = ArmyMoveType.NONE;//攻击陆地1 攻击飞行2
+        if(defenseArmy.armyState.Name == defensemapPointCtrl.LandArmyName)
+        {
+            attackSpace = ArmyMoveType.LAND;
+        }
+        else
+        {
+            attackSpace = ArmyMoveType.SKY;
+        }
+
+        if (canAttack && !isAttack)
+        {
+            //如果能攻击且没有攻击过
+            foreach (var item in canAttckPoint)
+            {
+                if (item.X == defensemapPointCtrl.mapPoint.X && item.Z == defensemapPointCtrl.mapPoint.Z)
+                {
+                    //canAttack = true;
+                    canAttackPoint = true;
+                    break;
+                }
+            }
+
+            if(canAttackPoint && attackSpace == ArmyMoveType.LAND)
+            {
+                //如果攻击陆地兵种
+
+                //TODO 播放攻击动画
+                //向服务器发送攻击消息
+                attackDto.Change(mapPoint, defensemapPointCtrl.mapPoint, ArmyCard.CanFly, false);
+                socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_ATTACK_CREQ, attackDto);
+                Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+
+                return true;
+            }
+            else if(canAttackPoint && attackSpace == ArmyMoveType.SKY)
+            {
+                //如果攻击飞行兵种
+
+                //TODO 播放攻击动画
+                //向服务器发送攻击消息
+                attackDto.Change(mapPoint, defensemapPointCtrl.mapPoint, ArmyCard.CanFly, true);
+                socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_ATTACK_CREQ, attackDto);
+                Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+
+                return true;
+            }     
+            
+        }
+
+        return false;
     }
 }

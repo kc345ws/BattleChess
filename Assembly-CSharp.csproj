@@ -125,6 +125,7 @@
     <Compile Include="Assets\Scripts\UI\2_Game\MyInfoPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\OtherInfoPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\SelectRacePanel.cs" />
+    <Compile Include="Assets\Scripts\UI\CursorManager.cs" />
     <Compile Include="Assets\Scripts\UI\UIEvent.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/Downloads/Unity3D/BattleChess/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

@@ -23,6 +23,8 @@ public class MsgCenter : MonoBase {
         gameObject.AddComponent<MapManager>();
         gameObject.AddComponent<ArmyManager>();
 
+        gameObject.AddComponent<CursorManager>();
+
         DontDestroyOnLoad(gameObject);
     }
 
