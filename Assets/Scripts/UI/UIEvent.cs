@@ -29,8 +29,9 @@ public static class UIEvent{
     public const int PLAYER_ENTER = 108;
     //玩家离开
     public const int PLAYER_LEAVE = 109;
+
     //玩家改变身份
-    public const int PLAYER_CHANGE_IDENTITY = 110;
+    //public const int PLAYER_CHANGE_IDENTITY = 110;
 
     //设置左边玩家的数据
     //public const int SET_LEFT_PLAYER = 111; 
@@ -44,7 +45,7 @@ public static class UIEvent{
     //public const int SET_RIGHT_PLAYER = 114;
 
     //显示抢按钮
-    public const int SHOW_GRAB_BUTTON = 115;
+    //public const int SHOW_GRAB_BUTTON = 115;
     //显示出牌按钮
     public const int SHOW_DEAL_BUTTON = 116;
     //设置自身用户信息

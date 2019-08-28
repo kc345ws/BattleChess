@@ -417,10 +417,11 @@ public class FightHandler : HandlerBase
         }*/
     }
 
+    
     /// <summary>
     /// 是否是第一个人开始叫地主
     /// </summary>
-    private bool isfirstturn = true;
+    /*private bool isfirstturn = true;
     //轮换抢地主(不叫)
     private void processTurnLandlord(int uid)
     {
@@ -435,9 +436,9 @@ public class FightHandler : HandlerBase
 
         if (uid == GameModles.Instance.userDto.ID)
         {
-            Dispatch(AreoCode.UI, UIEvent.SHOW_GRAB_BUTTON, true);
+           //Dispatch(AreoCode.UI, UIEvent.SHOW_GRAB_BUTTON, true);
         }
-    }
+    }*/
 
     private void processGetCard(List<CardDto> cardList)
     {

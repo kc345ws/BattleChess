@@ -81,6 +81,16 @@ public class MapPointCtrl : MapBase
         return GameObject.Instantiate(landArmy, position, landArmy.transform.rotation);
     }
 
+    /// <summary>
+    /// 更新
+    /// </summary>
+    /// <param name="landArmy"></param>
+    /// <returns></returns>
+    public void UpdateLandArmy(GameObject landArmy)
+    {
+        LandArmy = landArmy;
+    }
+
     public void MoveLandArmy(ref GameObject landArmy)
     {
         LandArmy = landArmy;
@@ -112,6 +122,11 @@ public class MapPointCtrl : MapBase
         Vector3 position = transform.transform.position;
         position.y = 1;
         return GameObject.Instantiate(skyarmy, position, skyarmy.transform.rotation);
+    }
+
+    public void UpdateSkyArmy(GameObject skyarmy)
+    {
+        SkyArmy = skyarmy;
     }
 
     /// <summary>

@@ -39,6 +39,8 @@ public class ArmyCtrl : ArmyBase
 
     public bool isAttack { get; private set; }//是否攻击过
 
+    public bool iscanMove = true;//是否可以移动
+
     //private Renderer renderer;
 
     private void Awake()
@@ -69,7 +71,10 @@ public class ArmyCtrl : ArmyBase
 
         canAttckPoint = MapAttackType.Instance.GetAttakRange(armyState);
 
-        if(armyState.Class == ArmyClassType.Ordinary)
+        armyState.Position = mapPoint;
+        //canAttckPoint = GetAttakRange(armyState);
+
+        if (armyState.Class == ArmyClassType.Ordinary)
         {
             //如果是普通兵种
             canAttack = true;
@@ -230,7 +235,7 @@ public class ArmyCtrl : ArmyBase
     /// </summary>
     private void Move()
     {
-        if (Input.GetMouseButtonDown(0) && isSelect)
+        if (Input.GetMouseButtonDown(0) && isSelect && iscanMove)
         {
             
             if (!EventSystem.current.IsPointerOverGameObject())
@@ -377,6 +382,7 @@ public class ArmyCtrl : ArmyBase
 
     public bool Attack(MapPointCtrl defensemapPointCtrl ,OtherArmyCtrl defenseArmy)
     {
+
         /*if(armyState.Class == ArmyClassType.Ordinary)
         {
             //如果兵种是普通兵种
@@ -401,6 +407,12 @@ public class ArmyCtrl : ArmyBase
         {
             //TODO 其他兵种
         }*/
+
+        if (defenseArmy == null)
+        {
+            return false;
+        }
+
         bool canAttackPoint = false;//是否能攻击地图点上的兵种
         int attackSpace = ArmyMoveType.NONE;//攻击陆地1 攻击飞行2
         if(defenseArmy.armyState.Name == defensemapPointCtrl.LandArmyName)
@@ -454,4 +466,150 @@ public class ArmyCtrl : ArmyBase
 
         return false;
     }
+
+
+    /*public List<MapPoint> GetAttakRange(ArmyCardBase armyCardBase)
+    {
+        //可以攻击到的范围
+        List<MapPoint> canAttckPoint = new List<MapPoint>();
+        switch (armyCardBase.AttackRangeType)
+        {
+            case MapAttackType.NONE:
+                return null;
+
+            case MapAttackType.Triple_lattice:
+                Triple_latticeType(armyCardBase.Position, ref canAttckPoint);
+                break;
+
+            case MapAttackType.Four_lattice:
+                Four_latticeType(armyCardBase.Position, ref canAttckPoint);
+                break;
+
+            case MapAttackType.Three_Front:
+                Three_FrontType(armyCardBase.Position, ref canAttckPoint);
+                break;
+
+            case MapAttackType.Four_Angle:
+                Four_AngleType(armyCardBase.Position, ref canAttckPoint);
+                break;
+
+            case MapAttackType.All_Around:
+                All_AroundType(armyCardBase.Position, ref canAttckPoint);
+                break;
+        }
+        return canAttckPoint;
+        //throw new Exception("没有该兵种的攻击范围类型");
+    }
+
+    /// <summary>
+    /// 判断攻击点是否超出地图边界
+    /// </summary>
+    /// <param name="mapPoint"></param>
+    /// <returns></returns>
+    private bool iscanAttack(MapPoint mapPoint)
+    {
+        if (mapPoint.X < 0 || mapPoint.X > 12)
+        {
+            return false;
+        }
+        else if (mapPoint.Z < 0 || mapPoint.Z > 8)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    private void Triple_latticeType(MapPoint mapPoint, ref List<MapPoint> canAttckPoint)
+    {
+        int x = mapPoint.X;
+        int z = mapPoint.Z;
+
+
+        if (iscanAttack(new MapPoint(x + 1, z)))
+        {
+            canAttckPoint.Add(new MapPoint(x + 1, z));
+        }
+        if (iscanAttack(new MapPoint(x, z + 1)))
+        {
+            canAttckPoint.Add(new MapPoint(x, z + 1));
+        }
+        if (iscanAttack(new MapPoint(x, z - 1)))
+        {
+            canAttckPoint.Add(new MapPoint(x, z - 1));
+        }
+    }
+
+    private void Four_latticeType(MapPoint mapPoint, ref List<MapPoint> canAttckPoint)
+    {
+        int x = mapPoint.X;
+        int z = mapPoint.Z;
+
+        if (iscanAttack(new MapPoint(x + 1, z)))
+        {
+            canAttckPoint.Add(new MapPoint(x + 1, z));
+        }
+        if (iscanAttack(new MapPoint(x - 1, z)))
+        {
+            canAttckPoint.Add(new MapPoint(x - 1, z));
+        }
+        if (iscanAttack(new MapPoint(x, z + 1)))
+        {
+            canAttckPoint.Add(new MapPoint(x, z + 1));
+        }
+        if (iscanAttack(new MapPoint(x, z - 1)))
+        {
+            canAttckPoint.Add(new MapPoint(x, z - 1));
+        }
+    }
+
+    private void Three_FrontType(MapPoint mapPoint, ref List<MapPoint> canAttckPoint)
+    {
+        int x = mapPoint.X;
+        int z = mapPoint.Z;
+
+        if (iscanAttack(new MapPoint(x + 1, z)))
+        {
+            canAttckPoint.Add(new MapPoint(x + 1, z));
+        }
+        if (iscanAttack(new MapPoint(x + 2, z)))
+        {
+            canAttckPoint.Add(new MapPoint(x + 2, z));
+        }
+        if (iscanAttack(new MapPoint(x + 3, z)))
+        {
+            canAttckPoint.Add(new MapPoint(x + 3, z));
+        }
+
+    }
+
+    private void Four_AngleType(MapPoint mapPoint, ref List<MapPoint> canAttckPoint)
+    {
+        int x = mapPoint.X;
+        int z = mapPoint.Z;
+
+        if (iscanAttack(new MapPoint(x - 1, z - 1)))
+        {
+            canAttckPoint.Add(new MapPoint(x - 1, z - 1));
+        }
+        if (iscanAttack(new MapPoint(x + 1, z + 1)))
+        {
+            canAttckPoint.Add(new MapPoint(x + 1, z + 1));
+        }
+        if (iscanAttack(new MapPoint(x + 1, z - 1)))
+        {
+            canAttckPoint.Add(new MapPoint(x + 1, z - 1));
+        }
+        if (iscanAttack(new MapPoint(x - 1, z + 1)))
+        {
+            canAttckPoint.Add(new MapPoint(x - 1, z + 1));
+        }
+    }
+
+    private void All_AroundType(MapPoint mapPoint, ref List<MapPoint> canAttckPoint)
+    {
+        Four_latticeType(mapPoint, ref canAttckPoint);
+        Four_AngleType(mapPoint, ref canAttckPoint);
+    }*/
+
+
 }

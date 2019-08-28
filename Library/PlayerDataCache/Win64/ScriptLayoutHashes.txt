@@ -127,6 +127,7 @@ d251bf88db6c95a6b1aa0b69298da9ef UnityEngine.SpatialTracking.dll:UnityEngine.Spa
 7fb9de8dcf73854b6b328eca1f7a6e6d Unity.Analytics.Tracker.dll:UnityEngine.Analytics.AnalyticsTracker
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MyCharacterCtrl
 b8a5e8091ab0b8861d2add371082c5e0 Unity.TextMeshPro.dll:TMPro.TMP_SpriteAsset
+e8a598726541f632b9380825dc66fb95 Assembly-CSharp.dll:.OtherArmyCtrl
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.OtherCharacterCtrl
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MyInfoPanel
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.CreatePanel
@@ -194,10 +195,10 @@ d791aa6007fa3640be1164ea75bb087d Unity.TextMeshPro.dll:TMPro.TMP_StyleSheet
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MyArmyCtrlManager
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.NetManager
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.AudioManager
-e8a598726541f632b9380825dc66fb95 Assembly-CSharp.dll:.ArmyCtrl
+1a8277815f94bd5b8602831f75b11a7b Assembly-CSharp.dll:.ArmyCtrl
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.Test
 5372ed2ce39229b1ac910757999a8be2 Unity.TextMeshPro.dll:TMPro.TextMeshPro
 3165968ba45c74472d279ba04455fccb Unity.TextMeshPro.dll:TMPro.TMP_ColorGradient
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MsgCenter
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
-e8a598726541f632b9380825dc66fb95 Assembly-CSharp.dll:.OtherArmyCtrl
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.CursorManager

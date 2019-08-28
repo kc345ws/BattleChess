@@ -187,7 +187,8 @@ public class MapBuilder : MapBase
                 GameObject army= mapPointCtrl.SetLandArmy(prefab);
                 //初始化敌方兵种信息
                 army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.LandArmyRace, mapPointDto.LandArmyName) ;
-
+                army.gameObject.GetComponent<OtherArmyCtrl>().armyState.Position = new Protocol.Constants.Map.MapPoint(otherx, otherz);
+                mapPointCtrl.UpdateLandArmy(army);
                 //向其他人添加兵种
                 Dispatch(AreoCode.ARMY, ArmyEvent.ADD_OTHER_ARMY, army);
             }
@@ -203,8 +204,9 @@ public class MapBuilder : MapBase
                 GameObject army = mapPointCtrl.SetSkyArmy(prefab);
 
                 //初始化敌方兵种信息
-                army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.SkyArmyRace, mapPointDto.SkyArmyName); 
-
+                army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.SkyArmyRace, mapPointDto.SkyArmyName);
+                army.gameObject.GetComponent<OtherArmyCtrl>().armyState.Position = new Protocol.Constants.Map.MapPoint(otherx, otherz);
+                mapPointCtrl.UpdateSkyArmy(army);
                 Dispatch(AreoCode.ARMY, ArmyEvent.ADD_OTHER_ARMY, army);
             }
         }

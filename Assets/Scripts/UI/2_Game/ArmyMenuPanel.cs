@@ -1,4 +1,5 @@
 ﻿using Protocol.Constants;
+using Protocol.Constants.Map;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,11 +16,13 @@ public class ArmyMenuPanel : UIBase
     private Button Button_Skill;
 
     //private ArmyCardBase armyState;
-    private ArmyCtrl armyCtrl;//兵种控制器
+    private static ArmyCtrl armyCtrl;//兵种控制器
 
     private MapPointCtrl attackMapPointCtrl;//要攻击的地图点控制器
 
-    private MapPointCtrl clickMapPointCtrl;//点击的地图点控制器
+    private static MapPointCtrl clickMapPointCtrl;//点击的地图点控制器
+
+    private bool isAttack = false;//是否处于攻击状态
     // Start is called before the first frame update
     void Start()
     {
@@ -61,7 +64,7 @@ public class ArmyMenuPanel : UIBase
                 SetPanelActive(false);
                 break;
 
-                
+
         }
     }
 
@@ -84,7 +87,7 @@ public class ArmyMenuPanel : UIBase
         }
         else
         {
-            Button_Attack.enabled = false ;
+            Button_Attack.enabled = false;
         }
         SetPanelActive(true);
     }
@@ -107,25 +110,101 @@ public class ArmyMenuPanel : UIBase
         if (armyCtrl != null)
         {
             //设置光标
-            Dispatch(AreoCode.UI, UIEvent.CURSOR_SET_ATTACK, "设置攻击光标");
+            if (!isAttack)
+            {
+                Dispatch(AreoCode.UI, UIEvent.CURSOR_SET_ATTACK, "设置攻击光标");
+                isAttack = true;
+            }
+            //屏蔽移动
+            armyCtrl.iscanMove = false;
+            
+            /*
             //选择要攻击的地图点
-            if(clickMapPointCtrl == null)
+            if (clickMapPointCtrl == null)
             {
                 //如果选择的地图点为空则递归调用
                 attackBtnClicker();
             }
-            //TODO 调用Armyctrl攻击   
-            if(!armyCtrl.Attack(clickMapPointCtrl, clickMapPointCtrl.gameObject.GetComponent<OtherArmyCtrl>()))
+            //调用Armyctrl攻击   
+            if (!armyCtrl.Attack(clickMapPointCtrl, clickMapPointCtrl.gameObject.GetComponent<OtherArmyCtrl>()))
             {
                 //如果不能攻击则递归调用
                 attackBtnClicker();
-            }
-            else
-            {
-                Dispatch(AreoCode.UI, UIEvent.CURSOR_SET_NORMAL, "设置普通光标");
-            }
+            }*/
+            StartCoroutine(Attack());
+           // else
+            //{
+                
+            //}
         }
     }
+
+    private IEnumerator Attack()
+    {
+        //选择要攻击的地图点
+        if (clickMapPointCtrl == null)
+        {
+            yield return new WaitUntil(isclickMapPointCtrlnull);
+        }
+        //调用Armyctrl攻击   
+        if (!armyCtrl.Attack(clickMapPointCtrl, clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>()))
+        {
+            //如果不能攻击
+            yield return new WaitUntil(isArmycanAttack);
+
+            //屏蔽查看属性
+            clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+
+            Dispatch(AreoCode.UI, UIEvent.CURSOR_SET_NORMAL, "设置普通光标");
+            isAttack = false;
+        }
+    }
+
+    private bool isclickMapPointCtrlnull()
+    {
+        if (clickMapPointCtrl != null)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private bool isArmycanAttack()
+    {
+        if(clickMapPointCtrl == null)
+        {
+            return false;
+        }
+
+        else if (armyCtrl.Attack(clickMapPointCtrl, clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>()))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 判断选择的地图点控制器是否为空
+    /// </summary>
+    /*private System.Func<bool> isclickMapPointCtrlnull =
+        () =>
+        {
+            if(clickMapPointCtrl != null)
+            {
+                return true;
+            }
+            return false;
+        };
+
+    private System.Func<bool> isArmycanAttack =
+        () =>
+        {
+            if(armyCtrl.Attack(clickMapPointCtrl, clickMapPointCtrl.gameObject.GetComponent<OtherArmyCtrl>()))
+            {
+                return true;
+            }
+            return false;
+        };*/
 
     /// <summary>
     /// 获取点击的地图点控制器
@@ -150,3 +229,6 @@ public class ArmyMenuPanel : UIBase
         return null;
     }
 }
+
+    
+

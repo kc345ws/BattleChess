@@ -19,6 +19,8 @@ public class OtherArmyCtrl : ArmyBase
     public delegate bool OtherArmySelectDelegate(OtherArmyCtrl otherArmyCtrl);
     public OtherArmySelectDelegate ArmySelectDelegate;
 
+    public bool iscanShowStatePanel = true;//是否可以显示属性面板
+
     // Start is called before the first frame update
     void Start()
     {
