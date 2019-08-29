@@ -188,6 +188,7 @@ public class MapBuilder : MapBase
                 //初始化敌方兵种信息
                 army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.LandArmyRace, mapPointDto.LandArmyName) ;
                 army.gameObject.GetComponent<OtherArmyCtrl>().armyState.Position = new Protocol.Constants.Map.MapPoint(otherx, otherz);
+                army.gameObject.GetComponent<OtherArmyCtrl>().armyState.CanFly = false;
                 mapPointCtrl.UpdateLandArmy(army);
                 //向其他人添加兵种
                 Dispatch(AreoCode.ARMY, ArmyEvent.ADD_OTHER_ARMY, army);
@@ -206,6 +207,7 @@ public class MapBuilder : MapBase
                 //初始化敌方兵种信息
                 army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.SkyArmyRace, mapPointDto.SkyArmyName);
                 army.gameObject.GetComponent<OtherArmyCtrl>().armyState.Position = new Protocol.Constants.Map.MapPoint(otherx, otherz);
+                army.gameObject.GetComponent<OtherArmyCtrl>().armyState.CanFly = true;
                 mapPointCtrl.UpdateSkyArmy(army);
                 Dispatch(AreoCode.ARMY, ArmyEvent.ADD_OTHER_ARMY, army);
             }
@@ -236,9 +238,13 @@ public class MapBuilder : MapBase
                         mapPointCtrl.LandArmyRace = selectArmyCard.Race;
                         mapPointCtrl.LandArmyName = selectArmyCard.Name;
                         //向我的兵种控制器集合添加兵种管理器
-                        ArmyCtrl armyctral = army.GetComponent<ArmyCtrl>();
-                        armyctral.Init(selectArmyCard, mapPointCtrl, army);
-                        myArmyCtrls.Add(armyctral);
+                        ArmyCtrl armyctrl = army.GetComponent<ArmyCtrl>();
+                        
+                        armyctrl.Init(selectArmyCard, mapPointCtrl, army);
+                        armyctrl.armyState.CanFly = false;
+                        //更新地图点控制器
+                        mapPointCtrl.UpdateLandArmy(army);
+                        myArmyCtrls.Add(armyctrl);
                         //移除卡牌
                         Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, selectArmyCard);
                         //向服务器发送消息
@@ -257,10 +263,15 @@ public class MapBuilder : MapBase
                         //mapPointCtrl.SkyArmyCard = selectArmyCard;
                         mapPointCtrl.SkyArmyRace = selectArmyCard.Race;
                         mapPointCtrl.SkyArmyName = selectArmyCard.Name;
+                         
                         //向我的兵种控制器集合添加兵种管理器
-                        ArmyCtrl armyctral = army.GetComponent<ArmyCtrl>();
-                        armyctral.Init(selectArmyCard, mapPointCtrl, army);
-                        myArmyCtrls.Add(armyctral);
+                        ArmyCtrl armyctrl = army.GetComponent<ArmyCtrl>();
+                        
+                        armyctrl.Init(selectArmyCard, mapPointCtrl, army);
+                        armyctrl.armyState.CanFly = true;
+                        //更新地图点控制器
+                        mapPointCtrl.UpdateSkyArmy(army);
+                        myArmyCtrls.Add(armyctrl);
                         //移除卡牌
                         Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, selectArmyCard);
                         //向服务器发送消息

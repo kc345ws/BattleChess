@@ -91,7 +91,7 @@ public class OtherArmyCtrl : ArmyBase
 
     private void OnMouseDown()
     {
-         if (ArmySelectDelegate.Invoke(this))
+         if (ArmySelectDelegate.Invoke(this) && iscanShowStatePanel)
             {
                 //第一次或和上一次不一样
                 Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_STATE_PANEL, armyState);           

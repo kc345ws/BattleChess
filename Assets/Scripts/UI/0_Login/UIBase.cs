@@ -56,6 +56,8 @@ public class UIBase : MonoBase {
         MsgCenter.Instance.Dispatch(areocode, eventcode, message);
     }
 
+    
+
     /// <summary>
     /// 设置脚本关联游戏物体的Active
     /// </summary>

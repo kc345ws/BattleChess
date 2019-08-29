@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Net;
 using Protocol.Code;
 using Protocol.Constants;
+using Protocol.Constants.Map;
 using Protocol.Dto.Fight;
 using System.Collections;
 using System.Collections.Generic;
@@ -78,7 +79,70 @@ public class FightHandler : HandlerBase
             case FightCode.MAP_ARMY_MOVE_SBOD:
                 processArmyMove(message as MapMoveDto);
                 break;
+
+            case FightCode.ARMY_ATTACK_SBOD:
+                processArmyAttack(message as MapAttackDto);
+                break;
         }
+    }
+
+    /// <summary>
+    /// 处理其他人兵种攻击自己兵种的请求
+    /// </summary>
+    private void processArmyAttack(MapAttackDto mapAttackDto)
+    {
+        //镜像对称
+        int totalX = 12;
+        int totalZ = 8;
+
+        MapPoint attackpoint = new MapPoint(totalX - mapAttackDto.AttacklMapPoint.X, totalZ - mapAttackDto.AttacklMapPoint.Z); 
+        MapPoint defensepoint = new MapPoint(totalX - mapAttackDto.DefenseMapPoint.X, totalZ - mapAttackDto.DefenseMapPoint.Z); ;
+        bool attackcanfly = mapAttackDto.AttackCanFly;
+        bool defensecanfly = mapAttackDto.DefenseCanFly;
+        MapPointCtrl attackPointCtrl = null;
+        MapPointCtrl defensePointCtrl = null;
+        OtherArmyCtrl attackCtrl;
+        ArmyCtrl defenseCtrl;
+        
+
+
+        foreach (var item in MapManager.mapPointCtrls)
+        {
+            if(item.mapPoint.X == attackpoint.X && item.mapPoint.Z == attackpoint.Z)
+            {
+                attackPointCtrl = item;
+            }
+            else if(item.mapPoint.X == defensepoint.X && item.mapPoint.Z == defensepoint.Z)
+            {
+                defensePointCtrl = item;
+            }
+
+            if(attackPointCtrl !=null && defensePointCtrl != null)
+            {
+                break;
+            }
+        }
+
+        if (!attackcanfly)
+        {
+            attackCtrl = attackPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+        }
+        else
+        {
+            attackCtrl = attackPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
+        }
+
+        if (!defensecanfly)
+        {
+            defenseCtrl = defensePointCtrl.LandArmy.GetComponent<ArmyCtrl>();
+        }
+        else
+        {
+            defenseCtrl = defensePointCtrl.SkyArmy.GetComponent<ArmyCtrl>();
+        }
+
+        //减血
+        defenseCtrl.armyState.Hp -= attackCtrl.armyState.Damage;
     }
     
     /// <summary>

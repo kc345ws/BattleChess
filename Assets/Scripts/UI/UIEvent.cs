@@ -94,4 +94,14 @@ public static class UIEvent{
     /// </summary>
     public const int CURSOR_SET_NORMAL = 127;
     public const int CURSOR_SET_ATTACK = 128;
+
+    /// <summary>
+    /// 显示选择攻击目标面板
+    /// </summary>
+    public const int SHOW_SELECT_ATTACK_PANEL = 129;
+
+    /// <summary>
+    /// 设置选择攻击的目标的结果
+    /// </summary>
+    public const int SET_SELECK_ATTACK = 130;
 }

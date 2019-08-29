@@ -42,6 +42,8 @@ public class MapPointCtrl : MapBase
 
     }
 
+
+
     /// <summary>
     /// 设置地块颜色
     /// </summary>

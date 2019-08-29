@@ -69,9 +69,10 @@ public class ArmyCtrl : ArmyBase
 
         setArmyState(cardDto);
 
-        canAttckPoint = MapAttackType.Instance.GetAttakRange(armyState);
+        
 
         armyState.Position = mapPoint;
+        canAttckPoint = MapAttackType.Instance.GetAttakRange(armyState);
         //canAttckPoint = GetAttakRange(armyState);
 
         if (armyState.Class == ArmyClassType.Ordinary)
@@ -415,6 +416,7 @@ public class ArmyCtrl : ArmyBase
 
         bool canAttackPoint = false;//是否能攻击地图点上的兵种
         int attackSpace = ArmyMoveType.NONE;//攻击陆地1 攻击飞行2
+
         if(defenseArmy.armyState.Name == defensemapPointCtrl.LandArmyName)
         {
             attackSpace = ArmyMoveType.LAND;
