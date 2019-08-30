@@ -104,4 +104,11 @@ public static class UIEvent{
     /// 设置选择攻击的目标的结果
     /// </summary>
     public const int SET_SELECK_ATTACK = 130;
+
+    /// <summary>
+    /// 陆地飞行单位重合时的选择面板
+    /// </summary>
+    public const int SELECT_LAND_SKY = 131;
+    
+
 }

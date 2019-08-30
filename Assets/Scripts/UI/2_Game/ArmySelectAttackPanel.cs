@@ -8,10 +8,13 @@ public class ArmySelectAttackPanel : UIBase
 {
     private Button Button_Land;
     private Button Button_Sky;
+
+    private bool isAttack = false;//是否是攻击请求
     // Start is called before the first frame update
     void Start()
     {
         Bind(UIEvent.SHOW_SELECT_ATTACK_PANEL);
+        Bind(UIEvent.SELECT_LAND_SKY);
 
         Button_Land = transform.Find("Button_Land").GetComponent<Button>();
         Button_Sky = transform.Find("Button_Sky").GetComponent<Button>();
@@ -41,13 +44,18 @@ public class ArmySelectAttackPanel : UIBase
         switch (eventcode)
         {
             case UIEvent.SHOW_SELECT_ATTACK_PANEL:
-                processShowPanel();
+                processShowPanel((bool)message);
+                break;
+
+            case UIEvent.SELECT_LAND_SKY:
+                processShowPanel((bool)message);
                 break;
         }
     }
 
-    private void processShowPanel()
+    private void processShowPanel(bool flag)
     {
+        isAttack = flag;
         SetPanelActive(true);
     }
 
@@ -56,7 +64,14 @@ public class ArmySelectAttackPanel : UIBase
     /// </summary>
     private void landBtnClicker()
     {
-        Dispatch(AreoCode.UI, UIEvent.SET_SELECK_ATTACK, ArmyMoveType.LAND);
+        if (isAttack)
+        {
+            Dispatch(AreoCode.UI, UIEvent.SET_SELECK_ATTACK, ArmyMoveType.LAND);
+        }
+        else
+        {
+            Dispatch(AreoCode.ARMY, ArmyEvent.SET_LAND_SKY, ArmyMoveType.LAND);
+        }
         SetPanelActive(false);
     }
 
@@ -65,7 +80,14 @@ public class ArmySelectAttackPanel : UIBase
     /// </summary>
     private void skyBtnClicker()
     {
-        Dispatch(AreoCode.UI, UIEvent.SET_SELECK_ATTACK, ArmyMoveType.SKY);
+        if (isAttack)
+        {
+            Dispatch(AreoCode.UI, UIEvent.SET_SELECK_ATTACK, ArmyMoveType.SKY);
+        }
+        else
+        {
+            Dispatch(AreoCode.ARMY, ArmyEvent.SET_LAND_SKY, ArmyMoveType.SKY);
+        }
         SetPanelActive(false);
     }
 }

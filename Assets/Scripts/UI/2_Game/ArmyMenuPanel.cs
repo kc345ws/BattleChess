@@ -91,11 +91,12 @@ public class ArmyMenuPanel : UIBase
         if (armyCtrl.canAttack && !armyCtrl.isAttack)
         {
             //如果兵种能攻击且没有攻击过
-            Button_Attack.enabled = true;
+            //Button_Attack.enabled = true;
+            Button_Attack.interactable = true;
         }
         else
         {
-            Button_Attack.enabled = false;
+            Button_Attack.interactable = false;
         }
         SetPanelActive(true);
     }
@@ -164,13 +165,16 @@ public class ArmyMenuPanel : UIBase
             //如果攻击方是陆地单位
             defenseArmy = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
         }
-        else if (armyCtrl.armyState.CanFly && clickMapPointCtrl.LandArmy != null && clickMapPointCtrl.SkyArmy!=null)
+        else if (armyCtrl.armyState.CanFly && clickMapPointCtrl!=null&&clickMapPointCtrl.LandArmy != null && clickMapPointCtrl.SkyArmy!=null)
         {
             //如果攻击方是飞行单位,且地图点上同时有陆地和飞行单位
-            Dispatch(AreoCode.UI, UIEvent.SHOW_SELECT_ATTACK_PANEL, "显示攻击选择面板");
+            MapPointCtrl mapPointCtrl = clickMapPointCtrl;
+            Dispatch(AreoCode.UI, UIEvent.SHOW_SELECT_ATTACK_PANEL, true);
             yield return new WaitUntil(isSetDefenseArmyType);
+            //打开面板后会清空选择的地图点控制器
+            clickMapPointCtrl = mapPointCtrl;
 
-            if(defenseArmyType == ArmyMoveType.LAND)
+            if (defenseArmyType == ArmyMoveType.LAND)
             {
                 defenseArmy = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
             }
@@ -191,7 +195,10 @@ public class ArmyMenuPanel : UIBase
         }
 
         //屏蔽查看属性
-        defenseArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+        if (defenseArmy != null)
+        {
+            defenseArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+        }
 
         //调用Armyctrl攻击   
         if (!armyCtrl.Attack(clickMapPointCtrl, defenseArmy))
@@ -211,6 +218,9 @@ public class ArmyMenuPanel : UIBase
 
         //对方减血
         defenseArmy.armyState.Hp -= armyCtrl.armyState.Damage;
+
+        Button_Attack.interactable = false;
+        
         refresh();
     }
 
@@ -322,6 +332,8 @@ public class ArmyMenuPanel : UIBase
         {
             defenseArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = true;
         }
+        //防御单位置空
+        defenseArmy = null;
     }
 }
 

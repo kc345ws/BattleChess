@@ -186,7 +186,7 @@ public class MapBuilder : MapBase
 
                 GameObject army= mapPointCtrl.SetLandArmy(prefab);
                 //初始化敌方兵种信息
-                army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.LandArmyRace, mapPointDto.LandArmyName) ;
+                army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.LandArmyRace, mapPointDto.LandArmyName,mapPointCtrl) ;
                 army.gameObject.GetComponent<OtherArmyCtrl>().armyState.Position = new Protocol.Constants.Map.MapPoint(otherx, otherz);
                 army.gameObject.GetComponent<OtherArmyCtrl>().armyState.CanFly = false;
                 mapPointCtrl.UpdateLandArmy(army);
@@ -205,7 +205,7 @@ public class MapBuilder : MapBase
                 GameObject army = mapPointCtrl.SetSkyArmy(prefab);
 
                 //初始化敌方兵种信息
-                army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.SkyArmyRace, mapPointDto.SkyArmyName);
+                army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.SkyArmyRace, mapPointDto.SkyArmyName,mapPointCtrl);
                 army.gameObject.GetComponent<OtherArmyCtrl>().armyState.Position = new Protocol.Constants.Map.MapPoint(otherx, otherz);
                 army.gameObject.GetComponent<OtherArmyCtrl>().armyState.CanFly = true;
                 mapPointCtrl.UpdateSkyArmy(army);

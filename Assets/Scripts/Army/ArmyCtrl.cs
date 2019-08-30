@@ -39,7 +39,11 @@ public class ArmyCtrl : ArmyBase
 
     public bool isAttack { get; private set; }//是否攻击过
 
+    //public bool isShowAttackButton { get; private set; }//是否显示攻击按钮
+
     public bool iscanMove = true;//是否可以移动
+
+    private int SelectArmyType = -1;//多个兵种重叠时选择的兵种类型
 
     //private Renderer renderer;
 
@@ -51,9 +55,21 @@ public class ArmyCtrl : ArmyBase
     // Start is called before the first frame update
     void Start()
     {
+        Bind(ArmyEvent.SET_LAND_SKY);
         //ArmyPrefab = gameObject; 
         socketMsg = new SocketMsg();
         attackDto = new MapAttackDto();
+    }
+
+    public override void Execute(int eventcode, object message)
+    {
+        //base.Execute(eventcode, message);
+        switch (eventcode)
+        {
+            case ArmyEvent.SET_LAND_SKY:
+                SelectArmyType = (int)message;
+                break;
+        }
     }
 
     public void Init(CardDto cardDto , MapPointCtrl mapPointCtrl ,GameObject armyPrefab)
@@ -80,7 +96,7 @@ public class ArmyCtrl : ArmyBase
             //如果是普通兵种
             canAttack = true;
             isAttack = false;
-
+            //isShowAttackButton = true;
             
         }
         else
@@ -311,25 +327,84 @@ public class ArmyCtrl : ArmyBase
 
     private void OnMouseDown()
     {
-        //isSelect = true;
-        //transform.localScale *= 2;
-        if (ArmySelectEvent.Invoke(this))
+        if(ArmymapPointCtrl.LandArmy !=null && ArmymapPointCtrl.SkyArmy != null)
         {
-            //第一次选择或和上次选择不一样
-            //transform.localScale *= 2;
-            //StartCoroutine(selectState());
-            //Dispatch(AreoCode.UI, UIEvent.SET_ARMY_METNU_VALUE, this);
-
-            //Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, armyState);
-            Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, this);
+            //如果陆地和飞行单位重合
+            Dispatch(AreoCode.UI, UIEvent.SELECT_LAND_SKY, false);
+            StartCoroutine(selectArmy());
         }
         else
         {
-            //StopCoroutine(selectState());
-            //和上次选择一样
-            //transform.localScale /= 2;
-            Dispatch(AreoCode.UI, UIEvent.CLOSE_ARMY_MENU_PANEL, "关闭面板");
+            //如果只有一个单位
+            if (ArmySelectEvent.Invoke(this))
+            {
+                //和上次选择不一样或第一次选择
+                Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, this);
+            }
+            else
+            {
+                //和上次选择一样
+                Dispatch(AreoCode.UI, UIEvent.CLOSE_ARMY_MENU_PANEL, "关闭面板");
+            }
+
         }
+
+        
+    }
+
+    /// <summary>
+    /// 选择兵种协程
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator selectArmy()
+    {
+        yield return new WaitUntil(isSelectArmyType);
+        if (SelectArmyType == ArmyMoveType.LAND)
+        {
+            //选择了陆地兵种
+            ArmyCtrl armyCtrl = ArmymapPointCtrl.LandArmy.GetComponent<ArmyCtrl>();
+
+            if (ArmySelectEvent.Invoke(armyCtrl))
+            {
+                //和上次选择不一样或第一次选择
+                Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, armyCtrl);
+            }
+            else
+            {
+                //和上次选择一样
+                Dispatch(AreoCode.UI, UIEvent.CLOSE_ARMY_MENU_PANEL, "关闭面板");
+            }
+        }
+        else
+        {
+            //如果选择了飞行单位
+            ArmyCtrl armyCtrl = ArmymapPointCtrl.SkyArmy.GetComponent<ArmyCtrl>();
+            if (ArmySelectEvent.Invoke(armyCtrl))
+            {
+                //和上次选择不一样或第一次选择
+                Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, armyCtrl);
+            }
+            else
+            {
+                //和上次选择一样
+                Dispatch(AreoCode.UI, UIEvent.CLOSE_ARMY_MENU_PANEL, "关闭面板");
+            }
+        }
+
+        SelectArmyType = -1;
+    }
+
+    /// <summary>
+    /// 是否选择兵种类型
+    /// </summary>
+    /// <returns></returns>
+    private bool isSelectArmyType()
+    {
+        if(SelectArmyType != -1)
+        {
+            return true;
+        }
+        return false;
     }
 
     /// <summary>
@@ -443,6 +518,9 @@ public class ArmyCtrl : ArmyBase
             {
                 //如果攻击陆地兵种
 
+                //改变状态
+                isAttack = true;
+                //isShowAttackButton = false;
                 //TODO 播放攻击动画
                 //向服务器发送攻击消息
                 attackDto.Change(mapPoint, defensemapPointCtrl.mapPoint, ArmyCard.CanFly, false);
@@ -454,7 +532,9 @@ public class ArmyCtrl : ArmyBase
             else if(canAttackPoint && attackSpace == ArmyMoveType.SKY)
             {
                 //如果攻击飞行兵种
-
+                //改变状态
+                isAttack = true;
+                //isShowAttackButton = false;
                 //TODO 播放攻击动画
                 //向服务器发送攻击消息
                 attackDto.Change(mapPoint, defensemapPointCtrl.mapPoint, ArmyCard.CanFly, true);
