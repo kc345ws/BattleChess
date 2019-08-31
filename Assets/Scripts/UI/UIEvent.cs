@@ -108,7 +108,7 @@ public static class UIEvent{
     /// <summary>
     /// 陆地飞行单位重合时的选择面板
     /// </summary>
-    public const int SELECT_LAND_SKY = 131;
-    
+    public const int SELECT_MY_LAND_SKY = 131;
+    public const int SELECT_OTHER_LAND_SKY = 132;
 
 }

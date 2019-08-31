@@ -77,7 +77,7 @@ public class MyCharacterCtrl : CharacterBase
     /// <summary>
     /// 出所选中的牌
     /// </summary>
-    private void dealSelectedCard()
+    /*private void dealSelectedCard()
     {
         DealDto dealDto = new DealDto(GameModles.Instance.userDto.ID, getSelectedCard());
         if (dealDto.isRegular)
@@ -89,13 +89,13 @@ public class MyCharacterCtrl : CharacterBase
         {
             Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "出牌不合法");
         }
-    }
+    }*/
 
     /// <summary>
     /// 获取所选中的牌
     /// </summary>
     /// <returns></returns>
-    private List<CardDto> getSelectedCard()
+    /*private List<CardDto> getSelectedCard()
     {
         List<CardDto> selectedCard = new List<CardDto>();
         foreach (var item in CardCtrllist)
@@ -106,7 +106,7 @@ public class MyCharacterCtrl : CharacterBase
             }
         }
         return selectedCard;
-    }
+    }*/
 
     /// <summary>
     /// 出牌成功时移除手牌
@@ -259,9 +259,9 @@ public class MyCharacterCtrl : CharacterBase
                 addTableCard(message as List<CardDto>);
                 break;
 
-            case CharacterEvent.DEAL_CARD:
+            /*case CharacterEvent.DEAL_CARD:
                 dealSelectedCard();
-                break;
+                break;*/
 
             case CharacterEvent.REMOVE_MY_CARDS:
                 //removeSelectCard(message as List<CardDto>);

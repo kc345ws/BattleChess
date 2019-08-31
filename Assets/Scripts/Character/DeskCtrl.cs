@@ -30,7 +30,7 @@ public class DeskCtrl : CharacterBase
         switch (eventcode)
         {
             case CharacterEvent.UPDATE_SHOW_dESK:
-                updateShowDesk(message as List<CardDto>);
+                //updateShowDesk(message as List<CardDto>);
 
                 break;
         }

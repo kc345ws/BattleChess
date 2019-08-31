@@ -28,7 +28,7 @@ public class OtherArmyCtrl : ArmyBase
     // Start is called before the first frame update
     void Start()
     {
-        Bind(ArmyEvent.SET_LAND_SKY);
+        Bind(ArmyEvent.SET_OTHER_LAND_SKY);
     }
 
     public override void Execute(int eventcode, object message)
@@ -36,7 +36,7 @@ public class OtherArmyCtrl : ArmyBase
         //base.Execute(eventcode, message);
         switch (eventcode)
         {
-            case ArmyEvent.SET_LAND_SKY:
+            case ArmyEvent.SET_OTHER_LAND_SKY:
                 SelectArmyType = (int)message;
                 break;
         }
@@ -115,7 +115,7 @@ public class OtherArmyCtrl : ArmyBase
         if (OtherMapPintctrl.LandArmy != null && OtherMapPintctrl.SkyArmy != null)
         {
             //如果陆地和飞行单位重合
-            Dispatch(AreoCode.UI, UIEvent.SELECT_LAND_SKY, false);
+            Dispatch(AreoCode.UI, UIEvent.SELECT_OTHER_LAND_SKY, false);
             StartCoroutine(selectArmy());
         }
         else

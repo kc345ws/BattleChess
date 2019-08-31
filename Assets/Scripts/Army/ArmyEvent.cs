@@ -14,6 +14,7 @@ public class ArmyEvent
     /// <summary>
     /// 多个兵种重叠时的选择结果
     /// </summary>
-    public const int SET_LAND_SKY = 1;
+    public const int SET_MY_LAND_SKY = 1;
+    public const int SET_OTHER_LAND_SKY = 2;
 }
 
