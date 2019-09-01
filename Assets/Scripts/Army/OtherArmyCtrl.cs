@@ -107,11 +107,15 @@ public class OtherArmyCtrl : ArmyBase
 
     private void OnMouseDown()
     {
-          
+        
     }
 
     private void OnMouseDrag()
     {
+        if (!iscanShowStatePanel)
+        {
+            return;
+        }
         if (OtherMapPintctrl.LandArmy != null && OtherMapPintctrl.SkyArmy != null)
         {
             //如果陆地和飞行单位重合
@@ -121,7 +125,7 @@ public class OtherArmyCtrl : ArmyBase
         else
         {
             //如果只有一个单位
-            if (ArmySelectDelegate.Invoke(this) && iscanShowStatePanel)
+            if (ArmySelectDelegate.Invoke(this))
             {
                 //第一次或和上一次不一样
                 Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_STATE_PANEL, armyState);
@@ -131,7 +135,6 @@ public class OtherArmyCtrl : ArmyBase
                 //和上次一样
             }
         }
-        
     }
 
     /// <summary>
@@ -156,6 +159,7 @@ public class OtherArmyCtrl : ArmyBase
                 //和上次一样
                 Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_STATE_PANEL, armyCtrl.armyState);
             }
+            SelectArmyType = -1;
         }
         else
         {
@@ -171,6 +175,7 @@ public class OtherArmyCtrl : ArmyBase
                 //和上次一样
                 Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_STATE_PANEL, armyCtrl.armyState);
             }
+            SelectArmyType = -1;
         }
         SelectArmyType = -1;
     }

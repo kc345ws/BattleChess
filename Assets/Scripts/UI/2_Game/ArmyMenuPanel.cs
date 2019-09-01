@@ -10,8 +10,8 @@ public class ArmyMenuPanel : UIBase
 {
     private Button Button_State;
     private Button Button_Close;
-    private Button Button_Attack;
-    private Button Button_Dodge;
+    private Button Button_Attack_Land;
+    private Button Button_Attack_Sky;
     private Button Button_Turn;
     private Button Button_Skill;
 
@@ -33,18 +33,19 @@ public class ArmyMenuPanel : UIBase
     {
         Bind(UIEvent.SHOW_ARMY_MENU_PANEL);
         Bind(UIEvent.CLOSE_ARMY_MENU_PANEL);
-        Bind(UIEvent.SET_SELECK_ATTACK);
+        //Bind(UIEvent.SET_SELECK_ATTACK);
 
         Button_State = transform.Find("Button_State").GetComponent<Button>();
         Button_Close = transform.Find("Button_Close").GetComponent<Button>();
-        Button_Attack = transform.Find("Button_Attack").GetComponent<Button>();
-        Button_Dodge = transform.Find("Button_Dodge").GetComponent<Button>();
+        Button_Attack_Land = transform.Find("Button_Attack_Land").GetComponent<Button>();
+        Button_Attack_Sky = transform.Find("Button_Attack_Sky").GetComponent<Button>();
         Button_Turn = transform.Find("Button_Turn").GetComponent<Button>();
         Button_Skill = transform.Find("Button_Skill").GetComponent<Button>();
 
         Button_State.onClick.AddListener(stateBtnClicker);
         Button_Close.onClick.AddListener(closeBtnClicker);
-        Button_Attack.onClick.AddListener(attackBtnClicker);
+        Button_Attack_Land.onClick.AddListener(attackLandBtnClicker);
+        Button_Attack_Sky.onClick.AddListener(attackSkyBtnClicker);
 
         SetPanelActive(false);
     }
@@ -53,7 +54,7 @@ public class ArmyMenuPanel : UIBase
     void Update()
     {
         clickMapPointCtrl = GetMapPointCtrl();
-        StartCoroutine(selectDenfenseArmy());
+        //StartCoroutine(selectDenfenseArmy());
     }
 
     public override void Execute(int eventcode, object message)
@@ -71,9 +72,9 @@ public class ArmyMenuPanel : UIBase
                 SetPanelActive(false);
                 break;
 
-            case UIEvent.SET_SELECK_ATTACK:
+            /*case UIEvent.SET_SELECK_ATTACK:
                 defenseArmyType = (int)message;
-                break;
+                break;*/
         }
     }
 
@@ -82,6 +83,8 @@ public class ArmyMenuPanel : UIBase
         base.OnDestroy();
         Button_State.onClick.RemoveAllListeners();
         Button_Close.onClick.RemoveAllListeners();
+        Button_Attack_Land.onClick.RemoveAllListeners();
+        Button_Attack_Sky.onClick.RemoveAllListeners();
     }
 
     /// <summary>
@@ -93,11 +96,21 @@ public class ArmyMenuPanel : UIBase
         {
             //如果兵种能攻击且没有攻击过
             //Button_Attack.enabled = true;
-            Button_Attack.interactable = true;
+            Button_Attack_Land.interactable = true;
         }
         else
         {
-            Button_Attack.interactable = false;
+            Button_Attack_Land.interactable = false;
+        }
+
+        if(armyCtrl.canAttack && !armyCtrl.isAttack && armyCtrl.armyState.CanFly)
+        {
+            //如果飞行单位能攻击且没有攻击过
+            Button_Attack_Sky.interactable = true;
+        }
+        else
+        {
+            Button_Attack_Sky.interactable = false;
         }
         SetPanelActive(true);
     }
@@ -115,14 +128,26 @@ public class ArmyMenuPanel : UIBase
     }
 
     /// <summary>
-    /// 攻击按钮
+    /// 攻击陆地单位按钮
     /// </summary>
-    private void attackBtnClicker()
+    private void attackLandBtnClicker()
     {
         attackState();
         if(armyCtrl != null)
         {
-            StartCoroutine(Attack());
+            StartCoroutine(AttackLand());
+        }
+    }
+
+    /// <summary>
+    /// 攻击飞行单位按钮
+    /// </summary>
+    private void attackSkyBtnClicker()
+    {
+        attackState();
+        if (armyCtrl != null)
+        {
+            StartCoroutine(AttackSky());
         }
     }
 
@@ -141,7 +166,11 @@ public class ArmyMenuPanel : UIBase
         }
     }
 
-    private IEnumerator Attack()
+    /// <summary>
+    /// 攻击陆地单位协程
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator AttackLand()
     {
         //OtherArmyCtrl defenseArmy = null;//进行防御的兵种
 
@@ -153,8 +182,25 @@ public class ArmyMenuPanel : UIBase
             attackState();
         }
 
+        //屏蔽查看属性
+        if (defenseArmy != null)
+        {
+            if(clickMapPointCtrl.LandArmy!=null)
+            clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+            if(clickMapPointCtrl.SkyArmy !=null)
+            clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+        }
 
-        if (!armyCtrl.armyState.CanFly && clickMapPointCtrl.LandArmy != null)
+        if (clickMapPointCtrl.LandArmy != null)
+        {
+            //如果攻击方的是陆地单位
+            if (clickMapPointCtrl.LandArmy != armyCtrl.ArmyPrefab)
+            {
+                //如果攻击的不是自己
+                defenseArmy = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+            }
+        }
+        /*if (!armyCtrl.armyState.CanFly && clickMapPointCtrl.LandArmy != null)
         {
             //如果攻击方是陆地单位
             if (clickMapPointCtrl.LandArmy != armyCtrl.ArmyPrefab)
@@ -170,9 +216,8 @@ public class ArmyMenuPanel : UIBase
                 //如果攻击方是飞行单位,且地图点上同时有陆地和飞行单位
                 MapPointCtrl mapPointCtrl = clickMapPointCtrl;
                 Dispatch(AreoCode.UI, UIEvent.SHOW_SELECT_ATTACK_PANEL, true);
-                yield return new WaitForSeconds(1f);
-                yield return new WaitUntil(isSetDefenseArmyType);
-
+                //yield return new WaitUntil(isSetDefenseArmyType);
+                yield return StartCoroutine(selectDenfenseArmy());
                 //打开面板后会清空选择的地图点控制器
                 clickMapPointCtrl = mapPointCtrl;
 
@@ -203,7 +248,7 @@ public class ArmyMenuPanel : UIBase
             {
                 defenseArmy = clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
             }
-        }
+        }*/
 
 
         if (defenseArmy == null)
@@ -258,12 +303,6 @@ public class ArmyMenuPanel : UIBase
              defenseArmy = clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
          }*/
 
-        //屏蔽查看属性
-        if (defenseArmy != null)
-        {
-            defenseArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
-        }
-
         //调用Armyctrl攻击   
         if (!armyCtrl.Attack(clickMapPointCtrl, defenseArmy))
         {
@@ -284,11 +323,173 @@ public class ArmyMenuPanel : UIBase
         //对方减血
         defenseArmy.armyState.Hp -= armyCtrl.armyState.Damage;
 
-        Button_Attack.interactable = false;
-        
+        Button_Attack_Land.interactable = false;
+        Button_Attack_Sky.interactable = false;
+
+
         refresh();
     }
 
+    /// <summary>
+    /// 攻击飞行单位协程
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator AttackSky()
+    {
+        //选择要攻击的地图点
+        if (clickMapPointCtrl == null)
+        {
+            //refresh();
+            yield return new WaitUntil(isclickMapPointCtrlnull);
+            attackState();
+        }
+
+        //屏蔽查看属性
+        if (defenseArmy != null)
+        {
+            if (clickMapPointCtrl.LandArmy != null)
+                clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+            if (clickMapPointCtrl.SkyArmy != null)
+                clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+        }
+
+        if (clickMapPointCtrl.SkyArmy != null)
+        {
+            //如果攻击方的是陆地单位
+            if (clickMapPointCtrl.SkyArmy != armyCtrl.ArmyPrefab)
+            {
+                //如果攻击的不是自己
+                defenseArmy = clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
+            }
+        }
+        /*if (!armyCtrl.armyState.CanFly && clickMapPointCtrl.LandArmy != null)
+        {
+            //如果攻击方是陆地单位
+            if (clickMapPointCtrl.LandArmy != armyCtrl.ArmyPrefab)
+            {
+                //如果攻击的不是自己
+                defenseArmy = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+            }
+        }
+        else if (armyCtrl.armyState.CanFly && clickMapPointCtrl != null && clickMapPointCtrl.LandArmy != null && clickMapPointCtrl.SkyArmy != null)
+        {
+            if (clickMapPointCtrl.SkyArmy != armyCtrl.ArmyPrefab)
+            {
+                //如果攻击方是飞行单位,且地图点上同时有陆地和飞行单位
+                MapPointCtrl mapPointCtrl = clickMapPointCtrl;
+                Dispatch(AreoCode.UI, UIEvent.SHOW_SELECT_ATTACK_PANEL, true);
+                //yield return new WaitUntil(isSetDefenseArmyType);
+                yield return StartCoroutine(selectDenfenseArmy());
+                //打开面板后会清空选择的地图点控制器
+                clickMapPointCtrl = mapPointCtrl;
+
+                if (defenseArmyType == ArmyMoveType.LAND)
+                {
+                    defenseArmy = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+                }
+                else if (defenseArmyType == ArmyMoveType.SKY)
+                {
+                    defenseArmy = clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
+                }
+
+                defenseArmyType = -1;
+            }
+        }
+        else if (armyCtrl.armyState.CanFly && clickMapPointCtrl.LandArmy != null)
+        {
+            //如果攻击方位飞行单位，且地图点上只有陆地单位
+            if (armyCtrl.ArmyPrefab != clickMapPointCtrl.SkyArmy)
+            {
+                defenseArmy = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+            }
+        }
+        else if (armyCtrl.armyState.CanFly && clickMapPointCtrl.SkyArmy != null)
+        {
+            //如果攻击方位飞行单位，且地图点上只有飞行单位
+            if (armyCtrl.ArmyPrefab != clickMapPointCtrl.SkyArmy)
+            {
+                defenseArmy = clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
+            }
+        }*/
+
+
+        if (defenseArmy == null)
+        {
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "攻击目标无效");
+            refresh();
+            yield break;
+        }
+        /*if(defenseArmy == null)
+        {
+            refresh();
+            yield return StartCoroutine(selectDenfenseArmy());
+            //yield return new WaitUntil(isSetDefneseArmy);
+            if(defenseArmy == null)
+            {
+                Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "攻击目标无效");
+                yield break;
+            }
+            attackState();
+        }*/
+        /* if (!armyCtrl.armyState.CanFly && clickMapPointCtrl.LandArmy !=null)
+         {
+             //如果攻击方是陆地单位
+             defenseArmy = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+         }
+         else if (armyCtrl.armyState.CanFly && clickMapPointCtrl!=null&&clickMapPointCtrl.LandArmy != null && clickMapPointCtrl.SkyArmy!=null)
+         {
+             //如果攻击方是飞行单位,且地图点上同时有陆地和飞行单位
+             MapPointCtrl mapPointCtrl = clickMapPointCtrl;
+             Dispatch(AreoCode.UI, UIEvent.SHOW_SELECT_ATTACK_PANEL, true);
+             yield return new WaitUntil(isSetDefenseArmyType);
+             //打开面板后会清空选择的地图点控制器
+             clickMapPointCtrl = mapPointCtrl;
+
+             if (defenseArmyType == ArmyMoveType.LAND)
+             {
+                 defenseArmy = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+             }
+             else if(defenseArmyType == ArmyMoveType.SKY)
+             {
+                 defenseArmy = clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
+             }
+         }
+         else if(armyCtrl.armyState.CanFly && clickMapPointCtrl.LandArmy != null)
+         {
+             //如果攻击方位飞行单位，且地图点上只有陆地单位
+             defenseArmy = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+         }
+         else if(armyCtrl.armyState.CanFly && clickMapPointCtrl.SkyArmy != null)
+         {
+             //如果攻击方位飞行单位，且地图点上只有飞行单位
+             defenseArmy = clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
+         }*/
+
+        //调用Armyctrl攻击   
+        if (!armyCtrl.Attack(clickMapPointCtrl, defenseArmy))
+        {
+            //如果不能攻击
+            refresh();
+            yield return new WaitUntil(isArmycanAttack);
+
+
+            //clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+
+
+
+            //Dispatch(AreoCode.UI, UIEvent.CURSOR_SET_NORMAL, "设置普通光标");
+            //isAttack = false;
+
+        }
+
+        //对方减血
+        defenseArmy.armyState.Hp -= armyCtrl.armyState.Damage;
+
+        Button_Attack_Land.interactable = false;
+        Button_Attack_Sky.interactable = false;
+
+        refresh();
+    }
     /// <summary>
     /// 判断是否选择了地图点
     /// </summary>
