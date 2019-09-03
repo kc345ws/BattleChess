@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
+//fixbug:兵种移动后需要更新可攻击范围
 public class ArmyCtrl : ArmyBase
 {
     public GameObject ArmyPrefab { get; private set; }//脚本控制的兵种
@@ -35,7 +37,7 @@ public class ArmyCtrl : ArmyBase
 
     private MapAttackDto attackDto;
 
-    public bool canAttack { get; private set; }//是否能攻击
+    public bool canAttack { get; set; }//是否能攻击
 
     public bool isAttack { get; private set; }//是否攻击过
 

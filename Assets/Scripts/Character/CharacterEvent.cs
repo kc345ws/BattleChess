@@ -27,5 +27,10 @@ public class CharacterEvent
 
     //更新桌面的牌
     public const int UPDATE_SHOW_dESK = 1010;
+
+    /// <summary>
+    /// 选择指令卡
+    /// </summary>
+    public const int SELECT_ORDERCARD = 1011;
 }
 

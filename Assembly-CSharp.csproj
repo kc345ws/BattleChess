@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\Character\CharacterManager.cs" />
     <Compile Include="Assets\Scripts\Character\DeskCtrl.cs" />
     <Compile Include="Assets\Scripts\Character\MyCharacterCtrl.cs" />
+    <Compile Include="Assets\Scripts\Character\OrderCardManager.cs" />
     <Compile Include="Assets\Scripts\Character\OtherCharacterCtrl.cs" />
     <Compile Include="Assets\Scripts\Framework\AreoCode.cs" />
     <Compile Include="Assets\Scripts\Framework\ManagerBase.cs" />

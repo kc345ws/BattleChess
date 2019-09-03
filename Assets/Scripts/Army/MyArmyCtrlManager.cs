@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MyArmyCtrlManager : ArmyBase
 {
-    private List<ArmyCtrl> CardCtrllist;//兵种控制器集合
+    public List<ArmyCtrl> CardCtrllist { get; private set; }//兵种控制器集合
 
     private ArmyCtrl LastSelectArmyCtrl;//上一个选择的兵种
 

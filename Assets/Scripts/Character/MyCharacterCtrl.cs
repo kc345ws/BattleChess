@@ -10,12 +10,12 @@ using Protocol.Code;
 /// </summary>
 public class MyCharacterCtrl : CharacterBase
 {
-    private List<CardDto> myCardList;
+    private List<CardDto> myCardList;//卡牌数据传输对象集合
     private List<CardCtrl> CardCtrllist;//卡牌控制器集合
     private Transform cardTransformParent;//卡牌的父物体
     private GameObject cardPrefab;//卡牌预设体
 
-    private SocketMsg socketMsg;
+    private SocketMsg socketMsg;//套接字封装
     public CardCtrl LastSelectCard { get; private set; }//上一次选择的卡牌
     // Start is called before the first frame update
     void Start()
@@ -32,6 +32,30 @@ public class MyCharacterCtrl : CharacterBase
         socketMsg = new SocketMsg();
     }
 
+    public override void Execute(int eventcode, object message)
+    {
+        base.Execute(eventcode, message);
+        switch (eventcode)
+        {
+            case CharacterEvent.INIT_MY_CARDLIST:
+                StartCoroutine(initPlayerCard(message as List<CardDto>));
+                break;
+
+            case CharacterEvent.ADD_MY_TABLECARDS:
+                addTableCard(message as List<CardDto>);
+                break;
+
+            /*case CharacterEvent.DEAL_CARD:
+                dealSelectedCard();
+                break;*/
+
+            case CharacterEvent.REMOVE_MY_CARDS:
+                //removeSelectCard(message as List<CardDto>);
+                removeSelectCard(message as CardDto);
+                break;
+        }
+    }
+
     /// <summary>
     /// 每次只有一张牌被选择
     /// </summary>
@@ -46,7 +70,12 @@ public class MyCharacterCtrl : CharacterBase
             if(selectCard.cardDto.Type == CardType.ARMYCARD)
             {
                 Dispatch(AreoCode.MAP, MapEvent.SELECT_ARMYCARD, selectCard.cardDto);
-                //如果选中的是兵种开
+                //如果选中的是兵种卡
+            }
+            else if(selectCard.cardDto.Type == CardType.ORDERCARD)
+            {
+                //如果选中指令卡
+                Dispatch(AreoCode.CHARACTER, CharacterEvent.SELECT_ORDERCARD, selectCard);
             }
             
             return true;
@@ -63,6 +92,12 @@ public class MyCharacterCtrl : CharacterBase
                 Dispatch(AreoCode.MAP, MapEvent.SELECT_ARMYCARD, selectCard.cardDto);
                 //如果选中的是兵种卡
             }
+            else if (selectCard.cardDto.Type == CardType.ORDERCARD)
+            {
+                //如果选中指令卡
+                Dispatch(AreoCode.CHARACTER, CharacterEvent.SELECT_ORDERCARD, selectCard);
+            }
+
             return true;
         }
         else
@@ -70,6 +105,7 @@ public class MyCharacterCtrl : CharacterBase
             //和上次点击的一样，取消选中
             LastSelectCard = null;
             Dispatch(AreoCode.MAP, MapEvent.CANCEL_SELECT_ARMYCARD, null);
+            Dispatch(AreoCode.CHARACTER, CharacterEvent.SELECT_ORDERCARD, null);
             return false;
         }
     }
@@ -242,37 +278,4 @@ public class MyCharacterCtrl : CharacterBase
         }
     }
 
-    private void Awake()
-    {     
-    }
-
-    public override void Execute(int eventcode, object message)
-    {
-        base.Execute(eventcode, message);
-        switch (eventcode)
-        {
-            case CharacterEvent.INIT_MY_CARDLIST:
-                StartCoroutine(initPlayerCard(message as List<CardDto>));
-                break;
-
-            case CharacterEvent.ADD_MY_TABLECARDS:
-                addTableCard(message as List<CardDto>);
-                break;
-
-            /*case CharacterEvent.DEAL_CARD:
-                dealSelectedCard();
-                break;*/
-
-            case CharacterEvent.REMOVE_MY_CARDS:
-                //removeSelectCard(message as List<CardDto>);
-                removeSelectCard(message as CardDto);
-                break;
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-         
-    }
 }
