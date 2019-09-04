@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -111,4 +112,31 @@ public static class UIEvent{
     public const int SELECT_MY_LAND_SKY = 131;
     public const int SELECT_OTHER_LAND_SKY = 132;
 
+    /// <summary>
+    /// 显示攻击所指向的兵种
+    /// </summary>
+    public const int SHOW_ATTACK_ARROW = 133;
+    public const int CLOSE_ATTACK_ARROW = 134;
+
+    /// <summary>
+    /// 显示出闪避面板
+    /// </summary>
+    public const ushort SHOW_DEAL_DODGE_PANEL = 135;
+
+    /// <summary>
+    /// 显示等待面板
+    /// </summary>
+    public const ushort SHOW_WAIT_PANEL = 136;
+    public const ushort CLOSE_WAIT_PANEL = 137;
+
+    /// <summary>
+    /// 是否攻击成功
+    /// </summary>
+    public const ushort IS_ATTACK_SUCCESS = 138;
+
+    /// <summary>
+    /// 显示遮盖平面
+    /// </summary>
+    public const ushort SHOW_HIDE_PLANE = 139;
+    public const ushort CLOSE_HIDE_PLANE = 140;
 }

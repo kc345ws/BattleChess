@@ -33,6 +33,7 @@ public class ArmyMenuPanel : UIBase
     {
         Bind(UIEvent.SHOW_ARMY_MENU_PANEL);
         Bind(UIEvent.CLOSE_ARMY_MENU_PANEL);
+        Bind(UIEvent.IS_ATTACK_SUCCESS);
         //Bind(UIEvent.SET_SELECK_ATTACK);
 
         Button_State = transform.Find("Button_State").GetComponent<Button>();
@@ -75,7 +76,30 @@ public class ArmyMenuPanel : UIBase
             /*case UIEvent.SET_SELECK_ATTACK:
                 defenseArmyType = (int)message;
                 break;*/
+            case UIEvent.IS_ATTACK_SUCCESS:
+                processIsAttackSuccess((bool)message);
+                break;
         }
+    }
+
+    private void processIsAttackSuccess(bool active)
+    {
+        if (active)
+        {
+            //如果对方没有出闪避
+            //对方减血
+            defenseArmy.armyState.Hp -= armyCtrl.armyState.Damage;
+            //提示消息
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "对方没有出闪避");
+        }
+        else
+        {
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "对方闪避了");
+        }
+        Dispatch(AreoCode.UI,UIEvent.CLOSE_WAIT_PANEL,"关闭等待面板");
+        Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏平面");
+        //防御单位置空
+        defenseArmy = null;
     }
 
     public override void OnDestroy()
@@ -320,13 +344,21 @@ public class ArmyMenuPanel : UIBase
             
         }
 
-        //对方减血
-        defenseArmy.armyState.Hp -= armyCtrl.armyState.Damage;
+        if (defenseArmy.armyState.Class == ArmyClassType.Ordinary)
+        {
+            //如果是普通兵种
+            //对方减血
+            defenseArmy.armyState.Hp -= armyCtrl.armyState.Damage;
+        }
+        else
+        {
+            //显示等待面板
+            Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "等待对方是否闪避...");
+            Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏平面");
+        }
 
         Button_Attack_Land.interactable = false;
         Button_Attack_Sky.interactable = false;
-
-
         refresh();
     }
 
@@ -482,8 +514,18 @@ public class ArmyMenuPanel : UIBase
 
         }
 
-        //对方减血
-        defenseArmy.armyState.Hp -= armyCtrl.armyState.Damage;
+        if(defenseArmy.armyState.Class == ArmyClassType.Ordinary)
+        {
+            //如果是普通兵种
+            //对方减血
+            defenseArmy.armyState.Hp -= armyCtrl.armyState.Damage;
+        }
+        else
+        {
+            //显示等待面板
+            Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "等待对方是否闪避...");
+            Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏平面");
+        }     
 
         Button_Attack_Land.interactable = false;
         Button_Attack_Sky.interactable = false;
@@ -670,7 +712,7 @@ public class ArmyMenuPanel : UIBase
             defenseArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = true;
         }
         //防御单位置空
-        defenseArmy = null;
+        //defenseArmy = null;
     }
 }
 

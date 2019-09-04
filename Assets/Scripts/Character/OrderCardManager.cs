@@ -37,7 +37,6 @@ public class OrderCardManager:CharacterBase
         }*/
         selectArmyCtrl = getArmyCtrlByMouse();
         useCard();
-        selectArmyCtrl = getArmyCtrlByMouse();
     }
 
     public override void Execute(int eventcode, object message)
@@ -75,6 +74,10 @@ public class OrderCardManager:CharacterBase
         {
             //如果使用攻击卡
             StartCoroutine(useAttack());
+        }
+        else if(selectOrderCardCtrl.cardDto.Name == OrderCardType.DODGE)
+        {
+            //如果使用闪避卡
         }
     }
 

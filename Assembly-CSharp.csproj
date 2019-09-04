@@ -124,9 +124,13 @@
     <Compile Include="Assets\Scripts\UI\2_Game\ArmyMenuPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\ArmySelectAttackPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\ArmyStatePanel.cs" />
+    <Compile Include="Assets\Scripts\UI\2_Game\AttackArrowCtrl.cs" />
+    <Compile Include="Assets\Scripts\UI\2_Game\DealDodgePanel.cs" />
+    <Compile Include="Assets\Scripts\UI\2_Game\HidePlane.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\MyInfoPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\OtherInfoPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\SelectRacePanel.cs" />
+    <Compile Include="Assets\Scripts\UI\2_Game\WaitPanel.cs" />
     <Compile Include="Assets\Scripts\UI\CursorManager.cs" />
     <Compile Include="Assets\Scripts\UI\UIEvent.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">

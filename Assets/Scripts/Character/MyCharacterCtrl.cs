@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Protocol.Constants;
 using Protocol.Code;
+using Protocol.Constants.Map;
 
 /// <summary>
 /// 自己角色的控制器
@@ -17,6 +18,10 @@ public class MyCharacterCtrl : CharacterBase
 
     private SocketMsg socketMsg;//套接字封装
     public CardCtrl LastSelectCard { get; private set; }//上一次选择的卡牌
+
+    private CardCtrl dodgeArmyctrl;//闪避手牌
+    private OtherArmyCtrl attackCtrl;//进行攻击的兵种
+    private ArmyCtrl defenseCtrl;//需要闪避的兵种
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +29,8 @@ public class MyCharacterCtrl : CharacterBase
         //Bind(CharacterEvent.ADD_MY_TABLECARDS);
         Bind(CharacterEvent.DEAL_CARD);
         Bind(CharacterEvent.REMOVE_MY_CARDS);
+        Bind(CharacterEvent.INQUIRY_DEAL_DODGE);
+        Bind(CharacterEvent.RETURN_DEAL_DODGE_RESULT);
 
         myCardList = new List<CardDto>();
         CardCtrllist = new List<CardCtrl>();
@@ -53,8 +60,158 @@ public class MyCharacterCtrl : CharacterBase
                 //removeSelectCard(message as List<CardDto>);
                 removeSelectCard(message as CardDto);
                 break;
+
+            case CharacterEvent.INQUIRY_DEAL_DODGE:
+                pcoessdealDodge(message as MapAttackDto);
+                break;
+
+            case CharacterEvent.RETURN_DEAL_DODGE_RESULT:
+                processDodgeResult((bool)message);
+                break;
         }
     }
+
+    private void processDodgeResult(bool active)
+    {
+        if (active)//出闪
+        {
+            //移除手牌
+            Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, dodgeArmyctrl.cardDto);
+            defenseCtrl = null;
+            attackCtrl = null;
+            //发送消息
+            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, true);
+            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+        }
+        else
+        {
+            //减血
+            defenseCtrl.armyState.Hp -= attackCtrl.armyState.Damage;
+            defenseCtrl = null;
+            attackCtrl = null;
+            //发送消息
+            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, false);
+            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+        }
+        //关闭箭头
+        Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
+        //关闭隐藏面板
+        Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
+    }
+
+    /// <summary>
+    /// 是否出闪避
+    /// </summary>
+    private void pcoessdealDodge(MapAttackDto mapAttackDto)
+    {
+        bool hasDodge = false;//手牌中是否有闪避
+        foreach (var item in CardCtrllist)
+        {
+            if(item.cardDto.Type == CardType.ORDERCARD && item.cardDto.Name == OrderCardType.DODGE)
+            {
+                hasDodge = true;
+                dodgeArmyctrl = item;
+                break;
+            }
+        }
+
+        //ArmyCtrl defenseCtrl;
+        //OtherArmyCtrl attackCtrl;
+        getArmy(out defenseCtrl, out attackCtrl, mapAttackDto);
+
+        if(dodgeArmyctrl == null || defenseCtrl == null || attackCtrl == null)
+        {
+            return;
+        }
+
+        if (!hasDodge || defenseCtrl.armyState.Class == ArmyClassType.Ordinary)
+        {
+            //如果没有闪避或是普通兵种直接减血
+            defenseCtrl.armyState.Hp -= attackCtrl.armyState.Damage;
+            //发送消息
+            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, false);
+            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+            //关闭箭头
+            Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
+            //关闭隐藏面板
+            Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
+            //发送提示
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "你方(" + defenseCtrl.armyState.Position.X + "," + defenseCtrl.armyState.Position.Z + ")" + "单位被攻击");
+            return;
+        }
+
+
+        //显示箭头
+        Vector3 pos = new Vector3(defenseCtrl.armyState.Position.X, 1, defenseCtrl.armyState.Position.Z);
+        Dispatch(AreoCode.UI, UIEvent.SHOW_ATTACK_ARROW, pos);
+        //显示出闪避面板
+        string str;
+        if (defenseCtrl.armyState.CanFly)
+        {
+            str = "你方位于箭头所指处的飞行单位被攻击，是否进行闪避？";
+        }
+        else
+        {
+            str = "你方位于箭头所指处的陆地单位被攻击，是否进行闪避？";
+        }      
+        Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_DODGE_PANEL, str);
+        Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏平面");
+    }
+
+    /// <summary>
+    /// 获取防御和攻击兵种的信息
+    /// </summary>
+    private void getArmy(out ArmyCtrl defenseCtrl, out OtherArmyCtrl attackCtrl, MapAttackDto mapAttackDto)
+    {
+        //镜像对称
+        int totalX = 12;
+        int totalZ = 8;
+
+        MapPoint attackpoint = new MapPoint(totalX - mapAttackDto.AttacklMapPoint.X, totalZ - mapAttackDto.AttacklMapPoint.Z);
+        MapPoint defensepoint = new MapPoint(totalX - mapAttackDto.DefenseMapPoint.X, totalZ - mapAttackDto.DefenseMapPoint.Z); ;
+        bool attackcanfly = mapAttackDto.AttackCanFly;
+        bool defensecanfly = mapAttackDto.DefenseCanFly;
+        MapPointCtrl attackPointCtrl = null;
+        MapPointCtrl defensePointCtrl = null;
+        //OtherArmyCtrl attackCtrl;
+        //ArmyCtrl defenseCtrl;
+
+        foreach (var item in MapManager.mapPointCtrls)
+        {
+            if (item.mapPoint.X == attackpoint.X && item.mapPoint.Z == attackpoint.Z)
+            {
+                attackPointCtrl = item;
+            }
+            else if (item.mapPoint.X == defensepoint.X && item.mapPoint.Z == defensepoint.Z)
+            {
+                defensePointCtrl = item;
+            }
+
+            if (attackPointCtrl != null && defensePointCtrl != null)
+            {
+                break;
+            }
+        }
+
+        if (!attackcanfly)
+        {
+            attackCtrl = attackPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+        }
+        else
+        {
+            attackCtrl = attackPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
+        }
+
+        if (!defensecanfly)
+        {
+            defenseCtrl = defensePointCtrl.LandArmy.GetComponent<ArmyCtrl>();
+        }
+        else
+        {
+            defenseCtrl = defensePointCtrl.SkyArmy.GetComponent<ArmyCtrl>();
+        }
+    }
+
 
     /// <summary>
     /// 每次只有一张牌被选择

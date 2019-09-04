@@ -83,6 +83,26 @@ public class FightHandler : HandlerBase
             case FightCode.ARMY_ATTACK_SBOD:
                 processArmyAttack(message as MapAttackDto);
                 break;
+
+            case FightCode.DEAL_DODGE_SBOD:
+                processDodgeSbod((bool)message);
+                break;
+        }
+    }
+    
+    /// <summary>
+    /// 处理闪避广播
+    /// </summary>
+    private void processDodgeSbod(bool active)
+    {
+        if (active)
+        {
+            //如果出了闪避,攻击失败
+            Dispatch(AreoCode.UI, UIEvent.IS_ATTACK_SUCCESS, false);
+        }
+        else
+        {
+            Dispatch(AreoCode.UI, UIEvent.IS_ATTACK_SUCCESS, true);
         }
     }
 
@@ -91,7 +111,7 @@ public class FightHandler : HandlerBase
     /// </summary>
     private void processArmyAttack(MapAttackDto mapAttackDto)
     {
-        //镜像对称
+        /*//镜像对称
         int totalX = 12;
         int totalZ = 8;
 
@@ -139,10 +159,13 @@ public class FightHandler : HandlerBase
         else
         {
             defenseCtrl = defensePointCtrl.SkyArmy.GetComponent<ArmyCtrl>();
-        }
+        }*/
+
+        //询问是否出闪避
+        Dispatch(AreoCode.CHARACTER, CharacterEvent.INQUIRY_DEAL_DODGE, mapAttackDto);
 
         //减血
-        defenseCtrl.armyState.Hp -= attackCtrl.armyState.Damage;
+        //defenseCtrl.armyState.Hp -= attackCtrl.armyState.Damage;
     }
     
     /// <summary>

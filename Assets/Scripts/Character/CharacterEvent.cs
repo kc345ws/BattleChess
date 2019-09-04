@@ -32,5 +32,12 @@ public class CharacterEvent
     /// 选择指令卡
     /// </summary>
     public const int SELECT_ORDERCARD = 1011;
+
+    /// <summary>
+    /// 询问是否出闪避
+    /// </summary>
+    public const int INQUIRY_DEAL_DODGE = 1012;
+    public const ushort RETURN_DEAL_DODGE_RESULT = 1013;
+
 }
 
