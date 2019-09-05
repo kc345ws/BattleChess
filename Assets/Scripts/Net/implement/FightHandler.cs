@@ -87,6 +87,27 @@ public class FightHandler : HandlerBase
             case FightCode.DEAL_DODGE_SBOD:
                 processDodgeSbod((bool)message);
                 break;
+
+            case FightCode.DEAL_BACKATTACK_SBOD:
+                processBackAttackSBOD((bool)message);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 处理反击广播
+    /// </summary>
+    /// <param name="active"></param>
+    private void processBackAttackSBOD(bool active)
+    {
+        if (active)
+        {
+            //如果反击了
+            Dispatch(AreoCode.UI, UIEvent.IS_BACKATTACK, true);
+        }
+        else
+        {
+            Dispatch(AreoCode.UI, UIEvent.IS_BACKATTACK, false);
         }
     }
     

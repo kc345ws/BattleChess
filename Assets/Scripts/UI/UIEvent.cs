@@ -139,4 +139,14 @@ public static class UIEvent{
     /// </summary>
     public const ushort SHOW_HIDE_PLANE = 139;
     public const ushort CLOSE_HIDE_PLANE = 140;
+
+    /// <summary>
+    /// 出反击面板
+    /// </summary>
+    public const ushort SHOW_DEAL_BACKATTACK_PANEL = 141;
+
+    /// <summary>
+    /// 是否反击了
+    /// </summary>
+    public const ushort IS_BACKATTACK = 142;
 }

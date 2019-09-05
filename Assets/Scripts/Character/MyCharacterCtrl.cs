@@ -31,6 +31,7 @@ public class MyCharacterCtrl : CharacterBase
         Bind(CharacterEvent.REMOVE_MY_CARDS);
         Bind(CharacterEvent.INQUIRY_DEAL_DODGE);
         Bind(CharacterEvent.RETURN_DEAL_DODGE_RESULT);
+        Bind(CharacterEvent.RETURN_DEAL_BACKATTACK_RESULT);
 
         myCardList = new List<CardDto>();
         CardCtrllist = new List<CardCtrl>();
@@ -68,9 +69,64 @@ public class MyCharacterCtrl : CharacterBase
             case CharacterEvent.RETURN_DEAL_DODGE_RESULT:
                 processDodgeResult((bool)message);
                 break;
+
+            case CharacterEvent.RETURN_DEAL_BACKATTACK_RESULT:
+                processBackAttackResult((bool)message);
+                break;
         }
     }
 
+    #region 反击
+    /// <summary>
+    /// 是否有某一卡牌
+    /// </summary>
+    /// <returns></returns>
+    private bool hasCardType(ushort cardtype , ushort cardname)
+    {
+        foreach (var item in CardCtrllist)
+        {
+            if(item.cardDto.Type == cardtype && item.cardDto.Name == cardname)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 处理反击结果
+    /// </summary>
+    /// <param name="active"></param>
+    private void processBackAttackResult(bool active)
+    {
+        if (active)//如果选择了反击
+        {
+            //减血
+            attackCtrl.armyState.Hp -= defenseCtrl.armyState.Damage;
+            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, true);
+            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+        }
+        else
+        {
+            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);
+            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+        }
+        //关闭箭头
+        Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
+        //关闭隐藏面板
+        Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
+        defenseCtrl = null;
+        attackCtrl = null;
+    }
+
+
+    #endregion
+
+    #region 闪避
+    /// <summary>
+    /// 处理出闪面板发来的消息
+    /// </summary>
+    /// <param name="active"></param>
     private void processDodgeResult(bool active)
     {
         if (active)//出闪
@@ -82,21 +138,41 @@ public class MyCharacterCtrl : CharacterBase
             //发送消息
             socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, true);
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+            //关闭箭头
+            Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
+            //关闭隐藏面板
+            Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
+            //发送反击消息
+            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);
+            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
         }
-        else
+        else//不出闪
         {
             //减血
-            defenseCtrl.armyState.Hp -= attackCtrl.armyState.Damage;
-            defenseCtrl = null;
-            attackCtrl = null;
+            defenseCtrl.armyState.Hp -= attackCtrl.armyState.Damage;   
             //发送消息
             socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, false);
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+
+            if (hasCardType(CardType.ORDERCARD, OrderCardType.BACKATTACK) && defenseCtrl.armyState.Hp > 0)
+            {
+                //反击
+                Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_BACKATTACK_PANEL, "你的单位在敌人的攻击中存活下来了,是否进行反击?");
+            }
+            else
+            {
+                //关闭箭头
+                Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
+                //关闭隐藏面板
+                Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
+                //发送反击消息
+                socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);
+                Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+            }
+            defenseCtrl = null;
+            attackCtrl = null;
         }
-        //关闭箭头
-        Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
-        //关闭隐藏面板
-        Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
+        
     }
 
     /// <summary>
@@ -107,7 +183,7 @@ public class MyCharacterCtrl : CharacterBase
         bool hasDodge = false;//手牌中是否有闪避
         foreach (var item in CardCtrllist)
         {
-            if(item.cardDto.Type == CardType.ORDERCARD && item.cardDto.Name == OrderCardType.DODGE)
+            if (item.cardDto.Type == CardType.ORDERCARD && item.cardDto.Name == OrderCardType.DODGE)
             {
                 hasDodge = true;
                 dodgeArmyctrl = item;
@@ -119,7 +195,7 @@ public class MyCharacterCtrl : CharacterBase
         //OtherArmyCtrl attackCtrl;
         getArmy(out defenseCtrl, out attackCtrl, mapAttackDto);
 
-        if(dodgeArmyctrl == null || defenseCtrl == null || attackCtrl == null)
+        if (defenseCtrl == null || attackCtrl == null)
         {
             return;
         }
@@ -132,11 +208,29 @@ public class MyCharacterCtrl : CharacterBase
             socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, false);
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
             //关闭箭头
-            Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
+            //Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
             //关闭隐藏面板
-            Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
+            //Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
             //发送提示
             Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "你方(" + defenseCtrl.armyState.Position.X + "," + defenseCtrl.armyState.Position.Z + ")" + "单位被攻击");
+
+            //反击
+            if (hasCardType(CardType.ORDERCARD, OrderCardType.BACKATTACK) && defenseCtrl.armyState.Hp > 0)
+            {
+                //反击
+                Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏平面");
+                Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_BACKATTACK_PANEL, "你的单位在敌人的攻击中存活下来了,是否进行反击?");
+            }
+            else
+            {
+                //关闭箭头
+                Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
+                //关闭隐藏面板
+                Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
+                //发送反击消息
+                socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);
+                Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+            }
             return;
         }
 
@@ -153,7 +247,7 @@ public class MyCharacterCtrl : CharacterBase
         else
         {
             str = "你方位于箭头所指处的陆地单位被攻击，是否进行闪避？";
-        }      
+        }
         Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_DODGE_PANEL, str);
         Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏平面");
     }
@@ -211,8 +305,9 @@ public class MyCharacterCtrl : CharacterBase
             defenseCtrl = defensePointCtrl.SkyArmy.GetComponent<ArmyCtrl>();
         }
     }
+    #endregion
 
-
+    #region 卡牌方法
     /// <summary>
     /// 每次只有一张牌被选择
     /// </summary>
@@ -220,28 +315,28 @@ public class MyCharacterCtrl : CharacterBase
     /// <returns></returns>
     public bool IsCanSelece(CardCtrl selectCard)
     {
-        if(LastSelectCard == null)
+        if (LastSelectCard == null)
         {
             //第一次点击
             LastSelectCard = selectCard;
-            if(selectCard.cardDto.Type == CardType.ARMYCARD)
+            if (selectCard.cardDto.Type == CardType.ARMYCARD)
             {
                 Dispatch(AreoCode.MAP, MapEvent.SELECT_ARMYCARD, selectCard.cardDto);
                 //如果选中的是兵种卡
             }
-            else if(selectCard.cardDto.Type == CardType.ORDERCARD)
+            else if (selectCard.cardDto.Type == CardType.ORDERCARD)
             {
                 //如果选中指令卡
                 Dispatch(AreoCode.CHARACTER, CharacterEvent.SELECT_ORDERCARD, selectCard);
             }
-            
+
             return true;
         }
-        else if(LastSelectCard != selectCard)
+        else if (LastSelectCard != selectCard)
         {
             //和上次点击的不一样,取消选中上一次选中的牌，选中当前的牌
             LastSelectCard.transform.localPosition -= new Vector3(1f, 0, 0);
-            LastSelectCard.IsSelected = false;          
+            LastSelectCard.IsSelected = false;
 
             LastSelectCard = selectCard;
             if (selectCard.cardDto.Type == CardType.ARMYCARD)
@@ -311,15 +406,15 @@ public class MyCharacterCtrl : CharacterBase
         List<CardCtrl> RestCardCtrllist = new List<CardCtrl>(CardCtrllist);
 
         //int removeindex = -1;
-        for(int i = 0; i < RestCardCtrllist.Count; i++)
+        for (int i = 0; i < RestCardCtrllist.Count; i++)
         {
-            if(RestCardCtrllist[i].cardDto == removeCard)
+            if (RestCardCtrllist[i].cardDto == removeCard)
             {
                 RestCardCtrllist.RemoveAt(i);
                 //removeindex = i;
                 break;
             }
-        }       
+        }
         myCardList.Remove(removeCard);
 
         int index = 0;
@@ -329,13 +424,13 @@ public class MyCharacterCtrl : CharacterBase
 
             index++;
 
-            if(index == RestCardCtrllist.Count)
+            if (index == RestCardCtrllist.Count)
             {
                 break;
             }
         }
 
-        for(int i = index; i < CardCtrllist.Count; i++)
+        for (int i = index; i < CardCtrllist.Count; i++)
         {
             CardCtrllist[i].IsSelected = false;
             Destroy(CardCtrllist[i].gameObject);
@@ -343,40 +438,10 @@ public class MyCharacterCtrl : CharacterBase
         }
 
         //CardCtrllist = RestCardCtrllist;
-        
+
 
         LastSelectCard = null;
         Dispatch(AreoCode.MAP, MapEvent.CANCEL_SELECT_ARMYCARD, null);//清除上次选择的卡牌
-
-        //int index = 0;
-
-        /*if(restcardList.Count == 0)
-        {
-            return;//如果剩余手牌为0
-        }*/
-
-        /*foreach (var item in CardCtrllist)
-        {
-            //CardWeight.SortCard(ref myCardList);
-            item.Init(restcardList[index], true, index);
-            index++;
-            
-            if(index == restcardList.Count)
-            {
-                break;
-            }
-        }*/
-
-
-        /*for (int i = index; i < CardCtrllist.Count; i++)
-        {
-            //CardWeight.SortCard(ref myCardList);
-            if (CardCtrllist[i]!=null && CardCtrllist[i].gameObject != null)
-            {
-                CardCtrllist[i].IsSelected = false;
-                Destroy(CardCtrllist[i].gameObject);//销毁剩余卡牌之后的卡牌
-            }           
-        }*/
     }
 
     /// <summary>
@@ -385,7 +450,7 @@ public class MyCharacterCtrl : CharacterBase
     /// <returns></returns>
     private IEnumerator initPlayerCard(List<CardDto> cardList)
     {
-        for(int i = 0; i < 14; i++)
+        for (int i = 0; i < 14; i++)
         {
             createCard(cardList[i], i);
             yield return new WaitForSeconds(0.1f);
@@ -416,7 +481,7 @@ public class MyCharacterCtrl : CharacterBase
         //CardWeight.SortCard(ref myCardList);
 
         //复用先前创建的牌
-        for(int i = 0; i < 17; i++)
+        for (int i = 0; i < 17; i++)
         {
             CardCtrllist[i].gameObject.SetActive(true);
             CardCtrllist[i].Init(myCardList[i], true, i);
@@ -434,5 +499,6 @@ public class MyCharacterCtrl : CharacterBase
             index++;
         }
     }
+    #endregion
 
 }

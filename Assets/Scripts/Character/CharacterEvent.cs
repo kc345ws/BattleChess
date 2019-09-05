@@ -39,5 +39,10 @@ public class CharacterEvent
     public const int INQUIRY_DEAL_DODGE = 1012;
     public const ushort RETURN_DEAL_DODGE_RESULT = 1013;
 
+    /// <summary>
+    /// 面板返回是否反击的结果
+    /// </summary>
+    public const ushort RETURN_DEAL_BACKATTACK_RESULT = 1014;
+
 }
 
