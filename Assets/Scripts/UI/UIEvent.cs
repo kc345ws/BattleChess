@@ -121,32 +121,32 @@ public static class UIEvent{
     /// <summary>
     /// 显示出闪避面板
     /// </summary>
-    public const ushort SHOW_DEAL_DODGE_PANEL = 135;
+    public const int SHOW_DEAL_DODGE_PANEL = 135;
 
     /// <summary>
     /// 显示等待面板
     /// </summary>
-    public const ushort SHOW_WAIT_PANEL = 136;
-    public const ushort CLOSE_WAIT_PANEL = 137;
+    public const int SHOW_WAIT_PANEL = 136;
+    public const int CLOSE_WAIT_PANEL = 137;
 
     /// <summary>
     /// 是否攻击成功
     /// </summary>
-    public const ushort IS_ATTACK_SUCCESS = 138;
+    public const int IS_ATTACK_SUCCESS = 138;
 
     /// <summary>
     /// 显示遮盖平面
     /// </summary>
-    public const ushort SHOW_HIDE_PLANE = 139;
-    public const ushort CLOSE_HIDE_PLANE = 140;
+    public const int SHOW_HIDE_PLANE = 139;
+    public const int CLOSE_HIDE_PLANE = 140;
 
     /// <summary>
     /// 出反击面板
     /// </summary>
-    public const ushort SHOW_DEAL_BACKATTACK_PANEL = 141;
+    public const int SHOW_DEAL_BACKATTACK_PANEL = 141;
 
     /// <summary>
     /// 是否反击了
     /// </summary>
-    public const ushort IS_BACKATTACK = 142;
+    public const int IS_BACKATTACK = 142;
 }

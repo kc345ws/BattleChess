@@ -8,6 +8,20 @@ using UnityEngine.UI;
 
 public class ArmyMenuPanel : UIBase
 {
+    private ArmyMenuPanel instance = null;
+    public ArmyMenuPanel Instance
+    {
+        get
+        {
+            if(instance == null)
+            {
+                instance = new ArmyMenuPanel();
+            }
+            return instance;
+        }
+    }
+    private ArmyMenuPanel() { }
+
     private Button Button_State;
     private Button Button_Close;
     private Button Button_Attack_Land;
@@ -28,6 +42,10 @@ public class ArmyMenuPanel : UIBase
 
     private OtherArmyCtrl defenseArmy = null;//进行防御的兵种控制器
 
+    private void Awake()
+    {
+        instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {

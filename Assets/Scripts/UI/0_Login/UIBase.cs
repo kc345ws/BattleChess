@@ -22,7 +22,9 @@ public class UIBase : MonoBase {
         EventcodeList.AddRange(eventcodes);
         //一次性将集合中的元素全部添加到List中
 
-        UIManager.Instance.Add(EventcodeList.ToArray(), this);
+        //fixbug
+        //UIManager.Instance.Add(EventcodeList.ToArray(), this);
+        UIManager.Instance.Add(eventcodes, this);
     }
 
     /// <summary>

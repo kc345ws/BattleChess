@@ -16,7 +16,7 @@ public class AudioBase : MonoBase
     protected void Bind(params int[] eventCodes)
     {
         list.AddRange(eventCodes);
-        AudioManager.Instance.Add(list.ToArray(), this);
+        AudioManager.Instance.Add(eventCodes, this);
     }
 
     /// <summary>

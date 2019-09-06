@@ -8,7 +8,24 @@ using UnityEngine.UI;
 /// </summary>
 public class WaitPanel : UIBase
 {
+    private WaitPanel instance = null;
+    public WaitPanel Instance { get
+        {
+            if (instance == null)
+            {
+                instance = new WaitPanel();
+            }
+            return instance;
+        } }
+
     private Text information;
+
+    private WaitPanel() { }
+
+    private void Awake()
+    {
+        instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
