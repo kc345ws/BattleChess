@@ -16,5 +16,12 @@ public class ArmyEvent
     /// </summary>
     public const int SET_MY_LAND_SKY = 1;
     public const int SET_OTHER_LAND_SKY = 2;
+
+    /// <summary>
+    /// 别人使用修养卡
+    /// </summary>
+    public const ushort OTHER_USE_REST = 3;
+
+    
 }
 

@@ -44,5 +44,10 @@ public class CharacterEvent
     /// </summary>
     public const ushort RETURN_DEAL_BACKATTACK_RESULT = 1014;
 
+    /// <summary>
+    /// 设置自己的兵种重叠选择结果
+    /// </summary>
+    public const ushort SET_MY_LAND_SKY = 1015;
+
 }
 

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Protocol.Dto.Fight;
 
 /// <summary>
 /// 其他人的兵种管理器集合
@@ -37,6 +38,7 @@ public class OtherArmyCtrlManager : ArmyBase
         OtherArmyCtrlList = new List<OtherArmyCtrl>();
 
         Bind(ArmyEvent.ADD_OTHER_ARMY);
+        Bind(ArmyEvent.OTHER_USE_REST);
     }
 
     // Update is called once per frame
@@ -53,9 +55,48 @@ public class OtherArmyCtrlManager : ArmyBase
                 //ArmyList.Add(message as GameObject);
                 processAddArmy(message as GameObject);
                 break;
+
+            case ArmyEvent.OTHER_USE_REST:
+                processRest(message as MapPointDto);
+                break;
         }
     }
 
+    /// <summary>
+    /// 处理使用修养
+    /// </summary>
+    /// <param name="mapPointDto"></param>
+    private void processRest(MapPointDto mapPointDto)
+    {
+        //镜像对称
+        int totalX = 12;
+        int totalZ = 8;
+        bool canfly = false;
+
+        int realx = totalX - mapPointDto.mapPoint.X;
+        int realz = totalZ - mapPointDto.mapPoint.Z;
+        if (mapPointDto.LandArmyRace == -1)
+        {
+            //如果是飞行单位使用了修养
+            canfly = true;
+        }
+
+        foreach (var item in OtherArmyCtrlList)
+        {
+            if(item.armyState.Position.X == realx && item.armyState.Position.Z == realz && item.armyState.CanFly == canfly)
+            {
+                item.armyState.Hp++;
+                break;
+            }
+        }
+
+        Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "对方(" + realx + "," + realz + ")使用修养卡");
+    }
+
+    /// <summary>
+    /// 处理添加单位
+    /// </summary>
+    /// <param name="army"></param>
     private void processAddArmy(GameObject army)
     {
         OtherArmyCtrl otherArmyCtrl = army.gameObject.GetComponent<OtherArmyCtrl>();

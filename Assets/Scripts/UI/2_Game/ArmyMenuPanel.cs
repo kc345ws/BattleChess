@@ -121,7 +121,15 @@ public class ArmyMenuPanel : UIBase
             //防御单位置空
             defenseArmy = null;
         }
+        else
+        {
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "对方没有反击");
 
+            Dispatch(AreoCode.UI, UIEvent.CLOSE_WAIT_PANEL, "关闭等待面板");
+            Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏平面");
+            //防御单位置空
+            defenseArmy = null;
+        }
     }
 
     /// <summary>
