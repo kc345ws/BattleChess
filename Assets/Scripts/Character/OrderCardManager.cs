@@ -14,6 +14,10 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class OrderCardManager:CharacterBase
 {
+    public static OrderCardManager Instance;
+
+    private OrderCardManager() { }
+
     private CardCtrl selectOrderCardCtrl;//选中的指令卡
 
     private ArmyCtrl selectArmyCtrl;//选中的兵种控制器
@@ -27,13 +31,23 @@ public class OrderCardManager:CharacterBase
     private SocketMsg socketMsg;
     private MapPointDto mapPointDto;
 
-    private bool isSelectMulArmy = true;//是否需要选择重叠兵种
-    private int isContinueProcessID = -1;//需要继续处理的卡牌事件 0攻击 1修养
+    //private bool isSelectMulArmy = true;//是否需要选择重叠兵种
+    //private int isContinueProcessID = -1;//需要继续处理的卡牌事件 0攻击 1修养
+
+    public delegate void SelectArmyCtrlDelegate(ArmyCtrl armyCtrl);
+    public SelectArmyCtrlDelegate armyCtrlDelegate;//选择单位控制器事件
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
         Bind(CharacterEvent.SELECT_ORDERCARD);
-        Bind(CharacterEvent.SET_MY_LAND_SKY);
+        //Bind(CharacterEvent.SET_MY_LAND_SKY);
+
+        armyCtrlDelegate = processSelectArmyDelegate;
 
         myArmyCtrlManager = GetComponent<MyArmyCtrlManager>();
         mapPointDto = new MapPointDto();
@@ -46,7 +60,7 @@ public class OrderCardManager:CharacterBase
         {
             getArmyCtrlByMouse();
         }*/
-        selectArmyCtrl = getArmyCtrlByMouse();
+        //selectArmyCtrl = getArmyCtrlByMouse();
         useCard();
     }
 
@@ -62,7 +76,7 @@ public class OrderCardManager:CharacterBase
                     processSelectOrderCard(null);
                 break;
 
-            case CharacterEvent.SET_MY_LAND_SKY:
+            /*case CharacterEvent.SET_MY_LAND_SKY:
                 if((int)message == ArmyMoveType.LAND && selectArmyCtrl !=null)
                 {
                     selectArmyCtrl = selectArmyCtrl.ArmymapPointCtrl.LandArmy.GetComponent<ArmyCtrl>();
@@ -72,14 +86,23 @@ public class OrderCardManager:CharacterBase
                     selectArmyCtrl = selectArmyCtrl.ArmymapPointCtrl.SkyArmy.GetComponent<ArmyCtrl>();
                 }
                 continueProcess();
-                break;
+                break;*/
         }
+    }
+
+    /// <summary>
+    /// 处理传送单位控制器委托
+    /// </summary>
+    /// <param name="armyCtrl"></param>
+    private void processSelectArmyDelegate(ArmyCtrl armyCtrl)
+    {
+        selectArmyCtrl = armyCtrl;
     }
 
     /// <summary>
     /// 继续处理卡牌事件
     /// </summary>
-    private void continueProcess()
+    /*private void continueProcess()
     {
         if(isContinueProcessID == 0)
         {
@@ -91,10 +114,10 @@ public class OrderCardManager:CharacterBase
             //如果使用修养卡
             StartCoroutine(useRest());
         }
-    }
+    }*/
 
     /// <summary>
-    /// 处理传中指令卡的事件
+    /// 处理传送指令卡的事件
     /// </summary>
     /// <param name="cardCtrl"></param>
     private void processSelectOrderCard(CardCtrl cardCtrl)
@@ -132,22 +155,30 @@ public class OrderCardManager:CharacterBase
         //开始选择兵种控制器
 
         //isNeedGetArmyCtrl = true;
+        if (selectOrderCardCtrl == null)
+        {
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "请先选择指令卡");
+            yield break;
+        }
         if (selectArmyCtrl == null)
         {
-            yield return new WaitUntil(isGetArmyCtrl);
-            if (selectOrderCardCtrl == null)
+            //yield return new WaitUntil(isGetArmyCtrl);
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "请先选择使用单位");
+            yield break;
+            /*if (selectOrderCardCtrl == null)
             {
                 yield break;
-            }
+            }*/
         }
+        
 
-        if (isSelectMulArmy && SelectUseArmy())
+        /*if (isSelectMulArmy && SelectUseArmy())
         {
             //如果有两个单位
             isSelectMulArmy = false;
             isContinueProcessID = 1;
             yield break;
-        }
+        }*/
 
         if (selectArmyCtrl.armyState.Hp >= selectArmyCtrl.armyState.MaxHp)
         {
@@ -186,8 +217,8 @@ public class OrderCardManager:CharacterBase
         //isNeedGetArmyCtrl = false;
         selectArmyCtrl = null;
         selectOrderCardCtrl = null;
-        isSelectMulArmy = true;
-        isContinueProcessID = -1;
+        //isSelectMulArmy = true;
+        //isContinueProcessID = -1;
         //Dispatch(AreoCode.UI, UIEvent.CLOSE_ARMY_MENU_PANEL, "关闭面板");
     }
 
@@ -212,26 +243,41 @@ public class OrderCardManager:CharacterBase
     /// <returns></returns>
     private IEnumerator useAttack()
     {
-        
+
         //开始选择兵种控制器
 
         //isNeedGetArmyCtrl = true;
+        if (selectOrderCardCtrl == null)
+        {
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "请先选择指令卡");
+            yield break;
+        }
         if (selectArmyCtrl == null)
+        {
+            //yield return new WaitUntil(isGetArmyCtrl);
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "请先选择使用单位");
+            yield break;
+            /*if (selectOrderCardCtrl == null)
+            {
+                yield break;
+            }*/
+        }
+        /*if (selectArmyCtrl == null)
         {
             yield return new WaitUntil(isGetArmyCtrl);
             if (selectOrderCardCtrl == null)
             {
                 yield break;
             }
-        }
+        }*/
 
-        if (isSelectMulArmy && SelectUseArmy())
+        /*if (isSelectMulArmy && SelectUseArmy())
         {
             //如果有两个单位
             isSelectMulArmy = false;
             isContinueProcessID = 0;
             yield break;
-        }
+        }*/
 
 
         if (selectArmyCtrl.armyState.Class == ArmyClassType.Ordinary)
@@ -257,8 +303,8 @@ public class OrderCardManager:CharacterBase
         //isNeedGetArmyCtrl = false;
         selectArmyCtrl = null;
         selectOrderCardCtrl = null;
-        isSelectMulArmy = true;
-        isContinueProcessID = -1;
+        //isSelectMulArmy = true;
+        //isContinueProcessID = -1;
         //Dispatch(AreoCode.UI, UIEvent.CLOSE_ARMY_MENU_PANEL, "关闭面板");
     }
 

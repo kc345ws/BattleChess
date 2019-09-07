@@ -1,4 +1,5 @@
 ﻿using Protocol.Constants;
+using Protocol.Constants.Map;
 using Protocol.Constants.Orc;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ public class OtherArmyCtrl : ArmyBase
 
     public bool iscanShowStatePanel = true;//是否可以显示属性面板
 
-    private MapPointCtrl OtherMapPintctrl;//敌方兵种所在地图点控制器
+    public MapPointCtrl OtherMapPintctrl { get; private set; }//敌方兵种所在地图点控制器
 
     private int SelectArmyType = -1;//兵种重合时选择的兵种类型
 
@@ -191,5 +192,11 @@ public class OtherArmyCtrl : ArmyBase
             return true;
         }
         return false;
+    }
+
+    public void Move(MapPoint mapPoint , MapPointCtrl mapPointCtrl)
+    {
+        armyState.Position = mapPoint;
+        OtherMapPintctrl = mapPointCtrl;
     }
 }

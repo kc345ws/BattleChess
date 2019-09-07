@@ -84,6 +84,8 @@ public class ArmyMenuPanel : UIBase
             case UIEvent.SHOW_ARMY_MENU_PANEL:
                 //armyState = message as ArmyCardBase;
                 armyCtrl = message as ArmyCtrl;
+                //给指令卡管理器传送单位控制器
+                OrderCardManager.Instance.armyCtrlDelegate.Invoke(armyCtrl);
                 //SetPanelActive(true);
                 processShowMenuPanel();
                 break;
@@ -105,7 +107,15 @@ public class ArmyMenuPanel : UIBase
         }
     }
 
-    //fixbug:会攻击两次
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+        Button_State.onClick.RemoveAllListeners();
+        Button_Close.onClick.RemoveAllListeners();
+        Button_Attack_Land.onClick.RemoveAllListeners();
+        Button_Attack_Sky.onClick.RemoveAllListeners();
+    }
+
     private void processIsBackAttack(bool active)
     {
         if (active)
@@ -163,14 +173,7 @@ public class ArmyMenuPanel : UIBase
         
     }
 
-    public override void OnDestroy()
-    {
-        base.OnDestroy();
-        Button_State.onClick.RemoveAllListeners();
-        Button_Close.onClick.RemoveAllListeners();
-        Button_Attack_Land.onClick.RemoveAllListeners();
-        Button_Attack_Sky.onClick.RemoveAllListeners();
-    }
+   
 
     /// <summary>
     /// 处理显示面板事件
@@ -268,7 +271,7 @@ public class ArmyMenuPanel : UIBase
         }
 
         //屏蔽查看属性
-        if (defenseArmy != null)
+        if (clickMapPointCtrl!=null)//defenseArmy != null)
         {
             if(clickMapPointCtrl.LandArmy!=null)
             clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
@@ -278,7 +281,7 @@ public class ArmyMenuPanel : UIBase
 
         if (clickMapPointCtrl.LandArmy != null)
         {
-            //如果攻击方的是陆地单位
+            //如果攻击方是陆地单位
             if (clickMapPointCtrl.LandArmy != armyCtrl.ArmyPrefab)
             {
                 //如果攻击的不是自己
@@ -389,11 +392,14 @@ public class ArmyMenuPanel : UIBase
          }*/
 
         //调用Armyctrl攻击   
-        if (!armyCtrl.Attack(clickMapPointCtrl, defenseArmy))
+        if (!armyCtrl.Attack(defenseArmy.OtherMapPintctrl, defenseArmy))
         {
             //如果不能攻击
             refresh();
-            yield return new WaitUntil(isArmycanAttack);
+            //yield return new WaitUntil(isArmycanAttack);
+            //防御单位置空
+            defenseArmy = null;
+            yield break;
 
             
             //clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
@@ -421,6 +427,8 @@ public class ArmyMenuPanel : UIBase
         Button_Attack_Land.interactable = false;
         Button_Attack_Sky.interactable = false;
         refresh();
+        //防御单位置空
+        //defenseArmy = null;
     }
 
     /// <summary>
@@ -438,7 +446,7 @@ public class ArmyMenuPanel : UIBase
         }
 
         //屏蔽查看属性
-        if (defenseArmy != null)
+        if (clickMapPointCtrl != null)
         {
             if (clickMapPointCtrl.LandArmy != null)
                 clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
@@ -559,11 +567,14 @@ public class ArmyMenuPanel : UIBase
          }*/
 
         //调用Armyctrl攻击   
-        if (!armyCtrl.Attack(clickMapPointCtrl, defenseArmy))
+        if (!armyCtrl.Attack(defenseArmy.OtherMapPintctrl, defenseArmy))
         {
             //如果不能攻击
             refresh();
-            yield return new WaitUntil(isArmycanAttack);
+            //防御单位置空
+            defenseArmy = null;
+            yield break;
+            //yield return new WaitUntil(isArmycanAttack);
 
 
             //clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
@@ -592,6 +603,8 @@ public class ArmyMenuPanel : UIBase
         Button_Attack_Sky.interactable = false;
 
         refresh();
+        //防御单位置空
+        //defenseArmy = null;
     }
     /// <summary>
     /// 判断是否选择了地图点

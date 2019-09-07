@@ -93,20 +93,24 @@ public class MapPointCtrl : MapBase
         LandArmy = landArmy;
     }
 
-    public void MoveLandArmy(ref GameObject landArmy)
+    public void MoveLandArmy(ref GameObject landArmy , int race , int name)
     {
         LandArmy = landArmy;
         Vector3 position = transform.transform.position;
         position.y = 1;
         landArmy.transform.position = position;
+        LandArmyRace = race;
+        LandArmyName = name;
     }
 
-    public void MoveSkyArmy(ref GameObject skyArmy)
+    public void MoveSkyArmy(ref GameObject skyArmy, int race, int name)
     {
         SkyArmy = skyArmy;
         Vector3 position = transform.transform.position;
         position.y = 1;
         skyArmy.transform.position = position;
+        SkyArmyRace = race;
+        SkyArmyName = name;
     }
 
     /// <summary>
@@ -116,6 +120,8 @@ public class MapPointCtrl : MapBase
     {
         //GameObject.Destroy(LandArmy.gameObject);
         LandArmy = null;
+        LandArmyRace = -1;
+        LandArmyName = -1;
     }
 
     public GameObject SetSkyArmy(GameObject skyarmy)
@@ -138,6 +144,8 @@ public class MapPointCtrl : MapBase
     {
         //GameObject.Destroy(SkyArmy.gameObject);
         SkyArmy = null;
+        SkyArmyRace = -1;
+        SkyArmyName = -1;
     }
 
     private void OnMouseEnter()

@@ -107,6 +107,7 @@ public class MapBuilder : MapBase
         MapPointCtrl OriginalPointCtrl = null;
         MapPointCtrl MovePointCtrl = null;
         GameObject Army = null;
+        OtherArmyCtrl otherArmyCtrl = null;
         foreach (var item in MapManager.mapPointCtrls)
         {
             if (item.mapPoint.X == OtherOriginalx && item.mapPoint.Z == OtherOriginalz)
@@ -129,6 +130,7 @@ public class MapBuilder : MapBase
             if(item.transform.position.x == OtherOriginalx && item.transform.position.z == OtherOriginalz)
             {
                 Army = item;
+                otherArmyCtrl = Army.GetComponent<OtherArmyCtrl>();
             }
         }
 
@@ -136,12 +138,14 @@ public class MapBuilder : MapBase
         {
             //如果是陆地单位
             OriginalPointCtrl.RemoveLandArmy();
-            MovePointCtrl.MoveLandArmy(ref Army);
+            MovePointCtrl.MoveLandArmy(ref Army,otherArmyCtrl.armyState.Race,otherArmyCtrl.armyState.Name);
+            otherArmyCtrl.Move(MovePointCtrl.mapPoint, MovePointCtrl);
         }
         else
         {
             OriginalPointCtrl.RemoveSkyArmy();
-            MovePointCtrl.MoveSkyArmy(ref Army);
+            MovePointCtrl.MoveSkyArmy(ref Army, otherArmyCtrl.armyState.Race, otherArmyCtrl.armyState.Name);
+            otherArmyCtrl.Move(MovePointCtrl.mapPoint, MovePointCtrl);
         }
     }
 
@@ -295,9 +299,9 @@ public class MapBuilder : MapBase
             //如果是陆地单位
             //设置陆地单位
             //movepointctrl.SetLandArmy(armyPrefab);
-            movepointctrl.MoveLandArmy(ref armyPrefab);
-            movepointctrl.LandArmyRace = armyCard.Race;
-            movepointctrl.LandArmyName = armyCard.Name;
+            movepointctrl.MoveLandArmy(ref armyPrefab , armyCard.Race, armyCard.Name);
+            //movepointctrl.LandArmyRace = armyCard.Race;
+            //movepointctrl.LandArmyName = armyCard.Name;
             //移除原来地块上的兵种
             removeArmy(ref originalCtral, armyCard);
             //向服务器发送消息
@@ -310,9 +314,9 @@ public class MapBuilder : MapBase
             //如果是飞行单位
             //设置飞行单位
             //movepointctrl.SetSkyArmy(armyPrefab);
-            movepointctrl.MoveSkyArmy(ref armyPrefab);
-            movepointctrl.SkyArmyRace = armyCard.Race;
-            movepointctrl.SkyArmyName = armyCard.Name;
+            movepointctrl.MoveSkyArmy(ref armyPrefab, armyCard.Race, armyCard.Name);
+            //movepointctrl.SkyArmyRace = armyCard.Race;
+            //movepointctrl.SkyArmyName = armyCard.Name;
             //移除原来地块上的兵种
             removeArmy(ref originalCtral, armyCard);
             //向服务器发送消息

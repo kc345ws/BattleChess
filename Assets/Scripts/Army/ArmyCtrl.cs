@@ -35,7 +35,7 @@ public class ArmyCtrl : ArmyBase
 
     private SocketMsg socketMsg;//套接字消息封装
 
-    private MapAttackDto attackDto;
+    private MapAttackDto attackDto;//地图攻击数据传输对象
 
     public bool canAttack { get; set; }//是否能攻击
 
@@ -47,7 +47,10 @@ public class ArmyCtrl : ArmyBase
 
     private int SelectArmyType = -1;//多个兵种重叠时选择的兵种类型
 
+    List<MapPointCtrl> canMovePointCtrls = new List<MapPointCtrl>();//可以移动到的地图点
+
     //private Renderer renderer;
+    private bool isrefresh = true;//是否需要还原颜色
 
     private void Awake()
     {
@@ -166,6 +169,17 @@ public class ArmyCtrl : ArmyBase
             Timer += Time.deltaTime;
             StartCoroutine(selectState());
             //selectState();
+            isrefresh = true;
+        }
+        else
+        {
+            //将地图点颜色变为原来的
+            if (isrefresh)
+            {
+                StopAllCoroutines();
+                setMappointCtrl(canMovePointCtrls);
+                isrefresh = false;
+            }         
         }
         Move();
     }
@@ -198,6 +212,7 @@ public class ArmyCtrl : ArmyBase
                         {
                             //如果是陆地单位,且要移动到的地图点没有陆地单位
                             canMoveMapPointCtrls.Add(mapPointCtrl);
+                            //改变颜色
                             mapPointCtrl.SetColor(bluecolor);
                         }
                         else if (ArmyCard.CanFly && mapPointCtrl.SkyArmy == null)
@@ -266,7 +281,8 @@ public class ArmyCtrl : ArmyBase
                 bool isCollider = Physics.Raycast(ray, out hit,1000,LayerMask.GetMask("MapPoint"));
                 if (isCollider)
                 {
-                    List<MapPointCtrl> canMovePointCtrls = GetCanMoveMapPoint();
+                    //List<MapPointCtrl> canMovePointCtrls = GetCanMoveMapPoint();
+                    canMovePointCtrls = GetCanMoveMapPoint();
                     MapPointCtrl movePointctrl = hit.collider.gameObject.GetComponent<MapPointCtrl>();
                     if (canMove(canMovePointCtrls, movePointctrl))
                     {
@@ -279,6 +295,12 @@ public class ArmyCtrl : ArmyBase
                         //改变所在所在地图点控制器
                         ArmymapPointCtrl = movePointctrl;
                         mapPoint = movePointctrl.mapPoint;
+                        //更新单位所在地图点
+                        armyState.Position = movePointctrl.mapPoint;
+                        //更新可攻击点
+                        canAttckPoint = MapAttackType.Instance.GetAttakRange(armyState);
+                        
+
                     }
                 }
             }
