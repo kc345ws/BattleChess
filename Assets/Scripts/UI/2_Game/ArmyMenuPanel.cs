@@ -85,7 +85,8 @@ public class ArmyMenuPanel : UIBase
                 //armyState = message as ArmyCardBase;
                 armyCtrl = message as ArmyCtrl;
                 //给指令卡管理器传送单位控制器
-                OrderCardManager.Instance.armyCtrlDelegate.Invoke(armyCtrl);
+                OrderCardManager.Instance.selectArmyCtrlDelegate.Invoke(armyCtrl);
+                OtherCardManager.Instance.selectArmyCtrlDelegate.Invoke(armyCtrl);
                 //SetPanelActive(true);
                 processShowMenuPanel();
                 break;
@@ -130,6 +131,8 @@ public class ArmyMenuPanel : UIBase
             Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏平面");
             //防御单位置空
             defenseArmy = null;
+            //移除卡牌
+            Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_OTHER_CARDS, "移除手牌");
         }
         else
         {
@@ -168,6 +171,8 @@ public class ArmyMenuPanel : UIBase
 
             //防御单位置空
             defenseArmy = null;
+            //移除卡牌
+            Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_OTHER_CARDS, "移除手牌");
         }
         
         

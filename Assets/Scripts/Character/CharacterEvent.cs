@@ -49,5 +49,14 @@ public class CharacterEvent
     /// </summary>
     public const ushort SET_MY_LAND_SKY = 1015;
 
+    /// <summary>
+    /// 选择非指令卡
+    /// </summary>
+    public const ushort SELECT_OTHERCARD = 1016;
+
+    /// <summary>
+    /// 对方使用攻击指令卡
+    /// </summary>
+    public const ushort OTHER_DEAL_ATTACK = 1017;
 }
 

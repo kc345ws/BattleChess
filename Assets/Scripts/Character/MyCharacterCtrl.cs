@@ -12,7 +12,7 @@ using Protocol.Constants.Map;
 public class MyCharacterCtrl : CharacterBase
 {
     private List<CardDto> myCardList;//卡牌数据传输对象集合
-    private List<CardCtrl> CardCtrllist;//卡牌控制器集合
+    public List<CardCtrl> CardCtrllist { get; private set; }//卡牌控制器集合
     private Transform cardTransformParent;//卡牌的父物体
     private GameObject cardPrefab;//卡牌预设体
 
@@ -328,6 +328,10 @@ public class MyCharacterCtrl : CharacterBase
             {
                 //如果选中指令卡
                 Dispatch(AreoCode.CHARACTER, CharacterEvent.SELECT_ORDERCARD, selectCard);
+            }else if(selectCard.cardDto.Type == CardType.OTHERCARD)
+            {
+                //如果选中非指令卡
+                Dispatch(AreoCode.CHARACTER, CharacterEvent.SELECT_OTHERCARD, selectCard);
             }
 
             return true;

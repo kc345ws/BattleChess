@@ -36,6 +36,10 @@ public class OtherCharacterCtrl : CharacterBase
             case CharacterEvent.REMOVE_OTHER_CARDS:
                 removeSelectCard();
                 break;
+
+            case CharacterEvent.OTHER_DEAL_ATTACK:
+                removeSelectCard();//移除卡牌
+                break;
         }
     }
 
@@ -45,6 +49,7 @@ public class OtherCharacterCtrl : CharacterBase
         Bind(CharacterEvent.INIT_OTHER_CARDLIST);
         Bind(CharacterEvent.ADD_OTHERT_TABLECARDS);
         Bind(CharacterEvent.REMOVE_OTHER_CARDS);
+        Bind(CharacterEvent.OTHER_DEAL_ATTACK);
 
         cardTransformParent = transform.Find("CardPoint");
         cardPrefab = Resources.Load<GameObject>("Prefabs/Card/OtherCard");
@@ -59,30 +64,6 @@ public class OtherCharacterCtrl : CharacterBase
     {
         Destroy(OtherCardList[0].gameObject);
         OtherCardList.RemoveAt(0);
-
-        //int index = 0;
-        /*if (restcardList.Count == 0)
-        {
-            return;//如果剩余手牌为0
-        }*/
-
-        /*foreach (var item in restcardList)
-        {
-            index++;
-
-            if (index == restcardList.Count)
-            {
-                break;
-            }
-        }
-
-        for (int i = index; i < OtherCardList.Count; i++)
-        {
-            if (OtherCardList[i].gameObject != null)
-            {
-                Destroy(OtherCardList[i].gameObject);//销毁剩余卡牌之后的卡牌
-            }
-        }*/
     }
 
         /// <summary>

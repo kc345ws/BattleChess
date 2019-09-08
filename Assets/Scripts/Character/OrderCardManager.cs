@@ -35,7 +35,7 @@ public class OrderCardManager:CharacterBase
     //private int isContinueProcessID = -1;//需要继续处理的卡牌事件 0攻击 1修养
 
     public delegate void SelectArmyCtrlDelegate(ArmyCtrl armyCtrl);
-    public SelectArmyCtrlDelegate armyCtrlDelegate;//选择单位控制器事件
+    public SelectArmyCtrlDelegate selectArmyCtrlDelegate;//选择单位控制器事件
 
     private void Awake()
     {
@@ -47,7 +47,7 @@ public class OrderCardManager:CharacterBase
         Bind(CharacterEvent.SELECT_ORDERCARD);
         //Bind(CharacterEvent.SET_MY_LAND_SKY);
 
-        armyCtrlDelegate = processSelectArmyDelegate;
+        selectArmyCtrlDelegate = processSelectArmyDelegate;
 
         myArmyCtrlManager = GetComponent<MyArmyCtrlManager>();
         mapPointDto = new MapPointDto();
@@ -127,7 +127,7 @@ public class OrderCardManager:CharacterBase
 
     private void useCard()
     {
-        if(selectOrderCardCtrl == null)
+        if(selectOrderCardCtrl == null || selectOrderCardCtrl.cardDto.Type != CardType.ORDERCARD)
         {
             return;
             //如果没有选择指令卡
@@ -299,6 +299,9 @@ public class OrderCardManager:CharacterBase
         }
         //移除攻击卡牌     
         Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, selectOrderCardCtrl.cardDto);
+        //发送消息
+        socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_ATTACK_CREQ, "使用攻击卡");
+        Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
         //状态重置
         //isNeedGetArmyCtrl = false;
         selectArmyCtrl = null;

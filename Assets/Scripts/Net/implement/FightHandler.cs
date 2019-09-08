@@ -27,40 +27,9 @@ public class FightHandler : HandlerBase
     public override void OnReceive(int subcode, object message)
     {
         switch (subcode)
-        {
+        {          
 
-            /*case FightCode.DEAL_SRES:
-                processDealSres((bool)message);
-                break;
-
-            case FightCode.DEAL_SBOD:
-                processDealSBOD(message as DealDto);
-                break;
-
-            case FightCode.GET_CARD_SRES://服务器给客户端发牌
-                processGetCard(message as List<CardDto>);
-                break;
-
-            case FightCode.PASS_SRES:
-                processPassSRES((bool)message);
-                break;
-
-            case FightCode.TURN_LANDLORD_SBOD:
-                processTurnLandlord((int)message);
-                break;
-
-            case FightCode.GRAB_LANDLORD_SBOD:
-                processGrabLandlord(message as LandLordDto);
-                break;
-
-            case FightCode.TURN_DEAL_SBOD:
-                processTurnDeal((int)message);
-                break;
-
-            case FightCode.GAME_OVER_SBOD:
-                processGameOver(message as OverDto);
-                break;*/
-            case FightCode.SELECT_RACE_SBOD:
+            case FightCode.SELECT_RACE_SBOD://选择种族
                 processSelectRaceSBOD();
                 break;
 
@@ -68,34 +37,59 @@ public class FightHandler : HandlerBase
                 processGetCard(message as List<CardDto>);
                 break;
 
-            case FightCode.MAP_SET_ARMY_SBOD:
+            case FightCode.MAP_SET_ARMY_SBOD://地图放置单位
                 processMapSetArmySbod(message as MapPointDto);
                 break;
 
-            case FightCode.DEAL_CARD_SBOD:
+            case FightCode.DEAL_CARD_SBOD://其他人出牌
                 processDealCard(message as ClientPeer);
                 break;
 
-            case FightCode.MAP_ARMY_MOVE_SBOD:
+            case FightCode.MAP_ARMY_MOVE_SBOD://单位移动
                 processArmyMove(message as MapMoveDto);
                 break;
 
-            case FightCode.ARMY_ATTACK_SBOD:
+            case FightCode.ARMY_ATTACK_SBOD://单位攻击
                 processArmyAttack(message as MapAttackDto);
                 break;
 
-            case FightCode.DEAL_DODGE_SBOD:
+            case FightCode.DEAL_DODGE_SBOD://闪避
                 processDodgeSbod((bool)message);
                 break;
 
-            case FightCode.DEAL_BACKATTACK_SBOD:
+            case FightCode.DEAL_BACKATTACK_SBOD://反击
                 processBackAttackSBOD((bool)message);
                 break;
 
-            case FightCode.DEAL_REST_SBOD:
+            case FightCode.DEAL_REST_SBOD://修养
                 processRestSBOD(message as MapPointDto);
                 break;
+
+            case FightCode.USE_OTHERCARD_SBOD://非指令卡
+                processOtherCard(message as CardDto);
+                break;
+
+            case FightCode.DEAL_ATTACK_SBOD://攻击卡
+                processAttackCard();
+                break;
         }
+    }
+
+    /// <summary>
+    /// 处理攻击卡
+    /// </summary>
+    private void processAttackCard()
+    {
+        Dispatch(AreoCode.CHARACTER, CharacterEvent.OTHER_DEAL_ATTACK, "使用了攻击卡");
+    }
+
+    /// <summary>
+    /// 处理别人使用非指令卡
+    /// </summary>
+    /// <param name="cardDto"></param>
+    private void processOtherCard(CardDto cardDto)
+    {
+        Dispatch(AreoCode.ARMY, ArmyEvent.OTHER_USE_OTHERCARD, cardDto);
     }
 
     /// <summary>

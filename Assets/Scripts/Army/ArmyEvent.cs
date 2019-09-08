@@ -22,6 +22,9 @@ public class ArmyEvent
     /// </summary>
     public const ushort OTHER_USE_REST = 3;
 
-    
+    /// <summary>
+    /// 别人使用非指令卡
+    /// </summary>
+    public const ushort OTHER_USE_OTHERCARD = 4;
 }
 

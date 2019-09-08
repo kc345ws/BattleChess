@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using Protocol.Dto.Fight;
+using Protocol.Constants;
+using Protocol.Constants.Orc.OtherCard;
 
 /// <summary>
 /// 其他人的兵种管理器集合
@@ -17,6 +19,10 @@ public class OtherArmyCtrlManager : ArmyBase
     /// 兵种控制器集合
     /// </summary>
     public static List<OtherArmyCtrl> OtherArmyCtrlList { get; private set; }
+
+    private OtherCharacterCtrl otherCharacterCtrl;//卡牌控制器管理类
+
+    //private Object Lock = new Object();
 
 
     //public static OtherArmyCtrlManager Instance = null;
@@ -36,9 +42,11 @@ public class OtherArmyCtrlManager : ArmyBase
     {
         ArmyList = new List<GameObject>();
         OtherArmyCtrlList = new List<OtherArmyCtrl>();
+        otherCharacterCtrl = GetComponent<OtherCharacterCtrl>();
 
         Bind(ArmyEvent.ADD_OTHER_ARMY);
         Bind(ArmyEvent.OTHER_USE_REST);
+        Bind(ArmyEvent.OTHER_USE_OTHERCARD);
     }
 
     // Update is called once per frame
@@ -59,8 +67,58 @@ public class OtherArmyCtrlManager : ArmyBase
             case ArmyEvent.OTHER_USE_REST:
                 processRest(message as MapPointDto);
                 break;
+
+            case ArmyEvent.OTHER_USE_OTHERCARD:
+                processOtherCard(message as CardDto);
+                break;
         }
     }
+
+    /// <summary>
+    /// 处理非指令卡
+    /// </summary>
+    /// <param name="cardDto"></param>
+    private void processOtherCard(CardDto cardDto)
+    {
+        switch (cardDto.Race)
+        {
+            case RaceType.ORC://兽族
+                switch (cardDto.Name)
+                {
+                    case OrcOtherCardType.Ancestor_Helmets://先祖头盔
+                        //使用
+                        OtherCard_AncestorHelmets();
+                        //提示
+                        Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "对方使用先祖头盔");
+                        //移除卡牌
+                        Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_OTHER_CARDS, "移除手牌");
+                        break;
+                }
+
+                break;
+        }
+    }
+
+    #region 兽族
+    /// <summary>
+    /// 先祖头盔
+    /// </summary>
+    private void OtherCard_AncestorHelmets()
+    {
+        foreach (var item in OtherArmyCtrlList)
+        {
+            if(item.armyState.Name == OrcArmyCardType.Infantry)
+            {
+                //场上所有兽族步兵血量加一，最大血量不变
+                lock (this)
+                {
+                    item.armyState.Hp++;
+                }        
+            }
+        }
+    }
+
+    #endregion
 
     /// <summary>
     /// 处理使用修养
@@ -91,6 +149,8 @@ public class OtherArmyCtrlManager : ArmyBase
         }
 
         Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "对方(" + realx + "," + realz + ")使用修养卡");
+        //移除卡牌
+        Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_OTHER_CARDS, "移除手牌");
     }
 
     /// <summary>
