@@ -149,4 +149,9 @@ public static class UIEvent{
     /// 是否反击了
     /// </summary>
     public const int IS_BACKATTACK = 142;
+
+    /// <summary>
+    /// 下一回合
+    /// </summary>
+    public const int NEXT_TURN = 143;
 }

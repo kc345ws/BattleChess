@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6035647227274920195}
   m_Layer: 9
   m_Name: WinLine
-  m_TagString: Untagged
+  m_TagString: Winline
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,9 +27,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1507216477747042}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.2, z: 1}
+  m_LocalScale: {x: 1, y: 0.19999999, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -104,3 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d35727427544a7445aeb39a71eea1edf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LandArmyRace: -1
+  LandArmyName: -1
+  SkyArmyRace: -1
+  SkyArmyName: -1

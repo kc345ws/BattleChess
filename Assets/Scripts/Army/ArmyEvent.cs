@@ -26,5 +26,10 @@ public class ArmyEvent
     /// 别人使用非指令卡
     /// </summary>
     public const ushort OTHER_USE_OTHERCARD = 4;
+
+    /// <summary>
+    /// 回合开始时刷新单位状态
+    /// </summary>
+    public const ushort TURN_REFRESH_ARMYSTATE = 5;
 }
 

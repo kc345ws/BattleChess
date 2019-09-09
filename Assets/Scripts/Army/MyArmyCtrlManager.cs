@@ -9,17 +9,48 @@ public class MyArmyCtrlManager : ArmyBase
 
     private ArmyCtrl LastSelectArmyCtrl;//上一个选择的兵种
 
+    public static MyArmyCtrlManager Instance;
+    private MyArmyCtrlManager() { }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         CardCtrllist = new List<ArmyCtrl>();
 
+        Bind(ArmyEvent.TURN_REFRESH_ARMYSTATE);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public override void Execute(int eventcode, object message)
+    {
+        base.Execute(eventcode, message);
+        switch (eventcode)
+        {
+            case ArmyEvent.TURN_REFRESH_ARMYSTATE:
+                processRefreshState();
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 处理刷新单位状态
+    /// </summary>
+    private void processRefreshState()
+    {
+        foreach (var item in CardCtrllist)
+        {
+            item.CanturnMove = true;//所有单位可以移动
+        }
     }
 
     public void Add(ArmyCtrl armyCtrl)
@@ -29,6 +60,7 @@ public class MyArmyCtrlManager : ArmyBase
         CardCtrllist.Add(armyCtrl);
         
     }
+
 
     private bool processArmySelect(ArmyCtrl armyCtrl)
     {

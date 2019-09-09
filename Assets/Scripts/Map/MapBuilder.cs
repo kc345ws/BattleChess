@@ -24,12 +24,17 @@ public class MapBuilder : MapBase
 
     private MapMoveDto mapMoveDto;//地图移动信息传输类
 
-    //public MapBuilder Instance;
+    public static MapBuilder Instance;//实例单例
 
-    //private int OtherCardId = 0;
+    public delegate void TurnDelegate(ref int turncount);//回合委托
+    public TurnDelegate turnDelegate;
+    private int TurnCount = 0;
+
+    private MapBuilder() { }
+
     private void Awake()
     {
-        //Instance = this;
+        Instance = this;
     }
     // Use this for initialization
     void Start()
@@ -233,9 +238,32 @@ public class MapBuilder : MapBase
                 bool isCollider = Physics.Raycast(ray, out hit, 1000, LayerMask.GetMask("MapPoint"));
                 if (isCollider)
                 {
+                    turnDelegate.Invoke(ref TurnCount);//获取回合数
                     MapPointCtrl mapPointCtrl = hit.collider.GetComponent<MapPointCtrl>();
                     if(!mapPointCtrl.HasLandArmy() && selectArmyCard!=null&&armyPrefab != null && !selectArmyCard.CanFly)
                     {
+                        if(selectArmyCard.Class == ArmyClassType.Hero && hit.collider.tag != "BossStart")
+                        {
+                            //如果是英雄单位只能箭头处
+                            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "英雄单位只能箭头处");
+                            return;
+                        }
+                        else if(selectArmyCard.Class != ArmyClassType.Hero && hit.collider.tag == "BossStart")
+                        {
+                            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "非英雄单位不能箭头处");
+                            return;
+                        }
+
+                        if(TurnCount == 1)
+                        {
+                            if(hit.collider.tag != "StartAreo" && hit.collider.tag != "Winline" && hit.collider.tag != "BossStart")
+                            {
+                                //如果第一回合不在屯兵区放置
+                                Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "初始阶段只能后三排");
+                                return;
+                            }
+                        }
+
                         //放置陆地单位
                         GameObject army = mapPointCtrl.SetLandArmy(armyPrefab);
                         //mapPointCtrl.LandArmyCard = selectArmyCard;
@@ -262,6 +290,28 @@ public class MapBuilder : MapBase
                     }
                     else if(!mapPointCtrl.HasSkyArmy() && selectArmyCard != null&&armyPrefab != null && selectArmyCard.CanFly)
                     {
+                        if (selectArmyCard.Class == ArmyClassType.Hero && hit.collider.tag != "BossStart")
+                        {
+                            //如果是英雄单位只能箭头处
+                            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "英雄单位只能箭头处");
+                            return;
+                        }
+                        else if (selectArmyCard.Class != ArmyClassType.Hero && hit.collider.tag == "BossStart")
+                        {
+                            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "非英雄单位不能箭头处");
+                            return;
+                        }
+
+                        if (TurnCount == 1)
+                        {
+                            if (hit.collider.tag != "StartAreo" && hit.collider.tag != "Winline" && hit.collider.tag != "BossStart")
+                            {
+                                //如果第一回合不在屯兵区放置
+                                Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "初始阶段只能后三排");
+                                return;
+                            }
+                        }
+
                         //放置飞行单位
                         GameObject army = mapPointCtrl.SetSkyArmy(armyPrefab);
                         //mapPointCtrl.SkyArmyCard = selectArmyCard;

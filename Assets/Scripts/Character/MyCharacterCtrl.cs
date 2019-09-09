@@ -11,6 +11,9 @@ using Protocol.Constants.Map;
 /// </summary>
 public class MyCharacterCtrl : CharacterBase
 {
+    public static MyCharacterCtrl Instance;
+    private MyCharacterCtrl() { }
+
     private List<CardDto> myCardList;//卡牌数据传输对象集合
     public List<CardCtrl> CardCtrllist { get; private set; }//卡牌控制器集合
     private Transform cardTransformParent;//卡牌的父物体
@@ -22,6 +25,11 @@ public class MyCharacterCtrl : CharacterBase
     private CardCtrl dodgeArmyctrl;//闪避手牌
     private OtherArmyCtrl attackCtrl;//进行攻击的兵种
     private ArmyCtrl defenseCtrl;//需要闪避的兵种
+
+    private void Awake()
+    {
+        Instance = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -74,6 +82,23 @@ public class MyCharacterCtrl : CharacterBase
                 processBackAttackResult((bool)message);
                 break;
         }
+    }
+
+    /// <summary>
+    /// 是否有某一类型的卡牌
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public bool hasTypeCard(int type)
+    {
+        foreach (var item in CardCtrllist)
+        {
+            if (item.cardDto.Type == type)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     #region 反击

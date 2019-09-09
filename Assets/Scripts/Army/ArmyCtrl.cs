@@ -50,7 +50,9 @@ public class ArmyCtrl : ArmyBase
     List<MapPointCtrl> canMovePointCtrls = new List<MapPointCtrl>();//可以移动到的地图点
 
     //private Renderer renderer;
-    private bool isrefresh = true;//是否需要还原颜色
+    private bool isrefresh = true;//是否需要还原颜色 
+
+    public bool CanturnMove = true;//在回合内是否还能移动
 
     private void Awake()
     {
@@ -181,7 +183,11 @@ public class ArmyCtrl : ArmyBase
                 isrefresh = false;
             }         
         }
-        Move();
+
+        if (CanturnMove)
+        {
+            Move();
+        }    
     }
 
     private List<MapPointCtrl> GetCanMoveMapPoint()
@@ -299,8 +305,9 @@ public class ArmyCtrl : ArmyBase
                         armyState.Position = movePointctrl.mapPoint;
                         //更新可攻击点
                         canAttckPoint = MapAttackType.Instance.GetAttakRange(armyState);
-                        
 
+                        //本回合不能再移动
+                        CanturnMove = false;
                     }
                 }
             }

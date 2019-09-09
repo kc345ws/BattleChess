@@ -72,7 +72,20 @@ public class FightHandler : HandlerBase
             case FightCode.DEAL_ATTACK_SBOD://攻击卡
                 processAttackCard();
                 break;
+
+            case FightCode.NEXT_TURN_SBOD://轮到某人开始下一回合
+                processNextTurn((int)message);
+                break;
         }
+    }
+
+    /// <summary>
+    /// 处理下一回合开始
+    /// </summary>
+    /// <param name="uid"></param>
+    private void processNextTurn(int uid)
+    {
+        Dispatch(AreoCode.UI, UIEvent.NEXT_TURN, uid);
     }
 
     /// <summary>
