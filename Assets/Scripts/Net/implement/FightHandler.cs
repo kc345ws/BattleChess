@@ -84,7 +84,19 @@ public class FightHandler : HandlerBase
             case FightCode.ADD_CARD_SBOD://服务器给其他人发牌
                 processAddCardSBOD((int)message);
                 break;
+
+            case FightCode.GAME_OVER_SBOD:
+                processGameOver();
+                break;
         }
+    }
+
+    /// <summary>
+    /// 处理游戏结束
+    /// </summary>
+    private void processGameOver()
+    {
+        Dispatch(AreoCode.UI, UIEvent.SHOW_LOSE_OVER_PANEL, "游戏失败");
     }
 
     /// <summary>
@@ -223,7 +235,7 @@ public class FightHandler : HandlerBase
     private void processGameOver(OverDto overDto)
     {
         //显示结束面板
-        Dispatch(AreoCode.UI, UIEvent.SHOW_OVER_PANEL, true);
+        Dispatch(AreoCode.UI, UIEvent.SHOW_LOSE_OVER_PANEL, true);
         //设置信息并播放音效
         Dispatch(AreoCode.UI, UIEvent.SET_OVER_PANEL_MESSAGE, overDto);
     }

@@ -34,6 +34,11 @@ public class MapPointCtrl : MapBase
         origanColor = renderer.material.color;
 
         MapManager.mapPointCtrls.Add(this);
+        if(gameObject.tag == "OtherWinline")
+        {
+            //如果是敌方胜利线
+            MapManager.OtherLineMapPointCtrls.Add(this);
+        }
     }
 
     // Update is called once per frame

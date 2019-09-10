@@ -10,10 +10,12 @@ public class MapManager : ManagerBase
     /// 地图点控制类集合
     /// </summary>
     public static List<MapPointCtrl> mapPointCtrls;
+    public static List<MapPointCtrl> OtherLineMapPointCtrls;
 
     void Awake()
     {
         Instance = this;
         mapPointCtrls = new List<MapPointCtrl>();
+        OtherLineMapPointCtrls = new List<MapPointCtrl>();
     }
 }

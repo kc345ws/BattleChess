@@ -39,7 +39,7 @@ public class ArmyCtrl : ArmyBase
 
     public bool canAttack { get; set; }//是否能攻击
 
-    public bool isAttack { get; private set; }//是否攻击过
+    public bool isAttack { get; set; }//是否攻击过
 
     //public bool isShowAttackButton { get; private set; }//是否显示攻击按钮
 

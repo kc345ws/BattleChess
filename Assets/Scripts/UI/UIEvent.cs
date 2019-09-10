@@ -58,7 +58,7 @@ public static class UIEvent{
     public const int RIGHT_PLAYER_LOADED = 119;
 
     //显示结束面板
-    public const int SHOW_OVER_PANEL = 120;
+    //public const int SHOW_OVER_PANEL = 120;
 
     //设置结束面板信息
     public const int SET_OVER_PANEL_MESSAGE = 121;
@@ -154,4 +154,10 @@ public static class UIEvent{
     /// 下一回合
     /// </summary>
     public const int NEXT_TURN = 143;
+
+    /// <summary>
+    /// 显示胜利结束面板
+    /// </summary>
+    public const ushort SHOW_WIN_OVER_PANEL = 144;
+    public const ushort SHOW_LOSE_OVER_PANEL = 145;
 }

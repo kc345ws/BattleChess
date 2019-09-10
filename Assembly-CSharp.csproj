@@ -128,6 +128,7 @@
     <Compile Include="Assets\Scripts\UI\2_Game\AttackArrowCtrl.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\DealBackAttackPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\DealDodgePanel.cs" />
+    <Compile Include="Assets\Scripts\UI\2_Game\GameOverPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\HidePlane.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\MyInfoPanel.cs" />
     <Compile Include="Assets\Scripts\UI\2_Game\OtherInfoPanel.cs" />

@@ -1,4 +1,5 @@
-﻿using Protocol.Dto.Fight;
+﻿using Protocol.Constants;
+using Protocol.Dto.Fight;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,11 @@ public class MyArmyCtrlManager : ArmyBase
     // Update is called once per frame
     void Update()
     {
+        //检测是否有单位死亡
+        if(CardCtrllist.Count > 0)
+        {
+            checkArmyDead();
+        }
         
     }
 
@@ -43,6 +49,46 @@ public class MyArmyCtrlManager : ArmyBase
     }
 
     /// <summary>
+    /// 检查单位是否死亡
+    /// </summary>
+    /// <returns></returns>
+    private void checkArmyDead()
+    {
+        int index = 0;
+        bool isdead = false;
+        foreach (var item in CardCtrllist)
+        {
+            if(item.armyState.Hp <= 0)
+            {
+                Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "我方单位死亡");
+                if (item.armyState.CanFly)
+                {
+
+                    //如果是飞行单位
+                    Destroy(item.ArmymapPointCtrl.SkyArmy);
+                    item.ArmymapPointCtrl.RemoveSkyArmy();
+                    
+                }
+                else
+                {
+                    //如果是陆地单位
+                    Destroy(item.ArmymapPointCtrl.LandArmy);
+                    item.ArmymapPointCtrl.RemoveLandArmy();
+                }
+                
+                isdead = true;
+                break;
+            }
+            index++;
+        }
+        if (isdead)
+        {
+            CardCtrllist.RemoveAt(index);
+        }
+        isdead = false;
+    }
+
+    /// <summary>
     /// 处理刷新单位状态
     /// </summary>
     private void processRefreshState()
@@ -50,6 +96,16 @@ public class MyArmyCtrlManager : ArmyBase
         foreach (var item in CardCtrllist)
         {
             item.CanturnMove = true;//所有单位可以移动
+            if(item.armyState.Class == ArmyClassType.Ordinary)
+            {
+                item.canAttack = true;
+                item.isAttack = false;
+            }
+            else
+            {
+                item.canAttack = false;
+                item.isAttack = false;
+            }
         }
     }
 
