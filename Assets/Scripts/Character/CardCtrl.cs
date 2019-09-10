@@ -130,7 +130,7 @@ public class CardCtrl : MonoBehaviour
         {
             return;
         }
-        Debug.Log("被点击");
+        //Debug.Log("被点击");
 
 
         //如果是第一次点击或者和上次点击的不一样,则将该张牌设为选中状态

@@ -12,9 +12,9 @@ public class CharacterEvent
     public const int INIT_OTHER_CARDLIST = 1001;
     //public const int INIT_RIGHT_CARDLIST = 1002;
 
-    //给自己的角色添加底牌
-    public const int ADD_MY_TABLECARDS = 1003;
-    public const int ADD_OTHERT_TABLECARDS = 1004;
+    //给自己的角色增加手牌牌
+    public const int ADD_MY_CARDS = 1003;
+    public const int ADD_OTHERT_CARDS = 1004;
     //public const int ADD_RIGHT_TABLECARDS = 1005;
 
     public const int DEAL_CARD = 1006;//角色出牌

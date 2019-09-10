@@ -29,8 +29,8 @@ public class OtherCharacterCtrl : CharacterBase
                 StartCoroutine(initPlayerCard());
                 break;
 
-            case CharacterEvent.ADD_OTHERT_TABLECARDS:
-                addTableCard();
+            case CharacterEvent.ADD_OTHERT_CARDS:
+                addCard((int)message);
                 break;
 
             case CharacterEvent.REMOVE_OTHER_CARDS:
@@ -47,7 +47,7 @@ public class OtherCharacterCtrl : CharacterBase
     void Start()
     {
         Bind(CharacterEvent.INIT_OTHER_CARDLIST);
-        Bind(CharacterEvent.ADD_OTHERT_TABLECARDS);
+        Bind(CharacterEvent.ADD_OTHERT_CARDS);
         Bind(CharacterEvent.REMOVE_OTHER_CARDS);
         Bind(CharacterEvent.OTHER_DEAL_ATTACK);
 
@@ -64,6 +64,7 @@ public class OtherCharacterCtrl : CharacterBase
     {
         Destroy(OtherCardList[0].gameObject);
         OtherCardList.RemoveAt(0);
+        Index--;
     }
 
         /// <summary>
@@ -83,9 +84,12 @@ public class OtherCharacterCtrl : CharacterBase
         }
     }
 
-    private void addTableCard()
+    /// <summary>
+    /// 增加手牌
+    /// </summary>
+    private void addCard(int cardCount)
     {
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < cardCount; i++)
         {
             createCard(Index);
             Index++;

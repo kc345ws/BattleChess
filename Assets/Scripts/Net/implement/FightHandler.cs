@@ -41,7 +41,7 @@ public class FightHandler : HandlerBase
                 processMapSetArmySbod(message as MapPointDto);
                 break;
 
-            case FightCode.DEAL_CARD_SBOD://其他人出牌
+            case FightCode.DEAL_ARMYCARD_SBOD://其他人使用兵种卡
                 processDealCard(message as ClientPeer);
                 break;
 
@@ -76,7 +76,33 @@ public class FightHandler : HandlerBase
             case FightCode.NEXT_TURN_SBOD://轮到某人开始下一回合
                 processNextTurn((int)message);
                 break;
+
+            case FightCode.ADD_CARD_SRES://服务器给自己发牌
+                processAddCardSRES(message as List<CardDto>);
+                break;
+
+            case FightCode.ADD_CARD_SBOD://服务器给其他人发牌
+                processAddCardSBOD((int)message);
+                break;
         }
+    }
+
+    /// <summary>
+    /// 处理服务器给其他人发牌
+    /// </summary>
+    /// <param name="cardCount">手牌数量</param>
+    private void processAddCardSBOD(int cardCount)
+    {
+        Dispatch(AreoCode.CHARACTER, CharacterEvent.ADD_OTHERT_CARDS, cardCount);
+    }
+
+    /// <summary>
+    /// 处理服务器给自己发牌
+    /// </summary>
+    /// <param name="cardlist"></param>
+    private void processAddCardSRES(List<CardDto> cardlist)
+    {
+        Dispatch(AreoCode.CHARACTER, CharacterEvent.ADD_MY_CARDS, cardlist);
     }
 
     /// <summary>

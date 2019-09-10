@@ -277,6 +277,10 @@ public class MapBuilder : MapBase
                         //更新地图点控制器
                         mapPointCtrl.UpdateLandArmy(army);
                         myArmyCtrls.Add(armyctrl);
+
+                        //向发送发送出牌消息，让其他人消除卡牌
+                        socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_ARMYCARD_CREQ, selectArmyCard);
+                        Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
                         //移除卡牌
                         Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, selectArmyCard);
                         //向服务器发送消息
@@ -284,8 +288,9 @@ public class MapBuilder : MapBase
                         socketMsg.Change(OpCode.FIGHT, FightCode.MAP_SET_ARMY_CREQ, pointDto);
                         Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
                         //向发送发送出牌消息，让其他人消除卡牌
-                        socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_CARD_CREQ, "出牌请求");
-                        Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+                        //socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_CARD_CREQ, "出牌请求");
+                        //socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_ARMYCARD_CREQ, selectArmyCard);
+                        //Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
                         
                     }
                     else if(!mapPointCtrl.HasSkyArmy() && selectArmyCard != null&&armyPrefab != null && selectArmyCard.CanFly)
@@ -306,8 +311,18 @@ public class MapBuilder : MapBase
                         {
                             if (hit.collider.tag != "StartAreo" && hit.collider.tag != "Winline" && hit.collider.tag != "BossStart")
                             {
-                                //如果第一回合不在屯兵区放置
+                                //如果第一回合不在初始屯兵区放置
                                 Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "初始阶段只能后三排");
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            //如果是其他回合
+                            if(hit.collider.tag != "StartAreo" && hit.collider.tag != "Winline" && hit.collider.tag != "BossStart" && hit.collider.tag != "FeatureArea")
+                            {
+                                //如果不在屯兵区放置
+                                Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "只能放置在后五排");
                                 return;
                             }
                         }
@@ -326,15 +341,19 @@ public class MapBuilder : MapBase
                         //更新地图点控制器
                         mapPointCtrl.UpdateSkyArmy(army);
                         myArmyCtrls.Add(armyctrl);
+
+                        //向发送发送出牌消息，让其他人消除卡牌
+                        socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_ARMYCARD_CREQ, selectArmyCard);
+                        Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
                         //移除卡牌
                         Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, selectArmyCard);
                         //向服务器发送消息
                         pointDto.Change(mapPointCtrl.mapPoint, mapPointCtrl.LandArmyRace, mapPointCtrl.LandArmyName, mapPointCtrl.SkyArmyRace, mapPointCtrl.SkyArmyName);
                         socketMsg.Change(OpCode.FIGHT, FightCode.MAP_SET_ARMY_CREQ, pointDto);
                         Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
-                        //向发送发送出牌消息，让其他人消除卡牌
-                        socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_CARD_CREQ, "出牌请求");
-                        Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+                        /*//向发送发送出牌消息，让其他人消除卡牌
+                        socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_ARMYCARD_CREQ, selectArmyCard);
+                        Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);*/
                         
                     }
                 }

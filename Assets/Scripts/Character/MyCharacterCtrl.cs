@@ -34,7 +34,7 @@ public class MyCharacterCtrl : CharacterBase
     void Start()
     {
         Bind(CharacterEvent.INIT_MY_CARDLIST);
-        //Bind(CharacterEvent.ADD_MY_TABLECARDS);
+        Bind(CharacterEvent.ADD_MY_CARDS);
         Bind(CharacterEvent.DEAL_CARD);
         Bind(CharacterEvent.REMOVE_MY_CARDS);
         Bind(CharacterEvent.INQUIRY_DEAL_DODGE);
@@ -57,8 +57,8 @@ public class MyCharacterCtrl : CharacterBase
                 StartCoroutine(initPlayerCard(message as List<CardDto>));
                 break;
 
-            case CharacterEvent.ADD_MY_TABLECARDS:
-                addTableCard(message as List<CardDto>);
+            case CharacterEvent.ADD_MY_CARDS:
+                addCard(message as List<CardDto>);
                 break;
 
             /*case CharacterEvent.DEAL_CARD:
@@ -486,6 +486,11 @@ public class MyCharacterCtrl : CharacterBase
         }
     }
 
+    /// <summary>
+    /// 初始阶段创建手牌
+    /// </summary>
+    /// <param name="cardDto"></param>
+    /// <param name="index"></param>
     private void createCard(CardDto cardDto, int index)
     {
         GameObject card = GameObject.Instantiate(cardPrefab, cardTransformParent);
@@ -500,28 +505,35 @@ public class MyCharacterCtrl : CharacterBase
         CardCtrllist.Add(cardCtrl);
     }
 
-    private void addTableCard(List<CardDto> cardlist)
+    /// <summary>
+    /// 每回合增加手牌
+    /// </summary>
+    /// <param name="cardlist"></param>
+    private void addCard(List<CardDto> cardlist)
     {
         int index = myCardList.Count;
         foreach (var item in cardlist)
         {
             myCardList.Add(item);
         }
+        //对手牌进行排序
         //CardWeight.SortCard(ref myCardList);
 
         //复用先前创建的牌
-        for (int i = 0; i < 17; i++)
+        for (int i = 0; i < index; i++)
         {
             CardCtrllist[i].gameObject.SetActive(true);
             CardCtrllist[i].Init(myCardList[i], true, i);
         }
 
-        for (int i = index; i < 20; i++)
+        for (int i = index; i < myCardList.Count; i++)
         {
             GameObject card = GameObject.Instantiate(cardPrefab, cardTransformParent);
-            card.transform.localPosition = new Vector2(index * 0.2f, 0);
+            card.transform.localPosition = new Vector3(0, index * 0.01f, index * -1f);
             //card.name = myCardList[i].Name;
             CardCtrl cardCtrl = card.GetComponent<CardCtrl>();
+
+            cardCtrl.CardMouseDownEvent = IsCanSelece;
             cardCtrl.Init(myCardList[i], true, index);
 
             CardCtrllist.Add(cardCtrl);

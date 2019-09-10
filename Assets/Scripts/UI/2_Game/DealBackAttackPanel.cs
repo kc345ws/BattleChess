@@ -39,6 +39,8 @@ public class DealBackAttackPanel : UIBase
         switch (eventcode)
         {
             case UIEvent.SHOW_DEAL_BACKATTACK_PANEL:
+                Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏面板");
+                Dispatch(AreoCode.UI, UIEvent.CLOSE_WAIT_PANEL, "关闭等待面板");
                 ChangeInfo((string)message);
                 SetPanelActive(true);
                 break;
@@ -57,12 +59,16 @@ public class DealBackAttackPanel : UIBase
         //发送消息
         Dispatch(AreoCode.CHARACTER, CharacterEvent.RETURN_DEAL_BACKATTACK_RESULT, true);
         SetPanelActive(false);
+        Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "等待对方操作结束...");
+        Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏面板");
     }
 
     private void noBtnClicker()
     {
         Dispatch(AreoCode.CHARACTER, CharacterEvent.RETURN_DEAL_BACKATTACK_RESULT, false);
         SetPanelActive(false);
+        Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "等待对方操作结束...");
+        Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏面板");
     }
 
     private void ChangeInfo(string str)
