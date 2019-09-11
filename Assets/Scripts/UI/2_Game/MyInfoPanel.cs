@@ -82,7 +82,7 @@ public class MyInfoPanel : UIBase
         socketMsg.Change(OpCode.FIGHT, FightCode.NEXT_TURN_CREQ, "下一回合");
         Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
         Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "对方回合");
-        Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "对方回合");
+        Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "");
 
         Button_NextTurn.interactable = false;
     }
@@ -117,7 +117,7 @@ public class MyInfoPanel : UIBase
         else
         {
             Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "对方回合");
-            Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "对方回合");
+            Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "");
         }
     }
 

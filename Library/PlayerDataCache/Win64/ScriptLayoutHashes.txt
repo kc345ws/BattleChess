@@ -6,6 +6,7 @@ Assets/Scenes/0_Login.unity
 Assets/Scenes/1_Main.unity
 Assets/Scenes/2_GameScene.unity
 SceneListEnd?
+71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.GameOverPanel
 984dcc0ba3707b7691fbdca8ff508d28 Unity.TextMeshPro.dll:TMPro.TMP_SelectionCaret
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.UIManager
 01aa15e337e3a9c62f15153dfac6d589 Unity.TextMeshPro.dll:TMPro.TMP_Dropdown
@@ -210,4 +211,3 @@ d791aa6007fa3640be1164ea75bb087d Unity.TextMeshPro.dll:TMPro.TMP_StyleSheet
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MsgCenter
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.CursorManager
-71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.GameOverPanel

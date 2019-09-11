@@ -119,9 +119,9 @@ public class ArmyMenuPanel : UIBase
 
     private void processIsBackAttack(bool active)
     {
-        if (active)
+        if (active)//对方反击
         {
-            //如果对方反击了
+            
             //自己掉血
             armyCtrl.armyState.Hp -= defenseArmy.armyState.Damage;
             //提示消息
@@ -129,12 +129,14 @@ public class ArmyMenuPanel : UIBase
 
             Dispatch(AreoCode.UI, UIEvent.CLOSE_WAIT_PANEL, "关闭等待面板");
             Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏平面");
-            //防御单位置空
-            defenseArmy = null;
+            
             //移除卡牌
             Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_OTHER_CARDS, "移除手牌");
+
+            //防御单位置空
+            defenseArmy = null;
         }
-        else
+        else//对方不反击
         {
             Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "对方没有反击");
 
@@ -151,9 +153,8 @@ public class ArmyMenuPanel : UIBase
     /// <param name="active"></param>
     private void processIsAttackSuccess(bool active)
     {
-        if (active)
+        if (active)//对方不闪避
         {
-            //如果对方没有出闪避
             //对方减血
             defenseArmy.armyState.Hp -= armyCtrl.armyState.Damage;
             //提示消息
@@ -163,14 +164,14 @@ public class ArmyMenuPanel : UIBase
             Dispatch(AreoCode.UI, UIEvent.CLOSE_WAIT_PANEL, "关闭等待面板");
             Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "等待对方是否反击...");
         }
-        else
+        else//对方闪避
         {
             Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "对方闪避了");
             Dispatch(AreoCode.UI, UIEvent.CLOSE_WAIT_PANEL, "关闭等待面板");
             Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏平面");
 
             //防御单位置空
-            defenseArmy = null;
+            //defenseArmy = null;
             //移除卡牌
             Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_OTHER_CARDS, "移除手牌");
         }

@@ -117,14 +117,18 @@ public class OtherArmyCtrlManager : ArmyBase
                 if (item.armyState.CanFly)
                 {
                     //如果是飞行单位
+                    ArmyList.Remove(item.OtherMapPintctrl.SkyArmy);
                     Destroy(item.OtherMapPintctrl.SkyArmy);
                     item.OtherMapPintctrl.RemoveSkyArmy();
+                    
                 }
                 else
                 {
                     //如果是陆地单位
+                    ArmyList.Remove(item.OtherMapPintctrl.LandArmy);
                     Destroy(item.OtherMapPintctrl.LandArmy);
                     item.OtherMapPintctrl.RemoveLandArmy();
+                    
                 }
                 
                 isdead = true;
@@ -253,6 +257,11 @@ public class OtherArmyCtrlManager : ArmyBase
 
     private bool processOtherArmySelect(OtherArmyCtrl otherArmyCtrl)
     {
+        if(otherArmyCtrl == null)
+        {
+            return false;
+        }
+
         if(LastSelectArmy == null)
         {
             //如果是第一次选择           

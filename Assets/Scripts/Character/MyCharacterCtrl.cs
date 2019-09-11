@@ -22,9 +22,10 @@ public class MyCharacterCtrl : CharacterBase
     private SocketMsg socketMsg;//套接字封装
     public CardCtrl LastSelectCard { get; private set; }//上一次选择的卡牌
 
-    private CardCtrl dodgeArmyctrl;//闪避手牌
+    private CardCtrl dodgeCardctrl;//闪避手牌
     private OtherArmyCtrl attackCtrl;//进行攻击的兵种
     private ArmyCtrl defenseCtrl;//需要闪避的兵种
+    private CardCtrl backAttackCardCtrl;//反击手牌
 
     private void Awake()
     {
@@ -106,16 +107,16 @@ public class MyCharacterCtrl : CharacterBase
     /// 是否有某一卡牌
     /// </summary>
     /// <returns></returns>
-    private bool hasCardType(ushort cardtype , ushort cardname)
+    private CardCtrl hasCardType(ushort cardtype , ushort cardname)
     {
         foreach (var item in CardCtrllist)
         {
             if(item.cardDto.Type == cardtype && item.cardDto.Name == cardname)
             {
-                return true;
+                return item;
             }
         }
-        return false;
+        return null;
     }
 
     /// <summary>
@@ -130,6 +131,8 @@ public class MyCharacterCtrl : CharacterBase
             attackCtrl.armyState.Hp -= defenseCtrl.armyState.Damage;
             socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, true);
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+            //移除反击手牌
+            Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, backAttackCardCtrl.cardDto);
         }
         else
         {
@@ -142,6 +145,9 @@ public class MyCharacterCtrl : CharacterBase
         Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
         defenseCtrl = null;
         attackCtrl = null;
+
+        Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示遮挡面板");
+        Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "");//显示等待面板
     }
 
 
@@ -157,19 +163,19 @@ public class MyCharacterCtrl : CharacterBase
         if (active)//出闪
         {
             //移除手牌
-            Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, dodgeArmyctrl.cardDto);
-            defenseCtrl = null;
-            attackCtrl = null;
+            Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, dodgeCardctrl.cardDto);
+            //defenseCtrl = null;
+            //attackCtrl = null;
             //发送消息
             socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, true);
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
             //关闭箭头
-            Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
+            //Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
             //关闭隐藏面板
-            Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
+            //Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
             //发送反击消息
-            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);
-            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+            //socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);
+            //Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
         }
         else//不出闪
         {
@@ -178,26 +184,33 @@ public class MyCharacterCtrl : CharacterBase
             //发送消息
             socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, false);
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+        }
 
-            if (hasCardType(CardType.ORDERCARD, OrderCardType.BACKATTACK) && defenseCtrl.armyState.Hp > 0)
-            {
-                //反击
-                Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_BACKATTACK_PANEL, "你的单位在敌人的攻击中存活下来了,是否进行反击?");
-            }
-            else
-            {
-                //关闭箭头
-                Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
-                //关闭隐藏面板
-                Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
-                //发送反击消息
-                socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);
-                Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
-            }
+        //是否反击
+        backAttackCardCtrl = hasCardType(CardType.ORDERCARD, OrderCardType.BACKATTACK);
+        if (backAttackCardCtrl!=null && defenseCtrl.armyState.Hp > 0)
+        {
+            //反击
+            Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_BACKATTACK_PANEL, "你的单位在敌人的攻击中存活下来了,是否进行反击?");
+        }
+        else
+        {
+            //关闭箭头
+            Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
+            //关闭隐藏面板
+            Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
+            //发送反击消息
+            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);
+            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+
             defenseCtrl = null;
             attackCtrl = null;
+
+            Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示遮挡面板");
+            Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "");
         }
-        
+        //defenseCtrl = null;
+        //attackCtrl = null;
     }
 
     /// <summary>
@@ -206,15 +219,21 @@ public class MyCharacterCtrl : CharacterBase
     private void pcoessdealDodge(MapAttackDto mapAttackDto)
     {
         bool hasDodge = false;//手牌中是否有闪避
-        foreach (var item in CardCtrllist)
+
+        dodgeCardctrl = hasCardType(CardType.ORDERCARD, OrderCardType.DODGE);
+        if(dodgeCardctrl != null)
+        {
+            hasDodge = true;
+        }
+        /*foreach (var item in CardCtrllist)
         {
             if (item.cardDto.Type == CardType.ORDERCARD && item.cardDto.Name == OrderCardType.DODGE)
             {
                 hasDodge = true;
-                dodgeArmyctrl = item;
+                dodgeCardctrl = item;
                 break;
             }
-        }
+        }*/
 
         //ArmyCtrl defenseCtrl;
         //OtherArmyCtrl attackCtrl;
@@ -222,12 +241,17 @@ public class MyCharacterCtrl : CharacterBase
 
         if (defenseCtrl == null || attackCtrl == null)
         {
+            //发送消息
+            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, false);
+            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
             return;
         }
 
+
+        //如果没有闪避或是普通兵种直接减血
         if (!hasDodge || defenseCtrl.armyState.Class == ArmyClassType.Ordinary)
         {
-            //如果没有闪避或是普通兵种直接减血
+            
             defenseCtrl.armyState.Hp -= attackCtrl.armyState.Damage;
             //发送消息
             socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, false);
@@ -239,14 +263,23 @@ public class MyCharacterCtrl : CharacterBase
             //发送提示
             Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "你方(" + defenseCtrl.armyState.Position.X + "," + defenseCtrl.armyState.Position.Z + ")" + "单位被攻击");
 
-            //反击
-            if (hasCardType(CardType.ORDERCARD, OrderCardType.BACKATTACK) && defenseCtrl.armyState.Hp > 0)
+            if(defenseCtrl.armyState.Class == ArmyClassType.Ordinary)
+            {
+                //发送反击消息
+                socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);
+                Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+                return;//普通兵种不能反击
+            }
+
+            //其他阶级兵种可以反击
+            backAttackCardCtrl = hasCardType(CardType.ORDERCARD, OrderCardType.BACKATTACK);
+            if (backAttackCardCtrl !=null && defenseCtrl.armyState.Hp > 0)
             {
                 //反击
                 Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏平面");
                 Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_BACKATTACK_PANEL, "你的单位在敌人的攻击中存活下来了,是否进行反击?");
             }
-            else
+            else//不反击
             {
                 //关闭箭头
                 Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
@@ -255,11 +288,18 @@ public class MyCharacterCtrl : CharacterBase
                 //发送反击消息
                 socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);
                 Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+
+                defenseCtrl = null;
+                attackCtrl = null;
+
+                Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示遮挡面板");
+                Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "");
             }
             return;
         }
 
 
+        //有闪避且被攻击单位为非普通阶级单位
         //显示箭头
         Vector3 pos = new Vector3(defenseCtrl.armyState.Position.X, 1, defenseCtrl.armyState.Position.Z);
         Dispatch(AreoCode.UI, UIEvent.SHOW_ATTACK_ARROW, pos);

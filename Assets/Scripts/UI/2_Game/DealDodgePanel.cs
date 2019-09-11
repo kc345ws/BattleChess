@@ -59,14 +59,16 @@ public class DealDodgePanel : UIBase
         //发送消息
         Dispatch(AreoCode.CHARACTER, CharacterEvent.RETURN_DEAL_DODGE_RESULT, true);
         SetPanelActive(false);
-        Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "等待对方操作结束...");
+        Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "");
+        Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示遮挡面板");
     }
 
     private void noBtnClicker()
     {
         Dispatch(AreoCode.CHARACTER, CharacterEvent.RETURN_DEAL_DODGE_RESULT, false);
         SetPanelActive(false);
-        Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "等待对方操作结束...");
+        Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "");
+        Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示遮挡面板");
     }
 
     private void ChangeInfo(string str)
