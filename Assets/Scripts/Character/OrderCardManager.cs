@@ -191,12 +191,12 @@ public class OrderCardManager:CharacterBase
 
         foreach (var item in myArmyCtrlManager.CardCtrllist)
         {
-            if (item.armyState.Name == selectArmyCtrl.armyState.Name)
+            if (item.armyState.Name == selectArmyCtrl.armyState.Name && item.ArmymapPointCtrl == selectArmyCtrl.ArmymapPointCtrl)
             {
                 //血量加一
                 item.armyState.Hp++;
                 //发送消息给其他人
-                if (item.armyState.CanFly)
+                if (item.armyState.MoveType == ArmyMoveType.SKY)
                 {
                     //如果是飞行单位
                     mapPointDto.Change(item.armyState.Position, -1, -1, item.armyState.Race, item.armyState.Name);
@@ -209,6 +209,7 @@ public class OrderCardManager:CharacterBase
                 socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_REST_CREQ, mapPointDto);
                 Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
                 Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "回复血量成功");
+                break;
             }
         }
         //移除修养卡牌     

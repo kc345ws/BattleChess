@@ -114,7 +114,7 @@ public class OtherArmyCtrlManager : ArmyBase
             if (item.armyState.Hp <= 0)
             {
                 Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "敌方单位死亡");
-                if (item.armyState.CanFly)
+                if (item.armyState.MoveType == ArmyMoveType.SKY)
                 {
                     //如果是飞行单位
                     ArmyList.Remove(item.OtherMapPintctrl.SkyArmy);
@@ -122,7 +122,7 @@ public class OtherArmyCtrlManager : ArmyBase
                     item.OtherMapPintctrl.RemoveSkyArmy();
                     
                 }
-                else
+                else if(item.armyState.MoveType == ArmyMoveType.LAND)
                 {
                     //如果是陆地单位
                     ArmyList.Remove(item.OtherMapPintctrl.LandArmy);
@@ -217,19 +217,20 @@ public class OtherArmyCtrlManager : ArmyBase
         //镜像对称
         int totalX = 12;
         int totalZ = 8;
-        bool canfly = false;
+        int movetype = -1;
 
         int realx = totalX - mapPointDto.mapPoint.X;
         int realz = totalZ - mapPointDto.mapPoint.Z;
+
         if (mapPointDto.LandArmyRace == -1)
         {
             //如果是飞行单位使用了修养
-            canfly = true;
+            movetype = ArmyMoveType.SKY;
         }
 
         foreach (var item in OtherArmyCtrlList)
         {
-            if(item.armyState.Position.X == realx && item.armyState.Position.Z == realz && item.armyState.CanFly == canfly)
+            if(item.armyState.Position.X == realx && item.armyState.Position.Z == realz && item.armyState.MoveType == movetype)
             {
                 item.armyState.Hp++;
                 break;

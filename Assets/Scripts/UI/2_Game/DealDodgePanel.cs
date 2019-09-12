@@ -39,7 +39,7 @@ public class DealDodgePanel : UIBase
         switch (eventcode)
         {
             case UIEvent.SHOW_DEAL_DODGE_PANEL:
-                Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏面板");
+                Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示遮挡面板");
                 Dispatch(AreoCode.UI, UIEvent.CLOSE_WAIT_PANEL, "关闭等待面板");
                 ChangeInfo((string)message);
                 SetPanelActive(true);

@@ -148,6 +148,10 @@ public class OtherArmyCtrl : ArmyBase
         if (SelectArmyType == ArmyMoveType.LAND)
         {
             //选择了陆地兵种
+            if(OtherMapPintctrl.LandArmy == null)
+            {
+                yield break;
+            }
             OtherArmyCtrl armyCtrl = OtherMapPintctrl.LandArmy.GetComponent<OtherArmyCtrl>();
 
             if (ArmySelectDelegate.Invoke(armyCtrl) && iscanShowStatePanel)
@@ -165,6 +169,10 @@ public class OtherArmyCtrl : ArmyBase
         else
         {
             //如果选择了飞行单位
+            if(OtherMapPintctrl.SkyArmy == null)
+            {
+                yield break;
+            }
             OtherArmyCtrl armyCtrl = OtherMapPintctrl.SkyArmy.GetComponent<OtherArmyCtrl>();
             if (ArmySelectDelegate.Invoke(armyCtrl) && iscanShowStatePanel)
             {

@@ -214,10 +214,17 @@ public class MyCharacterCtrl : CharacterBase
     }
 
     /// <summary>
-    /// 是否出闪避
+    /// 询问是否出闪避
     /// </summary>
     private void pcoessdealDodge(MapAttackDto mapAttackDto)
     {
+        if(mapAttackDto == null)
+        {
+            socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, false);
+            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+            return;
+        }
+
         bool hasDodge = false;//手牌中是否有闪避
 
         dodgeCardctrl = hasCardType(CardType.ORDERCARD, OrderCardType.DODGE);
@@ -225,18 +232,11 @@ public class MyCharacterCtrl : CharacterBase
         {
             hasDodge = true;
         }
-        /*foreach (var item in CardCtrllist)
+        else
         {
-            if (item.cardDto.Type == CardType.ORDERCARD && item.cardDto.Name == OrderCardType.DODGE)
-            {
-                hasDodge = true;
-                dodgeCardctrl = item;
-                break;
-            }
-        }*/
+            hasDodge = false;
+        }
 
-        //ArmyCtrl defenseCtrl;
-        //OtherArmyCtrl attackCtrl;
         getArmy(out defenseCtrl, out attackCtrl, mapAttackDto);
 
         if (defenseCtrl == null || attackCtrl == null)
@@ -261,7 +261,7 @@ public class MyCharacterCtrl : CharacterBase
             //关闭隐藏面板
             //Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
             //发送提示
-            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "你方(" + defenseCtrl.armyState.Position.X + "," + defenseCtrl.armyState.Position.Z + ")" + "单位被攻击");
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "我方(" + defenseCtrl.armyState.Position.X + "," + defenseCtrl.armyState.Position.Z + ")" + "单位被攻击");
 
             if(defenseCtrl.armyState.Class == ArmyClassType.Ordinary)
             {
@@ -276,7 +276,7 @@ public class MyCharacterCtrl : CharacterBase
             if (backAttackCardCtrl !=null && defenseCtrl.armyState.Hp > 0)
             {
                 //反击
-                Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏平面");
+                Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示遮挡平面");
                 Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_BACKATTACK_PANEL, "你的单位在敌人的攻击中存活下来了,是否进行反击?");
             }
             else//不反击
@@ -304,17 +304,18 @@ public class MyCharacterCtrl : CharacterBase
         Vector3 pos = new Vector3(defenseCtrl.armyState.Position.X, 1, defenseCtrl.armyState.Position.Z);
         Dispatch(AreoCode.UI, UIEvent.SHOW_ATTACK_ARROW, pos);
         //显示出闪避面板
-        string str;
-        if (defenseCtrl.armyState.CanFly)
+        string str = "";
+        if (defenseCtrl.armyState.MoveType == ArmyMoveType.SKY)
         {
-            str = "你方位于箭头所指处的飞行单位被攻击，是否进行闪避？";
+            str = "我方位于箭头所指处的飞行单位被攻击，是否进行闪避？";
         }
-        else
+        else if(defenseCtrl.armyState.MoveType == ArmyMoveType.LAND)
         {
-            str = "你方位于箭头所指处的陆地单位被攻击，是否进行闪避？";
+            str = "我方位于箭头所指处的陆地单位被攻击，是否进行闪避？";
         }
+
         Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_DODGE_PANEL, str);
-        Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示隐藏平面");
+        Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示遮挡平面");
     }
 
     /// <summary>
@@ -328,8 +329,8 @@ public class MyCharacterCtrl : CharacterBase
 
         MapPoint attackpoint = new MapPoint(totalX - mapAttackDto.AttacklMapPoint.X, totalZ - mapAttackDto.AttacklMapPoint.Z);
         MapPoint defensepoint = new MapPoint(totalX - mapAttackDto.DefenseMapPoint.X, totalZ - mapAttackDto.DefenseMapPoint.Z); ;
-        bool attackcanfly = mapAttackDto.AttackCanFly;
-        bool defensecanfly = mapAttackDto.DefenseCanFly;
+        int attackmovetype = mapAttackDto.AttackMoveType;
+        int defensemovetype = mapAttackDto.DefenseMoveType;
         MapPointCtrl attackPointCtrl = null;
         MapPointCtrl defensePointCtrl = null;
         //OtherArmyCtrl attackCtrl;
@@ -352,22 +353,30 @@ public class MyCharacterCtrl : CharacterBase
             }
         }
 
-        if (!attackcanfly)
+        if (attackmovetype == ArmyMoveType.LAND)
         {
             attackCtrl = attackPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
         }
-        else
+        else if(attackmovetype == ArmyMoveType.SKY)
         {
             attackCtrl = attackPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
         }
+        else
+        {
+            attackCtrl = null;
+        }
 
-        if (!defensecanfly)
+        if (defensemovetype == ArmyMoveType.LAND)
         {
             defenseCtrl = defensePointCtrl.LandArmy.GetComponent<ArmyCtrl>();
         }
-        else
+        else if(defensemovetype == ArmyMoveType.SKY)
         {
             defenseCtrl = defensePointCtrl.SkyArmy.GetComponent<ArmyCtrl>();
+        }
+        else
+        {
+            defenseCtrl = null;
         }
     }
     #endregion

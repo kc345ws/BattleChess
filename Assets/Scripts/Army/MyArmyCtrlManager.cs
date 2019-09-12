@@ -61,7 +61,7 @@ public class MyArmyCtrlManager : ArmyBase
             if(item.armyState.Hp <= 0)
             {
                 Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "我方单位死亡");
-                if (item.armyState.CanFly)
+                if (item.armyState.MoveType == ArmyMoveType.SKY)
                 {
 
                     //如果是飞行单位
@@ -99,12 +99,12 @@ public class MyArmyCtrlManager : ArmyBase
             if(item.armyState.Class == ArmyClassType.Ordinary)
             {
                 item.canAttack = true;
-                item.isAttack = false;
+                //item.isAttack = false;
             }
             else
             {
                 item.canAttack = false;
-                item.isAttack = false;
+                //item.isAttack = false;
             }
         }
     }
