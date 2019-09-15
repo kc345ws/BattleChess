@@ -397,6 +397,10 @@ public class MyCharacterCtrl : CharacterBase
             {
                 Dispatch(AreoCode.MAP, MapEvent.SELECT_ARMYCARD, selectCard.cardDto);
                 //如果选中的是兵种卡
+                foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                {
+                    item.canBeSeletced = false ;//屏蔽选择
+                }
             }
             else if (selectCard.cardDto.Type == CardType.ORDERCARD)
             {
@@ -426,6 +430,24 @@ public class MyCharacterCtrl : CharacterBase
             {
                 //如果选中指令卡
                 Dispatch(AreoCode.CHARACTER, CharacterEvent.SELECT_ORDERCARD, selectCard);
+                if (LastSelectCard.cardDto.Type == CardType.ARMYCARD)
+                {
+                    foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                    {
+                        item.canBeSeletced = true;//取消屏蔽选择
+                    }
+                }
+            }
+            else
+            {
+                //选择非指令卡
+                if (LastSelectCard.cardDto.Type == CardType.ARMYCARD)
+                {
+                    foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                    {
+                        item.canBeSeletced = true;//取消屏蔽选择
+                    }
+                }
             }
 
             return true;
@@ -433,6 +455,13 @@ public class MyCharacterCtrl : CharacterBase
         else
         {
             //和上次点击的一样，取消选中
+            if(LastSelectCard.cardDto.Type == CardType.ARMYCARD)
+            {
+                foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                {
+                    item.canBeSeletced = true;//取消屏蔽选择
+                }
+            }
             LastSelectCard = null;
             Dispatch(AreoCode.MAP, MapEvent.CANCEL_SELECT_ARMYCARD, null);
             Dispatch(AreoCode.CHARACTER, CharacterEvent.SELECT_ORDERCARD, null);

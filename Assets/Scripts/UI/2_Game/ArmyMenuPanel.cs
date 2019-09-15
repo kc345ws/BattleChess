@@ -213,6 +213,15 @@ public class ArmyMenuPanel : UIBase
     {
         refresh();//复原状态
 
+        if (armyCtrl != null)
+        {
+            armyCtrl.ArmySelectEvent.Invoke(armyCtrl);
+            foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+            {
+                item.canBeSeletced = true;
+            }
+            armyCtrl.CheckIsA();
+        }
         SetPanelActive(false);
     }
 

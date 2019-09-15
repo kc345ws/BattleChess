@@ -54,7 +54,7 @@ public class ArmyCtrl : ArmyBase
 
     public bool CanturnMove = true;//在回合内是否还能移动
 
-    private bool canBeSeletced = true;//是否能被选中
+    public bool canBeSeletced = true;//是否能被选中
 
     private void Awake()
     {

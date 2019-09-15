@@ -253,7 +253,7 @@ public class MapBuilder : MapBase
                 {
                     turnDelegate.Invoke(ref TurnCount);//获取回合数
                     MapPointCtrl mapPointCtrl = hit.collider.GetComponent<MapPointCtrl>();
-                    if(!mapPointCtrl.HasLandArmy() && selectArmyCard!=null&&armyPrefab != null)
+                    if(selectArmyCard!=null&&armyPrefab != null)
                     {
                         /* if(selectArmyCard.Class == ArmyClassType.Hero && hit.collider.tag != "BossStart")
                          {
@@ -280,6 +280,11 @@ public class MapBuilder : MapBase
                         switch (selectArmyCard.MoveType)
                         {
                             case ArmyMoveType.LAND://陆地单位
+                                if (mapPointCtrl.HasLandArmy())
+                                {
+                                    Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "此处已有陆地单位");
+                                    return;
+                                }
                                 //放置陆地单位
                                 GameObject army;
                                 army = mapPointCtrl.SetLandArmy(armyPrefab);
@@ -310,7 +315,11 @@ public class MapBuilder : MapBase
                                 break;
 
                             case ArmyMoveType.SKY:
-
+                                if (mapPointCtrl.HasSkyArmy())
+                                {
+                                    Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "此处已有飞行单位");
+                                    return;
+                                }
                                 //放置飞行单位
                                 army = mapPointCtrl.SetSkyArmy(armyPrefab);
                                 //mapPointCtrl.SkyArmyCard = selectArmyCard;
