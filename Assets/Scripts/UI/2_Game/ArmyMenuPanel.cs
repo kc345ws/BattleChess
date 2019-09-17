@@ -265,6 +265,9 @@ public class ArmyMenuPanel : UIBase
                 isAttack = true;
             }
             //屏蔽移动
+            Color color = new Color(150f / 255f, 47f / 255f, 127f / 255f);
+            armyCtrl.setMappointCtrlColor(armyCtrl.canMovePointCtrls);
+            armyCtrl.setMappointCtrlColor(armyCtrl.canAttckPointCtrls,color);
             armyCtrl.iscanMove = false; 
         }
     }
@@ -569,6 +572,8 @@ public class ArmyMenuPanel : UIBase
             isAttack = false;       
         }
 
+        //恢复颜色
+        armyCtrl.setMappointCtrlColor(armyCtrl.canAttckPointCtrls);
         //解除屏蔽移动
         armyCtrl.iscanMove = true;
         //解除屏蔽查看属性

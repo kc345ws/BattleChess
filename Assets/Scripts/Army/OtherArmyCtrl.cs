@@ -145,6 +145,8 @@ public class OtherArmyCtrl : ArmyBase
     private IEnumerator selectArmy()
     {
         yield return new WaitUntil(isSelectArmyType);
+
+        
         if (SelectArmyType == ArmyMoveType.LAND)
         {
             //选择了陆地兵种
@@ -153,6 +155,10 @@ public class OtherArmyCtrl : ArmyBase
                 yield break;
             }
             OtherArmyCtrl armyCtrl = OtherMapPintctrl.LandArmy.GetComponent<OtherArmyCtrl>();
+            if(armyCtrl == null)
+            {
+                yield break;
+            }
 
             if (ArmySelectDelegate.Invoke(armyCtrl) && iscanShowStatePanel)
             {
@@ -174,6 +180,10 @@ public class OtherArmyCtrl : ArmyBase
                 yield break;
             }
             OtherArmyCtrl armyCtrl = OtherMapPintctrl.SkyArmy.GetComponent<OtherArmyCtrl>();
+            if (armyCtrl == null)
+            {
+                yield break;
+            }
             if (ArmySelectDelegate.Invoke(armyCtrl) && iscanShowStatePanel)
             {
                 //第一次或和上一次不一样

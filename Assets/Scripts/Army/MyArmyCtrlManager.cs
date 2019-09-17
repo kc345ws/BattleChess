@@ -65,16 +65,21 @@ public class MyArmyCtrlManager : ArmyBase
                 {
 
                     //如果是飞行单位
+                    item.ArmySelectEvent.Invoke(item);
+                    item.setMappointCtrlColor(item.canMovePointCtrls);
                     Destroy(item.ArmymapPointCtrl.SkyArmy);
                     item.ArmymapPointCtrl.RemoveSkyArmy();
                     
                 }
-                else
+                else if(item.armyState.MoveType == ArmyMoveType.LAND)
                 {
                     //如果是陆地单位
+                    item.ArmySelectEvent.Invoke(item);
+                    item.setMappointCtrlColor(item.canMovePointCtrls);
                     Destroy(item.ArmymapPointCtrl.LandArmy);
                     item.ArmymapPointCtrl.RemoveLandArmy();
                 }
+                
                 
                 isdead = true;
                 break;
@@ -83,6 +88,7 @@ public class MyArmyCtrlManager : ArmyBase
         }
         if (isdead)
         {
+            
             CardCtrllist.RemoveAt(index);
         }
         isdead = false;

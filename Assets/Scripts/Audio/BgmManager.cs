@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BgmManager : AudioBase
 {
-    /*private AudioSource audioSource;
+    private AudioSource audioSource;
 
     private void Awake()
     {
@@ -35,7 +35,8 @@ public class BgmManager : AudioBase
     // Start is called before the first frame update
     void Start()
     {
-        AudioClip clip = Resources.Load<AudioClip>("Sound/BGM");
+        //AudioClip clip = Resources.Load<AudioClip>("Sound/BGM");
+        AudioClip clip = Resources.Load<AudioClip>("Audio/BGM");
         audioSource = GetComponent<AudioSource>();
 
         audioSource.clip = clip;
@@ -61,5 +62,5 @@ public class BgmManager : AudioBase
     void Update()
     {
         
-    }*/
+    }
 }

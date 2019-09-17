@@ -32,8 +32,9 @@ public class ArmyCtrl : ArmyBase
     public ArmyCardBase armyState;//兵种属性
 
     private List<MapPoint> canAttckPoint;//能够攻击到的点
+    public List<MapPointCtrl> canAttckPointCtrls = new List<MapPointCtrl>();
 
-    private List<MapPointCtrl> canMovePointCtrls = new List<MapPointCtrl>();//可以移动到的地图点
+    public List<MapPointCtrl> canMovePointCtrls = new List<MapPointCtrl>();//可以移动到的地图点
 
     private SocketMsg socketMsg;//套接字消息封装
 
@@ -50,7 +51,7 @@ public class ArmyCtrl : ArmyBase
     private int SelectArmyType = -1;//多个兵种重叠时选择的兵种类型  
 
     //private Renderer renderer;
-    private bool isrefresh = true;//是否需要还原颜色 
+    public bool isrefresh = true;//是否需要还原颜色 
 
     public bool CanturnMove = true;//在回合内是否还能移动
 
@@ -97,6 +98,18 @@ public class ArmyCtrl : ArmyBase
 
         armyState.Position = mapPoint;
         canAttckPoint = MapAttackType.Instance.GetAttakRange(armyState);
+        foreach (var point in canAttckPoint)
+        {
+            foreach (var item in MapManager.mapPointCtrls)
+            {
+                if(item.mapPoint.X == point.X && item.mapPoint.Z == point.Z)
+                {
+                    canAttckPointCtrls.Add(item);
+                    break;
+                }
+            }
+        }
+
         //canAttckPoint = GetAttakRange(armyState);
 
         if (armyState.Class == ArmyClassType.Ordinary)
@@ -180,7 +193,7 @@ public class ArmyCtrl : ArmyBase
             if (isrefresh)
             {
                 StopAllCoroutines();
-                setMappointCtrl(canMovePointCtrls);
+                setMappointCtrlColor(canMovePointCtrls);
                 isrefresh = false;
             }         
         }
@@ -325,7 +338,7 @@ public class ArmyCtrl : ArmyBase
                         moveMessage.Change(ArmymapPointCtrl,movePointctrl, ArmyCard, ArmyPrefab);
                         Dispatch(AreoCode.MAP, MapEvent.MOVE_MY_ARMY, ref moveMessage);
                         //将颜色变为原来的
-                        setMappointCtrl(canMovePointCtrls);
+                        setMappointCtrlColor(canMovePointCtrls);
                         //改变所在所在地图点控制器
                         ArmymapPointCtrl = movePointctrl;
                         mapPoint = movePointctrl.mapPoint;
@@ -333,7 +346,24 @@ public class ArmyCtrl : ArmyBase
                         armyState.Position = movePointctrl.mapPoint;
                         //更新可攻击点
                         canAttckPoint = MapAttackType.Instance.GetAttakRange(armyState);
+                        canAttckPointCtrls.Clear();//清空原先可攻击点
+                        foreach (var point in canAttckPoint)
+                        {
+                            foreach (var item in MapManager.mapPointCtrls)
+                            {
+                                if (item.mapPoint.X == point.X && item.mapPoint.Z == point.Z)
+                                {
+                                    canAttckPointCtrls.Add(item);
+                                    break;
+                                }
+                            }
+                        }
 
+                        //移动完后无需再屏蔽
+                        foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                        {
+                            item.canBeSeletced = true;//所有单位可交互
+                        }
                         //本回合不能再移动
                         CanturnMove = false;
                     }
@@ -342,11 +372,25 @@ public class ArmyCtrl : ArmyBase
         }     
     }
 
-    private void setMappointCtrl(List<MapPointCtrl> canMovePointCtrls)
+    /// <summary>
+    /// 设置地图块颜色
+    /// </summary>
+    /// <param name="canMovePointCtrls"></param>
+    public void setMappointCtrlColor(List<MapPointCtrl> canMovePointCtrls)
     {
+        //Color bluecolor = new Color(13f / 255f, 175f / 255f, 244f / 255f);
         foreach (var item in canMovePointCtrls)
         {
             item.SetColor(item.origanColor);
+        }
+    }
+
+    public void setMappointCtrlColor(List<MapPointCtrl> canMovePointCtrls , Color color)
+    {
+        //Color bluecolor = new Color(13f / 255f, 175f / 255f, 244f / 255f);
+        foreach (var item in canMovePointCtrls)
+        {
+            item.SetColor(color);
         }
     }
 
@@ -402,11 +446,22 @@ public class ArmyCtrl : ArmyBase
             
             if (ArmySelectEvent.Invoke(this))
             {
-                foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                if (CanturnMove)
                 {
-                    item.canBeSeletced = false;
+                    foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                    {
+                        item.canBeSeletced = false;
+                    }
+                    canBeSeletced = true;
                 }
-                canBeSeletced = true;
+                else
+                {
+                    foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                    {
+                        item.canBeSeletced = true;
+                    }
+                }
+                
 
                 //和上次选择不一样或第一次选择
                 Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, this);

@@ -105,6 +105,11 @@ public class MyInfoPanel : UIBase
         if(uid == GameModles.Instance.userDto.ID)
         {
             //如果轮到自己了
+            foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+            {
+                item.canBeSeletced = true;//所有单位可交互
+            }
+
             Button_NextTurn.interactable = true;
             Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE,"关闭");
             Dispatch(AreoCode.UI, UIEvent.CLOSE_WAIT_PANEL, "关闭");
