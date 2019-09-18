@@ -19,6 +19,10 @@ public class MapPointCtrl : MapBase
 
     public MapPoint mapPoint { get; private set; }//地图点
 
+    private int ArmyCount = 0;//该地块上单位数量
+
+    private bool isOtherShow = false;
+
     //public CardDto LandArmyCard { get; set; }
     //public CardDto SkyArmyCard { get; set; }
     public int LandArmyRace = -1;
@@ -51,7 +55,86 @@ public class MapPointCtrl : MapBase
     // Update is called once per frame
     void Update()
     {
+        if(ArmyCount >= 2)
+        {
+            //如果地块上有两个以上单位，屏蔽查看对方属性
+            OtherArmyCtrl otherArmyCtrl = null;
+            if(LandArmy !=null)
+            otherArmyCtrl = LandArmy.gameObject.GetComponent<OtherArmyCtrl>();
 
+            if(otherArmyCtrl != null)
+            {
+                otherArmyCtrl.iscanShowStatePanel = false;
+            }
+
+            if(SkyArmy !=null)
+            otherArmyCtrl = SkyArmy.gameObject.GetComponent<OtherArmyCtrl>();
+
+            if (otherArmyCtrl != null)
+            {
+                otherArmyCtrl.iscanShowStatePanel = false;
+            }
+
+            if(UnderGroundArmy !=null)
+            otherArmyCtrl = UnderGroundArmy.gameObject.GetComponent<OtherArmyCtrl>();
+
+            if (otherArmyCtrl != null)
+            {
+                otherArmyCtrl.iscanShowStatePanel = false;
+            }
+
+            if(ParsiticArmy!=null)
+            otherArmyCtrl = ParsiticArmy.gameObject.GetComponent<OtherArmyCtrl>();
+
+            if (otherArmyCtrl != null)
+            {
+                otherArmyCtrl.iscanShowStatePanel = false;
+            }
+            isOtherShow = false;
+        }
+        else
+        {
+            isOtherShow = true;
+        }
+
+
+        if (isOtherShow)
+        {
+            //如果地块上有两个以上单位，屏蔽查看对方属性
+            OtherArmyCtrl otherArmyCtrl = null;
+            if (LandArmy!=null)
+            {
+                otherArmyCtrl = LandArmy.gameObject.GetComponent<OtherArmyCtrl>();
+            }
+            
+            if (otherArmyCtrl != null)
+            {
+                otherArmyCtrl.iscanShowStatePanel = true;
+            }
+
+            if(SkyArmy !=null)
+            otherArmyCtrl = SkyArmy.gameObject.GetComponent<OtherArmyCtrl>();
+
+            if (otherArmyCtrl != null)
+            {
+                otherArmyCtrl.iscanShowStatePanel = true;
+            }
+
+            if(UnderGroundArmy!=null)
+            otherArmyCtrl = UnderGroundArmy.gameObject.GetComponent<OtherArmyCtrl>();
+            if (otherArmyCtrl != null)
+            {
+                otherArmyCtrl.iscanShowStatePanel = true;
+            }
+
+            if(ParsiticArmy!=null)
+            otherArmyCtrl = ParsiticArmy.gameObject.GetComponent<OtherArmyCtrl>();
+            if (otherArmyCtrl != null)
+            {
+                otherArmyCtrl.iscanShowStatePanel = true;
+            }
+            isOtherShow = false;
+        }
     }
 
 
@@ -84,7 +167,8 @@ public class MapPointCtrl : MapBase
         LandArmy = landArmy;
         Vector3 position = transform.transform.position;
         position.y = 1;
-        return GameObject.Instantiate(landArmy, position, landArmy.transform.rotation);
+        ArmyCount++;
+        return GameObject.Instantiate(landArmy, position, landArmy.transform.rotation);  
     }
 
     /// <summary>
@@ -111,6 +195,7 @@ public class MapPointCtrl : MapBase
         landArmy.transform.position = position;
         LandArmyRace = race;
         LandArmyName = name;
+        ArmyCount++;
     }
 
     /// <summary>
@@ -122,6 +207,7 @@ public class MapPointCtrl : MapBase
         LandArmy = null;
         LandArmyRace = -1;
         LandArmyName = -1;
+        ArmyCount--;
     }
     #endregion
 
@@ -141,6 +227,7 @@ public class MapPointCtrl : MapBase
         SkyArmy = skyarmy;
         Vector3 position = transform.transform.position;
         position.y = 1;
+        ArmyCount++;
         return GameObject.Instantiate(skyarmy, position, skyarmy.transform.rotation);
     }
 
@@ -152,6 +239,7 @@ public class MapPointCtrl : MapBase
         skyArmy.transform.position = position;
         SkyArmyRace = race;
         SkyArmyName = name;
+        ArmyCount++;
     }
 
     public void UpdateSkyArmy(GameObject skyarmy)
@@ -168,6 +256,7 @@ public class MapPointCtrl : MapBase
         SkyArmy = null;
         SkyArmyRace = -1;
         SkyArmyName = -1;
+        ArmyCount--;
     }
 
 
@@ -195,6 +284,7 @@ public class MapPointCtrl : MapBase
         UnderGroundArmy = underarmy;
         Vector3 position = transform.transform.position;
         position.y = 1;
+        ArmyCount++;
         return GameObject.Instantiate(underarmy, position, underarmy.transform.rotation);
     }
 
@@ -212,6 +302,7 @@ public class MapPointCtrl : MapBase
         underArmy.transform.position = position;
         UnderArmyRace = race;
         UnderArmyName = name;
+        ArmyCount++;
     }
 
     public void UpdateUnderArmy(GameObject underarmy)
@@ -228,6 +319,7 @@ public class MapPointCtrl : MapBase
         UnderGroundArmy = null;
         UnderArmyRace = -1;
         UnderArmyName = -1;
+        ArmyCount--;
     }
 
     #endregion
@@ -253,6 +345,7 @@ public class MapPointCtrl : MapBase
         ParsiticArmy = parsiticarmy;
         Vector3 position = transform.transform.position;
         position.y = 1;
+        ArmyCount++;
         return GameObject.Instantiate(parsiticarmy, position, parsiticarmy.transform.rotation);
     }
 
@@ -270,6 +363,7 @@ public class MapPointCtrl : MapBase
         parsiticArmy.transform.position = position;
         UnderArmyRace = race;
         UnderArmyName = name;
+        ArmyCount++;
     }
 
     public void UpdateParsiticArmy(GameObject parsiticarmy)
@@ -286,6 +380,7 @@ public class MapPointCtrl : MapBase
         ParsiticArmy = null;
         ParsiticRace = -1;
         ParsiticName = -1;
+        ArmyCount--;
     }
 
     #endregion

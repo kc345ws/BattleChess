@@ -23,11 +23,14 @@ public class CardCtrl : MonoBehaviour
 
     private bool isEnlarge;//是否在放大
 
+    public Vector3 originlocation;//原本的本地坐标
+
     private void Start()
     {
         Lock = new GameObject();
         isPreview = false;
         isEnlarge = false;
+        
     }
     /// <summary>
     /// 初始化卡牌
@@ -43,11 +46,13 @@ public class CardCtrl : MonoBehaviour
         //IsSelected = false;
         spriteRenderer = GetComponent<SpriteRenderer>();
 
+        originlocation = new Vector3(0, index * 0.01f, index * -1f);
         //重用卡牌
         if (IsSelected)
         {
             IsSelected = false;
             transform.localPosition -= new Vector3(1f, 0, 0);
+            transform.localPosition = originlocation;
         }
 
         string path  ="";
@@ -89,6 +94,9 @@ public class CardCtrl : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 长按
+    /// </summary>
     private void OnMouseDrag()
     {
         if (!isEnlarge)
@@ -99,13 +107,20 @@ public class CardCtrl : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 长按取消
+    /// </summary>
     private void OnMouseUp()
     {
         transform.localPosition -= new Vector3(6f, 0, 0);
         transform.localScale /= 3;
         isEnlarge = false;
+        transform.localPosition = originlocation;
     }
 
+    /// <summary>
+    /// 进入
+    /// </summary>
     private void OnMouseEnter()
     {
         if (!IsSelected)
@@ -115,12 +130,16 @@ public class CardCtrl : MonoBehaviour
         }   
     }
 
+    /// <summary>
+    /// 离开
+    /// </summary>
     private void OnMouseExit()
     {
         if (!IsSelected)
         {
             isPreview = false;
-            transform.localPosition -= new Vector3(0.5f, 0, 0);         
+            transform.localPosition -= new Vector3(0.5f, 0, 0);
+            transform.localPosition = originlocation;
         }       
     }
 
@@ -155,10 +174,12 @@ public class CardCtrl : MonoBehaviour
             if (isPreview)
             {
                 transform.localPosition -= new Vector3(0.5f, 0, 0);
+                transform.localPosition = originlocation;
             }
             else
             {
                 transform.localPosition -= new Vector3(1f, 0, 0);
+                transform.localPosition = originlocation;
             }
         }
 

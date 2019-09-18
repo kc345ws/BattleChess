@@ -237,6 +237,7 @@ public class MyCharacterCtrl : CharacterBase
             hasDodge = false;
         }
 
+        //获取攻击和防御的兵种
         getArmy(out defenseCtrl, out attackCtrl, mapAttackDto);
 
         if (defenseCtrl == null || attackCtrl == null)
@@ -353,11 +354,11 @@ public class MyCharacterCtrl : CharacterBase
             }
         }
 
-        if (attackmovetype == ArmyMoveType.LAND)
+        if (attackmovetype == ArmyMoveType.LAND && attackPointCtrl.LandArmy != null)
         {
             attackCtrl = attackPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
         }
-        else if(attackmovetype == ArmyMoveType.SKY)
+        else if(attackmovetype == ArmyMoveType.SKY && attackPointCtrl.SkyArmy !=null)
         {
             attackCtrl = attackPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
         }
@@ -366,11 +367,11 @@ public class MyCharacterCtrl : CharacterBase
             attackCtrl = null;
         }
 
-        if (defensemovetype == ArmyMoveType.LAND)
+        if (defensemovetype == ArmyMoveType.LAND && defensePointCtrl.LandArmy!=null)
         {
             defenseCtrl = defensePointCtrl.LandArmy.GetComponent<ArmyCtrl>();
         }
-        else if(defensemovetype == ArmyMoveType.SKY)
+        else if(defensemovetype == ArmyMoveType.SKY && defensePointCtrl.SkyArmy!=null)
         {
             defenseCtrl = defensePointCtrl.SkyArmy.GetComponent<ArmyCtrl>();
         }
@@ -576,6 +577,7 @@ public class MyCharacterCtrl : CharacterBase
         card.transform.localPosition = new Vector3(0, index * 0.01f, index * -1f);
         //card.name = cardDto.Name;
         CardCtrl cardCtrl = card.GetComponent<CardCtrl>();
+        
         cardCtrl.CardMouseDownEvent = IsCanSelece;
         cardCtrl.Init(cardDto, true, index);
 

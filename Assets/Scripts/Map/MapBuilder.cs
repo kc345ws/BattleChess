@@ -255,7 +255,7 @@ public class MapBuilder : MapBase
                     MapPointCtrl mapPointCtrl = hit.collider.GetComponent<MapPointCtrl>();
                     if(selectArmyCard!=null&&armyPrefab != null)
                     {
-                        if(selectArmyCard.Class == ArmyClassType.Hero && hit.collider.tag != "BossStart")
+                        /*if(selectArmyCard.Class == ArmyClassType.Hero && hit.collider.tag != "BossStart")
                          {
                              //如果是英雄单位只能箭头处
                              Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "英雄单位只能箭头处");
@@ -275,7 +275,7 @@ public class MapBuilder : MapBase
                                  Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "初始阶段只能后三排");
                                  return;
                              }
-                         }
+                         }*/
                         
                         switch (selectArmyCard.MoveType)
                         {

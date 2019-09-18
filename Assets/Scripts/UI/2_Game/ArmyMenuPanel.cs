@@ -289,12 +289,24 @@ public class ArmyMenuPanel : UIBase
         }
 
         //屏蔽查看属性
-        if (clickMapPointCtrl!=null)//defenseArmy != null)
+        if (clickMapPointCtrl != null)//defenseArmy != null)
         {
-            if(clickMapPointCtrl.LandArmy!=null)
-            clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+            if (clickMapPointCtrl.LandArmy != null) {
+                OtherArmyCtrl otherArmyCtrl = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+                if(otherArmyCtrl != null)
+                {
+                    otherArmyCtrl.iscanShowStatePanel = false;
+                }
+        }
             if(clickMapPointCtrl.SkyArmy !=null)
-            clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+            {
+                OtherArmyCtrl otherArmyCtrl = clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
+                if(otherArmyCtrl != null)
+                {
+                    otherArmyCtrl.iscanShowStatePanel = false;
+                }
+            }
+            
         }
 
         if (clickMapPointCtrl.LandArmy != null)
@@ -355,9 +367,23 @@ public class ArmyMenuPanel : UIBase
         if (clickMapPointCtrl != null)
         {
             if (clickMapPointCtrl.LandArmy != null)
-                clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+            {
+                OtherArmyCtrl otherArmyCtrl = clickMapPointCtrl.LandArmy.GetComponent<OtherArmyCtrl>();
+                if (otherArmyCtrl != null)
+                {
+                    otherArmyCtrl.iscanShowStatePanel = false;
+                }
+            }
+             
             if (clickMapPointCtrl.SkyArmy != null)
-                clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>().iscanShowStatePanel = false;
+            {
+                OtherArmyCtrl otherArmyCtrl = clickMapPointCtrl.SkyArmy.GetComponent<OtherArmyCtrl>();
+                if(otherArmyCtrl != null)
+                {
+                    otherArmyCtrl.iscanShowStatePanel = false;
+                }
+            }
+                
         }
 
         if (clickMapPointCtrl.SkyArmy != null)
