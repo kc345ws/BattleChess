@@ -435,7 +435,10 @@ public class ArmyCtrl : ArmyBase
             return;
         }
 
-        if(ArmymapPointCtrl.LandArmy !=null && ArmymapPointCtrl.SkyArmy != null)
+        
+
+        if(ArmymapPointCtrl.LandArmy !=null && ArmymapPointCtrl.SkyArmy != null
+            & ArmymapPointCtrl.LandArmy.GetComponent<ArmyCtrl>()!=null && ArmymapPointCtrl.SkyArmy.GetComponent<ArmyCtrl>()!=null)
         {
             //如果陆地和飞行单位重合
             Dispatch(AreoCode.UI, UIEvent.SELECT_MY_LAND_SKY, false);

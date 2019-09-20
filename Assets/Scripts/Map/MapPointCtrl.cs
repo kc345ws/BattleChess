@@ -19,9 +19,9 @@ public class MapPointCtrl : MapBase
 
     public MapPoint mapPoint { get; private set; }//地图点
 
-    private int ArmyCount = 0;//该地块上单位数量
+    //private int ArmyCount = 0;//该地块上单位数量
 
-    private bool isOtherShow = false;
+    //private bool isOtherShow = false;
 
     //public CardDto LandArmyCard { get; set; }
     //public CardDto SkyArmyCard { get; set; }
@@ -55,7 +55,7 @@ public class MapPointCtrl : MapBase
     // Update is called once per frame
     void Update()
     {
-        if(ArmyCount >= 2)
+        /*if(ArmyCount >= 2)
         {
             //如果地块上有两个以上单位，屏蔽查看对方属性
             OtherArmyCtrl otherArmyCtrl = null;
@@ -134,7 +134,7 @@ public class MapPointCtrl : MapBase
                 otherArmyCtrl.iscanShowStatePanel = true;
             }
             isOtherShow = false;
-        }
+        }*/
     }
 
 
@@ -162,12 +162,21 @@ public class MapPointCtrl : MapBase
     /// 在地图点上放置陆地单位
     /// </summary>
     /// <param name="landArmy"></param>
-    public GameObject SetLandArmy(GameObject landArmy)
+    public GameObject SetLandArmy(GameObject landArmy,bool ismine)
     {
         LandArmy = landArmy;
         Vector3 position = transform.transform.position;
-        position.y = 1;
-        ArmyCount++;
+        if (ismine)
+        {
+            //如果是自己单位抬高Y轴，防止与敌方单位重合
+            position.y = 2;
+        }
+        else
+        {
+            position.y = 1;
+        }
+        
+        //ArmyCount++;
         return GameObject.Instantiate(landArmy, position, landArmy.transform.rotation);  
     }
 
@@ -187,15 +196,23 @@ public class MapPointCtrl : MapBase
     /// <param name="landArmy"></param>
     /// <param name="race"></param>
     /// <param name="name"></param>
-    public void MoveLandArmy(ref GameObject landArmy, int race, int name)
+    public void MoveLandArmy(ref GameObject landArmy, int race, int name ,bool ismine)
     {
         LandArmy = landArmy;
         Vector3 position = transform.transform.position;
-        position.y = 1;
+        if (ismine)
+        {
+            position.y = 2;
+        }
+        else
+        {
+            position.y = 1;
+        }
+        
         landArmy.transform.position = position;
         LandArmyRace = race;
         LandArmyName = name;
-        ArmyCount++;
+        //ArmyCount++;
     }
 
     /// <summary>
@@ -207,7 +224,7 @@ public class MapPointCtrl : MapBase
         LandArmy = null;
         LandArmyRace = -1;
         LandArmyName = -1;
-        ArmyCount--;
+        //ArmyCount--;
     }
     #endregion
 
@@ -222,24 +239,39 @@ public class MapPointCtrl : MapBase
         return SkyArmy != null;
     }
 
-    public GameObject SetSkyArmy(GameObject skyarmy)
+    public GameObject SetSkyArmy(GameObject skyarmy ,bool ismine)
     {
         SkyArmy = skyarmy;
         Vector3 position = transform.transform.position;
-        position.y = 1;
-        ArmyCount++;
+        if (ismine)
+        {
+            //如果是自己单位抬高Y轴，防止与敌方单位重合
+            position.y = 2;
+        }
+        else
+        {
+            position.y = 1;
+        }
+        //ArmyCount++;
         return GameObject.Instantiate(skyarmy, position, skyarmy.transform.rotation);
     }
 
-    public void MoveSkyArmy(ref GameObject skyArmy, int race, int name)
+    public void MoveSkyArmy(ref GameObject skyArmy, int race, int name,bool ismine)
     {
         SkyArmy = skyArmy;
         Vector3 position = transform.transform.position;
-        position.y = 1;
+        if (ismine)
+        {
+            position.y = 2;
+        }
+        else
+        {
+            position.y = 1;
+        }
         skyArmy.transform.position = position;
         SkyArmyRace = race;
         SkyArmyName = name;
-        ArmyCount++;
+        //ArmyCount++;
     }
 
     public void UpdateSkyArmy(GameObject skyarmy)
@@ -256,7 +288,7 @@ public class MapPointCtrl : MapBase
         SkyArmy = null;
         SkyArmyRace = -1;
         SkyArmyName = -1;
-        ArmyCount--;
+        //ArmyCount--;
     }
 
 
@@ -279,12 +311,20 @@ public class MapPointCtrl : MapBase
     /// </summary>
     /// <param name="skyarmy"></param>
     /// <returns></returns>
-    public GameObject SetUnderArmy(GameObject underarmy)
+    public GameObject SetUnderArmy(GameObject underarmy, bool ismine)
     {
         UnderGroundArmy = underarmy;
         Vector3 position = transform.transform.position;
-        position.y = 1;
-        ArmyCount++;
+        if (ismine)
+        {
+            //如果是自己单位抬高Y轴，防止与敌方单位重合
+            position.y = 2;
+        }
+        else
+        {
+            position.y = 1;
+        }
+        //ArmyCount++;
         return GameObject.Instantiate(underarmy, position, underarmy.transform.rotation);
     }
 
@@ -294,15 +334,22 @@ public class MapPointCtrl : MapBase
     /// <param name="skyArmy"></param>
     /// <param name="race"></param>
     /// <param name="name"></param>
-    public void MoveUnderArmy(ref GameObject underArmy, int race, int name)
+    public void MoveUnderArmy(ref GameObject underArmy, int race, int name,bool ismine)
     {
         UnderGroundArmy = underArmy;
         Vector3 position = transform.transform.position;
-        position.y = 1;
+        if (ismine)
+        {
+            position.y = 2;
+        }
+        else
+        {
+            position.y = 1;
+        }
         underArmy.transform.position = position;
         UnderArmyRace = race;
         UnderArmyName = name;
-        ArmyCount++;
+        //ArmyCount++;
     }
 
     public void UpdateUnderArmy(GameObject underarmy)
@@ -319,7 +366,7 @@ public class MapPointCtrl : MapBase
         UnderGroundArmy = null;
         UnderArmyRace = -1;
         UnderArmyName = -1;
-        ArmyCount--;
+        //ArmyCount--;
     }
 
     #endregion
@@ -340,12 +387,20 @@ public class MapPointCtrl : MapBase
     /// </summary>
     /// <param name="skyarmy"></param>
     /// <returns></returns>
-    public GameObject SetParsiticArmy(GameObject parsiticarmy)
+    public GameObject SetParsiticArmy(GameObject parsiticarmy, bool ismine)
     {
         ParsiticArmy = parsiticarmy;
         Vector3 position = transform.transform.position;
-        position.y = 1;
-        ArmyCount++;
+        if (ismine)
+        {
+            //如果是自己单位抬高Y轴，防止与敌方单位重合
+            position.y = 2;
+        }
+        else
+        {
+            position.y = 1;
+        }
+        //ArmyCount++;
         return GameObject.Instantiate(parsiticarmy, position, parsiticarmy.transform.rotation);
     }
 
@@ -355,15 +410,22 @@ public class MapPointCtrl : MapBase
     /// <param name="skyArmy"></param>
     /// <param name="race"></param>
     /// <param name="name"></param>
-    public void MoveParsiticArmy(ref GameObject parsiticArmy, int race, int name)
+    public void MoveParsiticArmy(ref GameObject parsiticArmy, int race, int name,bool ismine)
     {
         ParsiticArmy = parsiticArmy;
         Vector3 position = transform.transform.position;
-        position.y = 1;
+        if (ismine)
+        {
+            position.y = 2;
+        }
+        else
+        {
+            position.y = 1;
+        }
         parsiticArmy.transform.position = position;
         UnderArmyRace = race;
         UnderArmyName = name;
-        ArmyCount++;
+        //ArmyCount++;
     }
 
     public void UpdateParsiticArmy(GameObject parsiticarmy)
@@ -380,7 +442,7 @@ public class MapPointCtrl : MapBase
         ParsiticArmy = null;
         ParsiticRace = -1;
         ParsiticName = -1;
-        ArmyCount--;
+        //ArmyCount--;
     }
 
     #endregion
