@@ -90,7 +90,7 @@ public class CardCtrl : MonoBehaviour
         Sprite sp = Resources.Load<Sprite>(path);
         spriteRenderer.sprite = sp;
         spriteRenderer.sortingOrder = index;
-
+        spriteRenderer.sortingLayerName = "Card";
 
     }
 
@@ -101,8 +101,9 @@ public class CardCtrl : MonoBehaviour
     {
         if (!isEnlarge)
         {
-            transform.localPosition += new Vector3(6f, 10f, 0);
+            transform.localPosition += new Vector3(6f, 0, 0);
             transform.localScale *= 3;
+            
             isEnlarge = true;
         }
     }
@@ -114,7 +115,7 @@ public class CardCtrl : MonoBehaviour
     {
         if (isEnlarge)
         {
-            transform.localPosition -= new Vector3(6f, 10f, 0);
+            transform.localPosition -= new Vector3(6f, 0, 0);
             transform.localScale /= 3;
             isEnlarge = false;
         }

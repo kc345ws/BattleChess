@@ -186,9 +186,11 @@ public class MapBuilder : MapBase
             }
         }
 
+        //fixbug 放置第二个单位时会额外放置第一个单位
         if (mapPointCtrl)
         {
-            if(mapPointDto.LandArmyRace != -1)
+            //传送的地图数据陆地单位不为空，且该地块上单位为空
+            if(mapPointDto.LandArmyRace != -1 && mapPointCtrl.LandArmyRace==-1)
             {
                 //陆地单位
                 mapPointCtrl.mapPoint.X = otherx;
@@ -207,7 +209,7 @@ public class MapBuilder : MapBase
                 //向其他人添加兵种
                 Dispatch(AreoCode.ARMY, ArmyEvent.ADD_OTHER_ARMY, army);
             }
-            if(mapPointDto.SkyArmyRace != -1)
+            if(mapPointDto.SkyArmyRace != -1 && mapPointCtrl.SkyArmyRace==-1)
             {
                 //飞行单位
                 mapPointCtrl.mapPoint.X = otherx;
@@ -270,7 +272,7 @@ public class MapBuilder : MapBase
                              return;
                          }
 
-                         if(TurnCount == 1)
+                         if(TurnCount <= 1)
                          {
                              if(hit.collider.tag != "StartAreo" && hit.collider.tag != "Winline" && hit.collider.tag != "BossStart")
                              {
