@@ -418,7 +418,10 @@ public class MyCharacterCtrl : CharacterBase
         else if (LastSelectCard != selectCard)
         {
             //和上次点击的不一样,取消选中上一次选中的牌，选中当前的牌
-            LastSelectCard.transform.localPosition -= new Vector3(1f, 0, 0);
+
+            LastSelectCard.transform.localPosition = LastSelectCard.originlocation;
+
+            
             LastSelectCard.IsSelected = false;
 
             LastSelectCard = selectCard;

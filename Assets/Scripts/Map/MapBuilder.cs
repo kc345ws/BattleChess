@@ -131,11 +131,14 @@ public class MapBuilder : MapBase
             }
         }
 
-        foreach (var item in OtherArmyCtrlManager.ArmyList)
+
+        //fixbug已解决 只通过坐标选择了敌方单位
+        foreach (var item in OtherArmyCtrlManager.OtherArmyCtrlList)
         {
-            if(item.transform.position.x == OtherOriginalx && item.transform.position.z == OtherOriginalz)
+            if(item.transform.position.x == OtherOriginalx && item.transform.position.z == OtherOriginalz
+                &&item.armyState.MoveType == mapMoveDto.MoveType)
             {
-                Army = item;
+                Army = item.gameObject;
                 otherArmyCtrl = Army.GetComponent<OtherArmyCtrl>();
             }
         }
@@ -144,13 +147,13 @@ public class MapBuilder : MapBase
         {
             //如果是陆地单位
             OriginalPointCtrl.RemoveLandArmy();
-            MovePointCtrl.MoveLandArmy(ref Army,otherArmyCtrl.armyState.Race,otherArmyCtrl.armyState.Name);
+            MovePointCtrl.MoveLandArmy(ref Army,otherArmyCtrl.armyState.Race,otherArmyCtrl.armyState.Name ,false);
             otherArmyCtrl.Move(MovePointCtrl.mapPoint, MovePointCtrl);
         }
         else if(mapMoveDto.MoveType == ArmyMoveType.SKY)
         {
             OriginalPointCtrl.RemoveSkyArmy();
-            MovePointCtrl.MoveSkyArmy(ref Army, otherArmyCtrl.armyState.Race, otherArmyCtrl.armyState.Name);
+            MovePointCtrl.MoveSkyArmy(ref Army, otherArmyCtrl.armyState.Race, otherArmyCtrl.armyState.Name ,false);
             otherArmyCtrl.Move(MovePointCtrl.mapPoint, MovePointCtrl);
         }
     }
@@ -194,7 +197,7 @@ public class MapBuilder : MapBase
                 mapPointCtrl.LandArmyName = mapPointDto.LandArmyName;
                 setArmyPrefab(mapPointCtrl.LandArmyRace, mapPointCtrl.LandArmyName, out prefab);
 
-                GameObject army= mapPointCtrl.SetLandArmy(prefab);
+                GameObject army= mapPointCtrl.SetLandArmy(prefab ,false);
                 //初始化敌方兵种信息
                 army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.LandArmyRace, mapPointDto.LandArmyName,mapPointCtrl) ;
                 army.gameObject.GetComponent<OtherArmyCtrl>().armyState.Position = new Protocol.Constants.Map.MapPoint(otherx, otherz);
@@ -213,7 +216,7 @@ public class MapBuilder : MapBase
                 mapPointCtrl.SkyArmyName = mapPointDto.SkyArmyName;
                 setArmyPrefab(mapPointCtrl.SkyArmyRace, mapPointCtrl.SkyArmyName, out prefab);
 
-                GameObject army = mapPointCtrl.SetSkyArmy(prefab);
+                GameObject army = mapPointCtrl.SetSkyArmy(prefab,false);
 
                 //初始化敌方兵种信息
                 army.gameObject.GetComponent<OtherArmyCtrl>().Init(mapPointDto.SkyArmyRace, mapPointDto.SkyArmyName,mapPointCtrl);
@@ -255,7 +258,7 @@ public class MapBuilder : MapBase
                     MapPointCtrl mapPointCtrl = hit.collider.GetComponent<MapPointCtrl>();
                     if(selectArmyCard!=null&&armyPrefab != null)
                     {
-                        /*if(selectArmyCard.Class == ArmyClassType.Hero && hit.collider.tag != "BossStart")
+                        if(selectArmyCard.Class == ArmyClassType.Hero && hit.collider.tag != "BossStart")
                          {
                              //如果是英雄单位只能箭头处
                              Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "英雄单位只能箭头处");
@@ -275,7 +278,7 @@ public class MapBuilder : MapBase
                                  Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "初始阶段只能后三排");
                                  return;
                              }
-                         }*/
+                         }
                         
                         switch (selectArmyCard.MoveType)
                         {
@@ -287,7 +290,7 @@ public class MapBuilder : MapBase
                                 }
                                 //放置陆地单位
                                 GameObject army;
-                                army = mapPointCtrl.SetLandArmy(armyPrefab);
+                                army = mapPointCtrl.SetLandArmy(armyPrefab,true);
                                 mapPointCtrl.LandArmyRace = selectArmyCard.Race;
                                 mapPointCtrl.LandArmyName = selectArmyCard.Name;
                                 //向我的兵种控制器集合添加兵种管理器
@@ -321,7 +324,7 @@ public class MapBuilder : MapBase
                                     return;
                                 }
                                 //放置飞行单位
-                                army = mapPointCtrl.SetSkyArmy(armyPrefab);
+                                army = mapPointCtrl.SetSkyArmy(armyPrefab,true);
                                 //mapPointCtrl.SkyArmyCard = selectArmyCard;
                                 mapPointCtrl.SkyArmyRace = selectArmyCard.Race;
                                 mapPointCtrl.SkyArmyName = selectArmyCard.Name;
@@ -367,6 +370,13 @@ public class MapBuilder : MapBase
         }
     }
 
+    /// <summary>
+    /// 移动自己的单位
+    /// </summary>
+    /// <param name="originalCtral"></param>
+    /// <param name="movepointctrl"></param>
+    /// <param name="armyCard"></param>
+    /// <param name="armyPrefab"></param>
     private void moveArmy(ref MapPointCtrl originalCtral,ref MapPointCtrl movepointctrl , CardDto armyCard , ref GameObject armyPrefab)
     {
         if (armyCard.MoveType == ArmyMoveType.LAND)
@@ -374,7 +384,7 @@ public class MapBuilder : MapBase
             //如果是陆地单位
             //设置陆地单位
             //movepointctrl.SetLandArmy(armyPrefab);
-            movepointctrl.MoveLandArmy(ref armyPrefab , armyCard.Race, armyCard.Name);
+            movepointctrl.MoveLandArmy(ref armyPrefab , armyCard.Race, armyCard.Name ,true);
             //movepointctrl.LandArmyRace = armyCard.Race;
             //movepointctrl.LandArmyName = armyCard.Name;
             //移除原来地块上的兵种
@@ -384,12 +394,12 @@ public class MapBuilder : MapBase
             socketMsg.Change(OpCode.FIGHT, FightCode.MAP_ARMY_MOVE_CREQ, mapMoveDto);
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
         }
-        else
+        else if(armyCard.MoveType == ArmyMoveType.SKY)
         {
             //如果是飞行单位
             //设置飞行单位
             //movepointctrl.SetSkyArmy(armyPrefab);
-            movepointctrl.MoveSkyArmy(ref armyPrefab, armyCard.Race, armyCard.Name);
+            movepointctrl.MoveSkyArmy(ref armyPrefab, armyCard.Race, armyCard.Name ,true);
             //movepointctrl.SkyArmyRace = armyCard.Race;
             //movepointctrl.SkyArmyName = armyCard.Name;
             //移除原来地块上的兵种

@@ -117,7 +117,12 @@ public class OtherArmyCtrl : ArmyBase
         {
             return;
         }
-        if (OtherMapPintctrl.LandArmy != null && OtherMapPintctrl.SkyArmy != null)
+
+
+
+        if (OtherMapPintctrl.LandArmy != null && OtherMapPintctrl.SkyArmy != null
+            && OtherMapPintctrl.LandArmy.GetComponent<OtherArmyCtrl>()!=null
+            && OtherMapPintctrl.SkyArmy.GetComponent<OtherArmyCtrl>()!=null)
         {
             //如果陆地和飞行单位重合
             Dispatch(AreoCode.UI, UIEvent.SELECT_OTHER_LAND_SKY, false);

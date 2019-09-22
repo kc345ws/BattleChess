@@ -126,6 +126,11 @@ public class MyArmyCtrlManager : ArmyBase
 
     private bool processArmySelect(ArmyCtrl armyCtrl)
     {
+        if(armyCtrl == null)
+        {
+            return false;
+        }
+
         if(LastSelectArmyCtrl == null)
         {
             //第一次选择

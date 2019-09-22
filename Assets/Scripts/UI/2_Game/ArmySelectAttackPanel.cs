@@ -87,7 +87,7 @@ public class ArmySelectAttackPanel : UIBase
         {
             //设置自己的兵种重叠结果
             Dispatch(AreoCode.ARMY, ArmyEvent.SET_MY_LAND_SKY, ArmyMoveType.LAND);
-            Dispatch(AreoCode.CHARACTER, CharacterEvent.SET_MY_LAND_SKY, ArmyMoveType.LAND);
+            //Dispatch(AreoCode.CHARACTER, CharacterEvent.SET_MY_LAND_SKY, ArmyMoveType.LAND);
         }
         else
         {
@@ -109,7 +109,7 @@ public class ArmySelectAttackPanel : UIBase
         else if(!isSetOther)
         {
             Dispatch(AreoCode.ARMY, ArmyEvent.SET_MY_LAND_SKY, ArmyMoveType.SKY);
-            Dispatch(AreoCode.CHARACTER, CharacterEvent.SET_MY_LAND_SKY, ArmyMoveType.SKY);
+            //Dispatch(AreoCode.CHARACTER, CharacterEvent.SET_MY_LAND_SKY, ArmyMoveType.SKY);
         }
         else
         {

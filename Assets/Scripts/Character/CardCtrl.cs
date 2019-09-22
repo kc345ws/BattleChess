@@ -19,11 +19,11 @@ public class CardCtrl : MonoBehaviour
 
     private static GameObject Lock;
 
-    private bool isPreview;//是否在预览
+    public bool isPreview { get; private set; }//是否在预览
 
     private bool isEnlarge;//是否在放大
 
-    public Vector3 originlocation;//原本的本地坐标
+    public Vector3 originlocation { get; private set; }//原本的本地坐标
 
     private void Start()
     {
@@ -95,13 +95,13 @@ public class CardCtrl : MonoBehaviour
     }
 
     /// <summary>
-    /// 长按
+    /// 长按放大
     /// </summary>
     private void OnMouseDrag()
     {
         if (!isEnlarge)
         {
-            transform.localPosition += new Vector3(6f, 0, 0);
+            transform.localPosition += new Vector3(6f, 10f, 0);
             transform.localScale *= 3;
             isEnlarge = true;
         }
@@ -112,10 +112,15 @@ public class CardCtrl : MonoBehaviour
     /// </summary>
     private void OnMouseUp()
     {
-        transform.localPosition -= new Vector3(6f, 0, 0);
-        transform.localScale /= 3;
-        isEnlarge = false;
-        transform.localPosition = originlocation;
+        if (isEnlarge)
+        {
+            transform.localPosition -= new Vector3(6f, 10f, 0);
+            transform.localScale /= 3;
+            isEnlarge = false;
+        }
+
+        //transform.localPosition = originlocation;
+        //IsSelected = false;
     }
 
     /// <summary>
@@ -123,6 +128,7 @@ public class CardCtrl : MonoBehaviour
     /// </summary>
     private void OnMouseEnter()
     {
+
         if (!IsSelected)
         {
             isPreview = true;
@@ -135,7 +141,7 @@ public class CardCtrl : MonoBehaviour
     /// </summary>
     private void OnMouseExit()
     {
-        if (!IsSelected)
+        if (!IsSelected && isPreview)
         {
             isPreview = false;
             transform.localPosition -= new Vector3(0.5f, 0, 0);
@@ -159,10 +165,12 @@ public class CardCtrl : MonoBehaviour
             //transform.localPosition += new Vector3(0, 0, 1f);
             if (isPreview)
             {
+                //如果在预览
                 transform.localPosition += new Vector3(0.5f, 0, 0);
             }
             else
             {
+                //不在预览状态
                 transform.localPosition += new Vector3(1f, 0, 0);
             }
             
@@ -173,11 +181,13 @@ public class CardCtrl : MonoBehaviour
             IsSelected = false;
             if (isPreview)
             {
+                //在预览状态
                 transform.localPosition -= new Vector3(0.5f, 0, 0);
                 transform.localPosition = originlocation;
             }
             else
             {
+                //不在预览状态
                 transform.localPosition -= new Vector3(1f, 0, 0);
                 transform.localPosition = originlocation;
             }
