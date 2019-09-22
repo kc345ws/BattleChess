@@ -131,11 +131,14 @@ public class MapBuilder : MapBase
             }
         }
 
-        foreach (var item in OtherArmyCtrlManager.ArmyList)
+
+        //fixbug已解决 只通过坐标选择了敌方单位
+        foreach (var item in OtherArmyCtrlManager.OtherArmyCtrlList)
         {
-            if(item.transform.position.x == OtherOriginalx && item.transform.position.z == OtherOriginalz)
+            if(item.transform.position.x == OtherOriginalx && item.transform.position.z == OtherOriginalz
+                &&item.armyState.MoveType == mapMoveDto.MoveType)
             {
-                Army = item;
+                Army = item.gameObject;
                 otherArmyCtrl = Army.GetComponent<OtherArmyCtrl>();
             }
         }
@@ -255,7 +258,7 @@ public class MapBuilder : MapBase
                     MapPointCtrl mapPointCtrl = hit.collider.GetComponent<MapPointCtrl>();
                     if(selectArmyCard!=null&&armyPrefab != null)
                     {
-                        /*if(selectArmyCard.Class == ArmyClassType.Hero && hit.collider.tag != "BossStart")
+                        if(selectArmyCard.Class == ArmyClassType.Hero && hit.collider.tag != "BossStart")
                          {
                              //如果是英雄单位只能箭头处
                              Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "英雄单位只能箭头处");
@@ -275,7 +278,7 @@ public class MapBuilder : MapBase
                                  Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "初始阶段只能后三排");
                                  return;
                              }
-                         }*/
+                         }
                         
                         switch (selectArmyCard.MoveType)
                         {
@@ -391,7 +394,7 @@ public class MapBuilder : MapBase
             socketMsg.Change(OpCode.FIGHT, FightCode.MAP_ARMY_MOVE_CREQ, mapMoveDto);
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
         }
-        else
+        else if(armyCard.MoveType == ArmyMoveType.SKY)
         {
             //如果是飞行单位
             //设置飞行单位
