@@ -208,14 +208,16 @@ public class ArmyCtrl : ArmyBase
     {
         List<MapPoint> canMoveMapPoints = new List<MapPoint>();//可以移动到的地图点
         List<MapPointCtrl> canMoveMapPointCtrls = new List<MapPointCtrl>();
-        int x = mapPoint.X;
-        int z = mapPoint.Z;
+        int Armyx = mapPoint.X;//单位所在坐标
+        int Armyz = mapPoint.Z;
 
         Color bluecolor = new Color(13f / 255f, 175f / 255f, 244f / 255f);
 
         canMoveMapPoints = MapMoveType.Instance.GetMoveRange(armyState);
-        foreach (var item in canMoveMapPoints)
+        /*foreach (var item in canMoveMapPoints)
         {
+            //判断每一个可移动点
+            bool canPointMove = false;//这个可移动点是否可以移动到
             foreach (var mapPointCtrl in MapManager.mapPointCtrls)
             {
                 if (item.X == mapPointCtrl.mapPoint.X && item.Z == mapPointCtrl.mapPoint.Z)
@@ -226,14 +228,94 @@ public class ArmyCtrl : ArmyBase
                         canMoveMapPointCtrls.Add(mapPointCtrl);
                         //改变颜色
                         mapPointCtrl.SetColor(bluecolor);
+                        canPointMove = true;
                     }
                     else if (ArmyCard.MoveType == ArmyMoveType.SKY && mapPointCtrl.SkyArmy == null)
                     {
                         //如果是飞行单位，且要移动到的地图点没有飞行单位
                         canMoveMapPointCtrls.Add(mapPointCtrl);
                         mapPointCtrl.SetColor(bluecolor);
+                        canPointMove = true;
                     }
                     break;
+                }
+            }
+            if (!canPointMove)
+            {
+
+            }
+        }*/
+
+        for (int i = 0; i < canMoveMapPoints.Count;i++)
+        {
+            var item = canMoveMapPoints[i];
+            //判断每一个可移动点
+            bool canPointMove = false;//这个可移动点是否可以移动到
+            foreach (var mapPointCtrl in MapManager.mapPointCtrls)
+            {
+                if (item.X == mapPointCtrl.mapPoint.X && item.Z == mapPointCtrl.mapPoint.Z)
+                {
+                    if (ArmyCard.MoveType == ArmyMoveType.LAND && mapPointCtrl.LandArmy == null)
+                    {
+                        //如果是陆地单位,且要移动到的地图点没有陆地单位
+                        canMoveMapPointCtrls.Add(mapPointCtrl);
+                        //改变颜色
+                        mapPointCtrl.SetColor(bluecolor);
+                        canPointMove = true;
+                    }
+                    else if (ArmyCard.MoveType == ArmyMoveType.SKY && mapPointCtrl.SkyArmy == null)
+                    {
+                        //如果是飞行单位，且要移动到的地图点没有飞行单位
+                        canMoveMapPointCtrls.Add(mapPointCtrl);
+                        mapPointCtrl.SetColor(bluecolor);
+                        canPointMove = true;
+                    }
+                    break;
+                }
+            }
+            //穿透问题解决
+            if (!canPointMove)
+            {
+                //canMoveMapPoints.RemoveAt(i);
+                for(int j = 0; j < canMoveMapPoints.Count; j++)
+                {
+                    bool isdel = false;//是否删除
+                    if(canMoveMapPoints[i].X - Armyx >=1 &&
+                        canMoveMapPoints[j].X - canMoveMapPoints[i].X >= 1
+                        && canMoveMapPoints[j].Z == canMoveMapPoints[i].Z)
+                    {
+                        //不可移动点在单位上方
+                        //且该点在不可移动点上方
+                        //且该点和不可移动点的Z坐标相同
+                        //则该点被不可移动点阻挡也无法移动到
+                        isdel = true;
+                    }
+                    else if(canMoveMapPoints[i].X - Armyx <= -1 &&
+                        canMoveMapPoints[j].X - canMoveMapPoints[i].X <= -1
+                        && canMoveMapPoints[j].Z == canMoveMapPoints[i].Z)
+                    {
+                        //该点在不可移动点下方
+                        isdel = true;
+                    }
+                    else if (canMoveMapPoints[i].Z - Armyz >= 1 &&
+                        canMoveMapPoints[j].Z - canMoveMapPoints[i].Z >= 1
+                        && canMoveMapPoints[j].X == canMoveMapPoints[i].X)
+                    {
+                        //该点在不可移动点右侧
+                        isdel = true;
+                    }
+                    else if (canMoveMapPoints[i].Z - Armyz <= -1 &&
+                        canMoveMapPoints[j].Z - canMoveMapPoints[i].Z <= -1
+                       && canMoveMapPoints[j].X == canMoveMapPoints[i].X)
+                    {
+                        //该点在不可移动点左侧
+                        isdel = true;
+                    }
+
+                    if (isdel)
+                    {
+                        canMoveMapPoints.RemoveAt(j);
+                    }
                 }
             }
         }

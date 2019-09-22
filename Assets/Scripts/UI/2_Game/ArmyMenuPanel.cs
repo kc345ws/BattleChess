@@ -8,8 +8,8 @@ using UnityEngine.UI;
 
 public class ArmyMenuPanel : UIBase
 {
-    private ArmyMenuPanel instance = null;
-    public ArmyMenuPanel Instance
+    private static ArmyMenuPanel instance = null;
+    public static ArmyMenuPanel Instance
     {
         get
         {
@@ -610,6 +610,15 @@ public class ArmyMenuPanel : UIBase
         //防御单位置空
         //defenseArmy = null;
     }
+
+    /// <summary>
+    /// 刷新菜单
+    /// </summary>
+   /* public void refreshMenu()
+    {
+        SetPanelActive(false);
+        SetPanelActive(true);
+    }*/
 }
 
     

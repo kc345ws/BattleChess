@@ -298,6 +298,8 @@ public class OrderCardManager:CharacterBase
                 item.canAttack = true;
             }
         }
+        //刷新兵种菜单面板
+        Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, selectArmyCtrl);
         //移除攻击卡牌     
         Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, selectOrderCardCtrl.cardDto);
         //发送消息
