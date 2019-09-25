@@ -93,6 +93,12 @@ public class ArmyMenuPanel : UIBase
 
             case UIEvent.CLOSE_ARMY_MENU_PANEL:
                 SetPanelActive(false);
+
+                //解除屏蔽选择
+                foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                {
+                    item.canBeSeletced = true;
+                }
                 break;
 
             /*case UIEvent.SET_SELECK_ATTACK:
@@ -175,8 +181,9 @@ public class ArmyMenuPanel : UIBase
             //移除卡牌
             Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_OTHER_CARDS, "移除手牌");
         }
-        
-        
+
+        Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示遮挡面板");
+        Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "等待对方是否反击");
     }
 
    
@@ -197,9 +204,9 @@ public class ArmyMenuPanel : UIBase
             Button_Attack_Land.interactable = false;
         }
 
-        if(armyCtrl.canAttack&& armyCtrl.armyState.MoveType == ArmyMoveType.SKY)
+        if(armyCtrl.canAttack&& (armyCtrl.armyState.MoveType == ArmyMoveType.SKY || armyCtrl.armyState.CanSlantAttack))
         {
-            //如果飞行单位能攻击且没有攻击过
+            //如果飞行单位或者斜射单位能攻击且没有攻击过
             Button_Attack_Sky.interactable = true;
         }
         else

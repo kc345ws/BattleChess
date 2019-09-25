@@ -186,6 +186,7 @@ public class MyCharacterCtrl : CharacterBase
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
         }
 
+        
         //是否反击
         backAttackCardCtrl = hasCardType(CardType.ORDERCARD, OrderCardType.BACKATTACK);
         if (backAttackCardCtrl!=null && defenseCtrl.armyState.Hp > 0)
@@ -193,7 +194,7 @@ public class MyCharacterCtrl : CharacterBase
             //反击
             Dispatch(AreoCode.UI, UIEvent.SHOW_DEAL_BACKATTACK_PANEL, "你的单位在敌人的攻击中存活下来了,是否进行反击?");
         }
-        else
+        else//不反击
         {
             //关闭箭头
             Dispatch(AreoCode.UI, UIEvent.CLOSE_ATTACK_ARROW, "关闭箭头");
@@ -207,7 +208,7 @@ public class MyCharacterCtrl : CharacterBase
             attackCtrl = null;
 
             Dispatch(AreoCode.UI, UIEvent.SHOW_HIDE_PLANE, "显示遮挡面板");
-            Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "");
+            Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "对方回合");
         }
         //defenseCtrl = null;
         //attackCtrl = null;

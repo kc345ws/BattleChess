@@ -204,7 +204,7 @@ public class ArmyCtrl : ArmyBase
         }    
     }
 
-    private List<MapPointCtrl> GetCanMoveMapPoint()
+    public List<MapPointCtrl> GetCanMoveMapPoint()
     {
         List<MapPoint> canMoveMapPoints = new List<MapPoint>();//可以移动到的地图点
         List<MapPointCtrl> canMoveMapPointCtrls = new List<MapPointCtrl>();
@@ -531,8 +531,10 @@ public class ArmyCtrl : ArmyBase
             
             if (ArmySelectEvent.Invoke(this))
             {
-                if (CanturnMove)
+                if (CanturnMove)//本回合可以移动
                 {
+
+                    //屏蔽其他单位的选择
                     foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
                     {
                         item.canBeSeletced = false;
@@ -573,40 +575,79 @@ public class ArmyCtrl : ArmyBase
     /// <returns></returns>
     private IEnumerator selectArmy()
     {
+        //清空上一次的选择结果
+        SelectArmyType = -1;//能解决诸多BUG
         yield return new WaitUntil(isSelectArmyType);
         if (SelectArmyType == ArmyMoveType.LAND)
         {
             //选择了陆地兵种
-            ArmyCtrl armyCtrl = ArmymapPointCtrl.LandArmy.GetComponent<ArmyCtrl>();
+            ArmyCtrl armyCtrl = ArmymapPointCtrl.LandArmy.GetComponent<ArmyCtrl>();         
 
-            if (ArmySelectEvent.Invoke(armyCtrl))
+            if (armyCtrl.ArmySelectEvent.Invoke(armyCtrl))
             {
                 //和上次选择不一样或第一次选择
                 Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, armyCtrl);
+
+                if (armyCtrl.CanturnMove)
+                {
+                    foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                    {
+                        item.canBeSeletced = false;
+                    }
+                    armyCtrl.canBeSeletced = true;
+                    armyCtrl.GetCanMoveMapPoint();
+                }
+                
+
             }
             else
             {
                 //和上次选择一样
                 Dispatch(AreoCode.UI, UIEvent.CLOSE_ARMY_MENU_PANEL, "关闭面板");
+
+                //解蔽选择屏蔽
+                foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                {
+                    item.canBeSeletced = true;
+                }
             }
+
+            
         }
-        else
+        else if (SelectArmyType == ArmyMoveType.SKY)
         {
             //如果选择了飞行单位
             ArmyCtrl armyCtrl = ArmymapPointCtrl.SkyArmy.GetComponent<ArmyCtrl>();
-            if (ArmySelectEvent.Invoke(armyCtrl))
+            if (armyCtrl.ArmySelectEvent.Invoke(armyCtrl))
             {
                 //和上次选择不一样或第一次选择
                 Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, armyCtrl);
+
+                if (armyCtrl.CanturnMove)
+                {
+                    foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                    {
+                        item.canBeSeletced = false;
+                    }
+                    armyCtrl.canBeSeletced = true;
+                    armyCtrl.GetCanMoveMapPoint();
+                }
+
             }
             else
             {
                 //和上次选择一样
                 Dispatch(AreoCode.UI, UIEvent.CLOSE_ARMY_MENU_PANEL, "关闭面板");
-            }
+
+                //解蔽选择屏蔽
+                foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                {
+                    item.canBeSeletced = true;
+                }
+            }         
         }
 
-        SelectArmyType = -1;
+        
     }
 
     /// <summary>
