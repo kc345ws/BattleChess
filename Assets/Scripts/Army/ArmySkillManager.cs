@@ -78,12 +78,20 @@ public class ArmySkillManager : ArmyBase
                 switch (armyCtrl.armyState.Name)
                 {
                     case OrcArmyCardType.Hero:
-                        armyCtrl.armySkill = new OrcHeroSkill(ref armyCtrl);
+                        armyCtrl.gameObject.AddComponent<OrcHeroSkill>();
+                        // armyCtrl.armySkill = new OrcHeroSkill(ref armyCtrl);
+                        armyCtrl.gameObject.GetComponent<OrcHeroSkill>().SetArmyCtrl(ref armyCtrl);
+                        armyCtrl.armySkill = armyCtrl.gameObject.GetComponent<OrcHeroSkill>();
+                        break;
 
+                    case OrcArmyCardType.Raven_Shaman:
+                        //armyCtrl.armySkill = new OrcRavenShamanSkill(ref armyCtrl);
+                        armyCtrl.gameObject.AddComponent<OrcRavenShamanSkill>();
+                        armyCtrl.gameObject.GetComponent<OrcRavenShamanSkill>().SetArmyCtrl(ref armyCtrl);
+                        armyCtrl.armySkill = armyCtrl.gameObject.GetComponent<OrcRavenShamanSkill>();
                         break;
 
                     default:
-
                         armyCtrl.armySkill = new ArmySkillBase();
                         break;
                 }

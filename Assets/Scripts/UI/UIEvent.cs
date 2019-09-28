@@ -160,4 +160,9 @@ public static class UIEvent{
     /// </summary>
     public const ushort SHOW_WIN_OVER_PANEL = 144;
     public const ushort SHOW_LOSE_OVER_PANEL = 145;
+
+    /// <summary>
+    /// 治疗光标
+    /// </summary>
+    public const ushort CURSOR_SET_HEART = 146;
 }

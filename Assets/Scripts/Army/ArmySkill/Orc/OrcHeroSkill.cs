@@ -3,21 +3,20 @@ using System.Collections;
 
 public class OrcHeroSkill : ArmySkillBase
 {
-    private ArmyCtrl armyCtrl;//该单位的控制器
-
     private bool isturnFirst = true;//是否是本回合首次使用
 
     public bool isKillOther = false;//是否击杀了其他单位
 
-    public bool isUsed = false;//本回合是否使用过了
+    //public bool isUsed = false;//本回合是否使用过了
 
-    public OrcHeroSkill(ref ArmyCtrl armyCtrl)
+    public OrcHeroSkill()
     {
-        this.armyCtrl = armyCtrl;
+        //this.armyCtrl = armyCtrl;
         canPerTurn = true;
         isPassive = true;
         isNeedOtherDead = true;
-
+        isUsed = false;
+        isBind = true;
     }
     // Use this for initialization
     void Start()

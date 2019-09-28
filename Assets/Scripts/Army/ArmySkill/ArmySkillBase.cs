@@ -1,13 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// 兵种技能基类
 /// </summary>
 public class ArmySkillBase :ArmyBase
 {
-
-
+    /// <summary>
+    /// 该单位的控制器
+    /// </summary>
+    /// 
+    public ArmyCtrl armyCtrl;
     /// <summary>
     /// 是否每局都执行
     /// </summary>
@@ -23,10 +27,28 @@ public class ArmySkillBase :ArmyBase
     /// </summary>
     public bool isNeedOtherDead { get; set; }
 
+    /// <summary>
+    /// 本回合是否使用过
+    /// </summary>
+    public bool isUsed { get; set; }
+
+    /// <summary>
+    /// 是否绑定了技能
+    /// </summary>
+    public bool isBind { get; set; }
+
     public ArmySkillBase()
     {
         canPerTurn = false;
         isPassive = false;
+        isNeedOtherDead = false;
+        isUsed = false;
+        isBind = false;
+    }
+
+    public void SetArmyCtrl(ref ArmyCtrl armyCtrl)
+    {
+        this.armyCtrl = armyCtrl;
     }
 
     // Use this for initialization
@@ -44,5 +66,28 @@ public class ArmySkillBase :ArmyBase
      public virtual void UseSkill() { }
      public virtual void TurnRefrsh() { }
      public virtual void ProcessOtherDead() { }//处理其他单位死亡
+
+    /// <summary>
+    /// 获得鼠标左键点击兵种控制器
+    /// </summary>
+    public ArmyCtrl getArmyCtrlByMouse()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                bool isCollider = Physics.Raycast(ray, out hit, 1000, LayerMask.GetMask("MyArmy"));
+                if (isCollider)
+                {
+                    //selectArmyCtrl = hit.collider.gameObject.GetComponent<ArmyCtrl>();
+
+                    return hit.collider.gameObject.GetComponent<ArmyCtrl>();
+                }
+            }
+        }
+        return null;
+    }
 
 }

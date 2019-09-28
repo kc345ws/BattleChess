@@ -66,6 +66,7 @@ public class ArmyMenuPanel : UIBase
         Button_Close.onClick.AddListener(closeBtnClicker);
         Button_Attack_Land.onClick.AddListener(attackLandBtnClicker);
         Button_Attack_Sky.onClick.AddListener(attackSkyBtnClicker);
+        Button_Skill.onClick.AddListener(skillBtnClicker);
 
         SetPanelActive(false);
     }
@@ -121,6 +122,7 @@ public class ArmyMenuPanel : UIBase
         Button_Close.onClick.RemoveAllListeners();
         Button_Attack_Land.onClick.RemoveAllListeners();
         Button_Attack_Sky.onClick.RemoveAllListeners();
+        Button_Skill.onClick.RemoveAllListeners();
     }
 
     private void processIsBackAttack(bool active)
@@ -219,7 +221,25 @@ public class ArmyMenuPanel : UIBase
         {
             Button_Attack_Sky.interactable = false;
         }
+
+        if(!armyCtrl.armySkill.isPassive && armyCtrl.armySkill.isBind && !armyCtrl.armySkill.isUsed)
+        {
+            //非被动技能且已经绑定了技能
+            Button_Skill.interactable = true;
+        }
+        else
+        {
+            Button_Skill.interactable = false;
+        }
         SetPanelActive(true);
+    }
+
+    /// <summary>
+    /// 使用技能
+    /// </summary>
+    private void skillBtnClicker()
+    {
+        armyCtrl.armySkill.UseSkill();
     }
 
     private void closeBtnClicker()
@@ -235,6 +255,10 @@ public class ArmyMenuPanel : UIBase
             }
             armyCtrl.CheckIsA();
         }
+
+        //停止所有协程
+        StopAllCoroutines();
+        Dispatch(AreoCode.UI, UIEvent.CURSOR_SET_NORMAL, "正常光标");
         SetPanelActive(false);
     }
 
