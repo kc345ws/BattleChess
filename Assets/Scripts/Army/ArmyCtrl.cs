@@ -57,6 +57,14 @@ public class ArmyCtrl : ArmyBase
 
     public bool canBeSeletced = true;//是否能被选中
 
+    /// <summary>
+    /// 技能
+    /// </summary>
+    /// <param name="armystate"></param>
+    //public delegate void SkillDelegate(ref ArmyCtrl armyCtrl);
+    //public SkillDelegate ArmySkill;
+    public ArmySkillBase armySkill;
+
     private void Awake()
     {
         isSelect = false;
@@ -201,7 +209,14 @@ public class ArmyCtrl : ArmyBase
         if (CanturnMove)
         {
             Move();
-        }    
+        }
+
+        if (armySkill.isPassive)
+        {
+            //如果是被动技能
+            armySkill.UseSkill();
+        }
+        //ArmySkill.Invoke();
     }
 
     public List<MapPointCtrl> GetCanMoveMapPoint()

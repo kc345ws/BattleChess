@@ -31,5 +31,16 @@ public class ArmyEvent
     /// 回合开始时刷新单位状态
     /// </summary>
     public const ushort TURN_REFRESH_ARMYSTATE = 5;
+
+
+    /// <summary>
+    /// 回合开始刷新单位技能
+    /// </summary>
+    public const ushort TURN_REFRESH_ARMYSKILL = 6;
+
+    /// <summary>
+    /// 单位死亡
+    /// </summary>
+    public const ushort ARMY_DEAD = 7;
 }
 

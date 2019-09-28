@@ -9,6 +9,11 @@ public class ArmyBase : MonoBase
     /// </summary>
     private List<int> list = new List<int>();
 
+    public ArmyBase()
+    {
+
+    }
+
     /// <summary>
     /// 绑定一个或多个消息
     /// </summary>

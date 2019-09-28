@@ -119,6 +119,7 @@ public class MyArmyCtrlManager : ArmyBase
     {
         //armyCtrl.Init(cardDto, mapPointCtrl , armyprefab);
         armyCtrl.ArmySelectEvent = processArmySelect;
+        ArmySkillManager.Instance.BindSkill(ref armyCtrl);//绑定技能     
         CardCtrllist.Add(armyCtrl);
         
     }

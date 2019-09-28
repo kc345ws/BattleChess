@@ -169,6 +169,12 @@ public class ArmyMenuPanel : UIBase
             //等待反击
             Dispatch(AreoCode.UI, UIEvent.CLOSE_WAIT_PANEL, "关闭等待面板");
             Dispatch(AreoCode.UI, UIEvent.SHOW_WAIT_PANEL, "等待对方是否反击...");
+
+            if(defenseArmy.armyState.Hp <= 0)
+            {
+                //发送单位死亡消息
+                Dispatch(AreoCode.ARMY, ArmyEvent.ARMY_DEAD, armyCtrl);
+            }
         }
         else//对方闪避
         {

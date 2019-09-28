@@ -116,6 +116,9 @@ public class MyInfoPanel : UIBase
             Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "轮到你了");
 
             Dispatch(AreoCode.ARMY, ArmyEvent.TURN_REFRESH_ARMYSTATE, "刷新兵种状态");
+            Dispatch(AreoCode.ARMY, ArmyEvent.TURN_REFRESH_ARMYSKILL, "刷新兵种技能");
+
+
 
             TurnCount++;//回合数加一
         }

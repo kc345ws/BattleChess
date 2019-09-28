@@ -215,7 +215,7 @@ public class MyCharacterCtrl : CharacterBase
     }
 
     /// <summary>
-    /// 询问是否出闪避
+    /// 询问是我方否出闪避
     /// </summary>
     private void pcoessdealDodge(MapAttackDto mapAttackDto)
     {
@@ -264,6 +264,9 @@ public class MyCharacterCtrl : CharacterBase
             //Dispatch(AreoCode.UI, UIEvent.CLOSE_HIDE_PLANE, "关闭隐藏面板");
             //发送提示
             Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "我方(" + defenseCtrl.armyState.Position.X + "," + defenseCtrl.armyState.Position.Z + ")" + "单位被攻击");
+
+            
+
 
             if(defenseCtrl.armyState.Class == ArmyClassType.Ordinary)
             {

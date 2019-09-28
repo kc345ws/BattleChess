@@ -16,4 +16,6 @@ public class MonoBase : MonoBehaviour {
     {
 
     }
+
+    public MonoBase() { }
 }
