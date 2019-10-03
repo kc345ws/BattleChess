@@ -88,7 +88,16 @@ public class FightHandler : HandlerBase
             case FightCode.GAME_OVER_SBOD:
                 processGameOver();
                 break;
+
+            case FightCode.ARMY_USE_SKILL_SBOD:
+                processArmySkill(message as SkillDto);
+                break;
         }
+    }
+
+    private void processArmySkill(SkillDto skillDto)
+    {
+        Dispatch(AreoCode.ARMY, ArmyEvent.OTHER_ARMY_USE_SKILL, skillDto);
     }
 
     /// <summary>

@@ -52,6 +52,7 @@ public class OtherArmyCtrlManager : ArmyBase
         Bind(ArmyEvent.ADD_OTHER_ARMY);
         Bind(ArmyEvent.OTHER_USE_REST);
         Bind(ArmyEvent.OTHER_USE_OTHERCARD);
+        Bind(ArmyEvent.OTHER_ARMY_USE_SKILL);
     }
 
     // Update is called once per frame
@@ -158,6 +159,49 @@ public class OtherArmyCtrlManager : ArmyBase
 
             case ArmyEvent.OTHER_USE_OTHERCARD:
                 processOtherCard(message as CardDto);
+                break;
+
+            case ArmyEvent.OTHER_ARMY_USE_SKILL:
+                processOtherArmySkill(message as SkillDto);
+                break;
+        }
+    }
+
+    private void processOtherArmySkill(SkillDto skillDto)
+    {
+        //镜像对称
+        int totalX = 12;
+        int totalZ = 8;
+
+        
+        switch (skillDto.Race)
+        {
+            case RaceType.ORC:
+
+                switch (skillDto.Name)
+                {
+                    case OrcArmyCardType.Hero:
+                        Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "敌方铁血长老发动狂怒血脉");
+                        break;
+
+                    case OrcArmyCardType.Raven_Shaman:
+                        Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "敌方乌鸦萨满使用治疗");
+
+                        int OtherOriginalx = totalX - skillDto.TargetMapPoint.X;
+                        int OtherOriginalz = totalZ - skillDto.TargetMapPoint.Z;//对方兵种真实位置
+                        foreach (var item in OtherArmyCtrlList)
+                        {
+                            if(item.armyState.Position.X == OtherOriginalx
+                                && item.armyState.Position.Z == OtherOriginalz
+                                && item.armyState.Name == skillDto.TargetName)
+                            {
+                                item.armyState.Hp++;
+                                break;
+                            }
+                        }
+
+                        break;
+                }
                 break;
         }
     }

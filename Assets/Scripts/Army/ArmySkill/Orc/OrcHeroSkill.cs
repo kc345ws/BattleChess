@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Protocol.Code;
 
 public class OrcHeroSkill : ArmySkillBase
 {
@@ -53,6 +54,10 @@ public class OrcHeroSkill : ArmySkillBase
             armyCtrl.canAttack = true;
             isturnFirst = false;
             Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "铁血长老发动狂怒血脉");
+
+            skillDto.Change(armyCtrl.armyState.Race, armyCtrl.armyState.Name, -1, null);
+            socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_USE_SKILL_CREQ, skillDto);
+            Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
         }
         else
         {
@@ -64,6 +69,11 @@ public class OrcHeroSkill : ArmySkillBase
                 isKillOther = false;
                 isUsed = true;
                 Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "铁血长老发动狂怒血脉");
+
+
+                skillDto.Change(armyCtrl.armyState.Race, armyCtrl.armyState.Name, -1, null);
+                socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_USE_SKILL_CREQ, skillDto);
+                Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
             }
         }
     }

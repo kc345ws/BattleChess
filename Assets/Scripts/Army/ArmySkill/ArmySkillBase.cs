@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.EventSystems;
+using Protocol.Dto.Fight;
 
 /// <summary>
 /// 兵种技能基类
@@ -37,6 +38,9 @@ public class ArmySkillBase :ArmyBase
     /// </summary>
     public bool isBind { get; set; }
 
+    public SkillDto skillDto;
+    public SocketMsg socketMsg;
+
     public ArmySkillBase()
     {
         canPerTurn = false;
@@ -44,6 +48,8 @@ public class ArmySkillBase :ArmyBase
         isNeedOtherDead = false;
         isUsed = false;
         isBind = false;
+        skillDto = new SkillDto();
+        socketMsg = new SocketMsg();
     }
 
     public void SetArmyCtrl(ref ArmyCtrl armyCtrl)

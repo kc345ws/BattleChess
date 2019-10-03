@@ -42,5 +42,15 @@ public class ArmyEvent
     /// 单位死亡
     /// </summary>
     public const ushort ARMY_DEAD = 7;
+
+    /// <summary>
+    /// 单位使用技能
+    /// </summary>
+    public const ushort ARMY_USE_SKILL = 8;
+
+    /// <summary>
+    /// 敌方单位使用技能
+    /// </summary>
+    public const ushort OTHER_ARMY_USE_SKILL = 9;
 }
 

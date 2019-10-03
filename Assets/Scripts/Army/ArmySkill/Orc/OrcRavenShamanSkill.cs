@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Protocol.Constants.Map;
+using Protocol.Code;
 
 /// <summary>
 /// 乌鸦萨满技能
@@ -66,11 +68,17 @@ public class OrcRavenShamanSkill : ArmySkillBase
         Dispatch(AreoCode.UI, UIEvent.CURSOR_SET_NORMAL, "正常光标");
         Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "治疗成功");
 
-        //给对方发送消息
+        
 
         Dispatch(AreoCode.UI, UIEvent.CLOSE_ARMY_MENU_PANEL, "关闭单位功能面板");
         Dispatch(AreoCode.UI, UIEvent.SHOW_ARMY_MENU_PANEL, armyCtrl);
         isUsed = true;
+
+        //给对方发送消息
+        MapPoint targetMappoint = healArmyctrl.armyState.Position;
+        skillDto.Change(armyCtrl.armyState.Race, armyCtrl.armyState.Name, healArmyctrl.armyState.Name, targetMappoint);
+        socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_USE_SKILL_CREQ, skillDto);
+        Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
     }
 
     /// <summary>
