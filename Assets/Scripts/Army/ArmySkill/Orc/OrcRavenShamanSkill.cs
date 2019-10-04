@@ -2,6 +2,7 @@
 using System.Collections;
 using Protocol.Constants.Map;
 using Protocol.Code;
+using System.Collections.Generic;
 
 /// <summary>
 /// 乌鸦萨满技能
@@ -12,6 +13,8 @@ public class OrcRavenShamanSkill : ArmySkillBase
 
     //private bool isStartSelect = false;//是否开始治疗单位
     // Use this for initialization
+
+    Color healcolor = new Color(95f / 255f, 242f / 255f, 10f / 255f);
     void Start()
     {
 
@@ -54,14 +57,43 @@ public class OrcRavenShamanSkill : ArmySkillBase
         //isStartSelect = true;
 
         Dispatch(AreoCode.UI, UIEvent.CURSOR_SET_HEART, "治疗光标");
+        List<MapPoint> canhealPoints = MapSkillType.Instance.GetSkillRange(armyCtrl.armyState);
+        List<MapPointCtrl> canhealMapCtrls = MapTools.getMapCtrlByMapPoint(canhealPoints);
+        MapTools.setMappointCtrlColor(canhealMapCtrls,healcolor);
         yield return new WaitUntil(isSelecthealArmy);
 
-        if(healArmyctrl.armyState.Hp >= healArmyctrl.armyState.MaxHp)
+
+        bool canHeal = false;
+        foreach (var item in canhealMapCtrls)
+        {
+            if (healArmyctrl.armyState.Position.X == item.mapPoint.X
+                && healArmyctrl.armyState.Position.Z == item.mapPoint.Z)
+            {
+                canHeal = true;
+                break;
+            }
+        }
+        if (!canHeal)
+        {
+            Dispatch(AreoCode.UI, UIEvent.CURSOR_SET_NORMAL, "正常光标");
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "不在治疗范围内");
+            MapTools.setMappointCtrlColor(canhealMapCtrls);
+            healArmyctrl = null;
+            yield break;
+        }
+
+        if (healArmyctrl.armyState.Hp >= healArmyctrl.armyState.MaxHp)
         {
             Dispatch(AreoCode.UI, UIEvent.CURSOR_SET_NORMAL, "正常光标");
             Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "该单位血量已经达到上限");
+            MapTools.setMappointCtrlColor(canhealMapCtrls);
+            healArmyctrl = null;
             yield break;
         }
+              
+        
+
+        
 
 
         healArmyctrl.armyState.Hp++;
@@ -79,6 +111,8 @@ public class OrcRavenShamanSkill : ArmySkillBase
         skillDto.Change(armyCtrl.armyState.Race, armyCtrl.armyState.Name, healArmyctrl.armyState.Name, targetMappoint);
         socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_USE_SKILL_CREQ, skillDto);
         Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+
+        MapTools.setMappointCtrlColor(canhealMapCtrls);
     }
 
     /// <summary>

@@ -35,8 +35,8 @@ new是指“隐藏”，是指子类隐藏了父类的方法，当然，通过�
 
     public NetManager()
     {
-        //Client = new ClientPeer("127.0.0.1", 59800);  
-        Client = new ClientPeer("47.93.8.200", 59800);
+        Client = new ClientPeer("127.0.0.1", 59800);  
+       // Client = new ClientPeer("47.93.8.200", 59800);
     }
 
     void Awake()

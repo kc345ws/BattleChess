@@ -100,6 +100,7 @@ public class ArmyMenuPanel : UIBase
                 {
                     item.canBeSeletced = true;
                 }
+                StopAllCoroutines();
                 break;
 
             /*case UIEvent.SET_SELECK_ATTACK:
