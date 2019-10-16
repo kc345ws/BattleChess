@@ -104,15 +104,16 @@ public class MyArmyCtrlManager : ArmyBase
             item.CanturnMove = true;//所有单位可以移动
             if(item.armyState.Class == ArmyClassType.Ordinary)
             {
-                item.canAttack = true;
-                item.canUseAttack = true;
+                item.canAttack = true;             
                 //item.isAttack = false;
             }
             else
             {
                 item.canAttack = false;
                 //item.isAttack = false;
+                item.canUseAttack = true;//非普通阶单位刷新攻击卡使用限制
             }
+            
         }
     }
 
