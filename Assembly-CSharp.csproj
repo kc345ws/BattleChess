@@ -141,6 +141,7 @@
     <Compile Include="Assets\Scripts\UI\2_Game\WaitPanel.cs" />
     <Compile Include="Assets\Scripts\UI\CursorManager.cs" />
     <Compile Include="Assets\Scripts\UI\UIEvent.cs" />
+    <None Include="Assets\Scripts\兽族卡组.txt" />
     <None Include="Assets\Scripts\BugLog.txt" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>D:/Downloads/Unity3D/BattleChess/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

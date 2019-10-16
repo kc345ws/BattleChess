@@ -288,6 +288,13 @@ public class OrderCardManager:CharacterBase
             selectArmyCtrl = null;
             selectOrderCardCtrl = null;
             yield break;
+        }else if (!selectArmyCtrl.canUseAttack)
+        {
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "该种单位本回合已使用过攻击卡");
+            //isNeedGetArmyCtrl = false;
+            selectArmyCtrl = null;
+            selectOrderCardCtrl = null;
+            yield break;
         }
 
         foreach (var item in myArmyCtrlManager.CardCtrllist)
@@ -296,6 +303,7 @@ public class OrderCardManager:CharacterBase
             {
                 //将该兵种设置为能攻击
                 item.canAttack = true;
+                item.canUseAttack = false;
             }
         }
         //刷新兵种菜单面板

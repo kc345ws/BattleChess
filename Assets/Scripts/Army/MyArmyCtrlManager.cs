@@ -105,6 +105,7 @@ public class MyArmyCtrlManager : ArmyBase
             if(item.armyState.Class == ArmyClassType.Ordinary)
             {
                 item.canAttack = true;
+                item.canUseAttack = true;
                 //item.isAttack = false;
             }
             else

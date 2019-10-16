@@ -57,6 +57,8 @@ public class ArmyCtrl : ArmyBase
 
     public bool canBeSeletced = true;//是否能被选中
 
+    public bool canUseAttack = true;//本回合是否还能使用攻击卡
+
     /// <summary>
     /// 技能
     /// </summary>
