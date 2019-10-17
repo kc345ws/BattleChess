@@ -216,3 +216,4 @@ aa3f99535a3a501b19efbe5a9dc9ee8e Assembly-CSharp.dll:.ArmyCtrl
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.MsgCenter
 8649814970b42d345b89944b862453cc Unity.TextMeshPro.dll:TMPro.TMP_SubMesh
 71bb6a6b6c8f052f948db64c7dd3ca4f Assembly-CSharp.dll:.CursorManager
+70379a4ecb7c6af64d90648c05b1e3d2 Assembly-CSharp.dll:Assets.Scripts.Army.ArmySkill.Orc.OrcPangolinSkill

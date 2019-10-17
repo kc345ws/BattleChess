@@ -184,6 +184,20 @@ public class MyCharacterCtrl : CharacterBase
             //发送消息
             socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_DODGE_CREQ, false);
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+
+
+            if(defenseCtrl.armyState.Race == RaceType.ORC &&
+                defenseCtrl.armyState.Name == OrcArmyCardType.Pangolin)
+            {
+                Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "穿山甲发动反击背刺");
+                //如果是兽族穿山甲
+                attackCtrl.armyState.Hp --;//受到技能伤害
+                SkillDto skillDto = new SkillDto(defenseCtrl.armyState.Race, defenseCtrl.armyState.Name
+                    , OrcArmyCardType.Pangolin, attackCtrl.armyState.Position);
+
+                socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_USE_SKILL_CREQ, skillDto);
+                Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+            }
         }
 
         
@@ -265,10 +279,21 @@ public class MyCharacterCtrl : CharacterBase
             //发送提示
             Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "我方(" + defenseCtrl.armyState.Position.X + "," + defenseCtrl.armyState.Position.Z + ")" + "单位被攻击");
 
-            
+            if (defenseCtrl.armyState.Race == RaceType.ORC &&
+                defenseCtrl.armyState.Name == OrcArmyCardType.Pangolin)
+            {
+                Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "穿山甲发动反击背刺");
+                //如果是兽族穿山甲
+                attackCtrl.armyState.Hp--;//受到技能伤害
+                SkillDto skillDto = new SkillDto(defenseCtrl.armyState.Race, defenseCtrl.armyState.Name
+                    , OrcArmyCardType.Pangolin, attackCtrl.armyState.Position);
+
+                socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_USE_SKILL_CREQ, skillDto);
+                Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+            }
 
 
-            if(defenseCtrl.armyState.Class == ArmyClassType.Ordinary)
+            if (defenseCtrl.armyState.Class == ArmyClassType.Ordinary)
             {
                 //发送反击消息
                 socketMsg.Change(OpCode.FIGHT, FightCode.DEAL_BACKATTACK_CREQ, false);

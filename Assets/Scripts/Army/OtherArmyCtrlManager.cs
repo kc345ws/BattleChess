@@ -173,7 +173,9 @@ public class OtherArmyCtrlManager : ArmyBase
         int totalX = 12;
         int totalZ = 8;
 
-        
+
+        int OtherOriginalx = -1;
+        int OtherOriginalz = -1;
         switch (skillDto.Race)
         {
             case RaceType.ORC:
@@ -187,15 +189,34 @@ public class OtherArmyCtrlManager : ArmyBase
                     case OrcArmyCardType.Raven_Shaman:
                         Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "敌方乌鸦萨满使用治疗");
 
-                        int OtherOriginalx = totalX - skillDto.TargetMapPoint.X;
-                        int OtherOriginalz = totalZ - skillDto.TargetMapPoint.Z;//对方兵种真实位置
+                        OtherOriginalx = totalX - skillDto.TargetMapPoint.X;
+                        OtherOriginalz = totalZ - skillDto.TargetMapPoint.Z;//对方兵种真实位置
                         foreach (var item in OtherArmyCtrlList)
                         {
-                            if(item.armyState.Position.X == OtherOriginalx
+                            
+                            if (item.armyState.Position.X == OtherOriginalx
                                 && item.armyState.Position.Z == OtherOriginalz
                                 && item.armyState.Name == skillDto.TargetName)
                             {
                                 item.armyState.Hp++;
+                                break;
+                            }
+                        }
+
+                        break;
+
+                    case OrcArmyCardType.Pangolin:
+                        Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "敌方穿山甲发动反击背刺");
+
+                        OtherOriginalx = totalX - skillDto.TargetMapPoint.X;
+                        OtherOriginalz = totalZ - skillDto.TargetMapPoint.Z;//我方兵种真实位置
+                        foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                        {
+                            if (item.armyState.Position.X == OtherOriginalx
+                                && item.armyState.Position.Z == OtherOriginalz
+                                && item.armyState.Name == skillDto.TargetName)
+                            {
+                                item.armyState.Hp--;
                                 break;
                             }
                         }

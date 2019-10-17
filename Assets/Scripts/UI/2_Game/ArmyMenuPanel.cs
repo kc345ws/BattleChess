@@ -232,6 +232,8 @@ public class ArmyMenuPanel : UIBase
         {
             Button_Skill.interactable = false;
         }
+
+        Button_Turn.interactable = false;
         SetPanelActive(true);
     }
 

@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\Army\ArmyManager.cs" />
     <Compile Include="Assets\Scripts\Army\ArmySkill\ArmySkillBase.cs" />
     <Compile Include="Assets\Scripts\Army\ArmySkill\Orc\OrcHeroSkill.cs" />
+    <Compile Include="Assets\Scripts\Army\ArmySkill\Orc\OrcPangolinSkill.cs" />
     <Compile Include="Assets\Scripts\Army\ArmySkill\Orc\OrcRavenShamanSkill.cs" />
     <Compile Include="Assets\Scripts\Army\ArmySkillManager.cs" />
     <Compile Include="Assets\Scripts\Army\MyArmyCtrlManager.cs" />
