@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4065199341789311570}
   - component: {fileID: 3678080295208919857}
   - component: {fileID: 1595804304131159003}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: 9
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,3 +106,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0250a35b1f80244f84f8718f1c6a1ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSelect: 0
+  iscanShowStatePanel: 1

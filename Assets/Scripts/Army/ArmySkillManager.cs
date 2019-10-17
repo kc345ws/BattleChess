@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Protocol.Constants;
+using Assets.Scripts.Army.ArmySkill.Orc;
 
 /// <summary>
 /// 兵种技能管理类
@@ -61,6 +62,8 @@ public class ArmySkillManager : ArmyBase
                     }
                 }
 
+
+
                 break;
         }
     }
@@ -89,6 +92,12 @@ public class ArmySkillManager : ArmyBase
                         armyCtrl.gameObject.AddComponent<OrcRavenShamanSkill>();
                         armyCtrl.gameObject.GetComponent<OrcRavenShamanSkill>().SetArmyCtrl(ref armyCtrl);
                         armyCtrl.armySkill = armyCtrl.gameObject.GetComponent<OrcRavenShamanSkill>();
+                        break;
+
+                    case OrcArmyCardType.Giant_mouthed_Frog://巨口蛙
+                        armyCtrl.gameObject.AddComponent<OrcGiantSkill>();
+                        armyCtrl.gameObject.GetComponent<OrcGiantSkill>().SetArmyCtrl(ref armyCtrl);
+                        armyCtrl.armySkill = armyCtrl.gameObject.GetComponent<OrcGiantSkill>();
                         break;
 
                     default:

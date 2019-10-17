@@ -222,6 +222,25 @@ public class OtherArmyCtrlManager : ArmyBase
                         }
 
                         break;
+
+                    case OrcArmyCardType.Giant_mouthed_Frog:
+                        Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "敌方巨口蛙发动吞噬");
+
+                        OtherOriginalx = totalX - skillDto.TargetMapPoint.X;
+                        OtherOriginalz = totalZ - skillDto.TargetMapPoint.Z;//我方兵种真实位置
+                        foreach (var item in MyArmyCtrlManager.Instance.CardCtrllist)
+                        {
+                            if (item.armyState.Position.X == OtherOriginalx
+                                && item.armyState.Position.Z == OtherOriginalz
+                                && item.armyState.Name == skillDto.TargetName)
+                            {
+                                item.armyState.Hp=0;
+                                break;
+                            }
+                        }
+
+
+                        break;
                 }
                 break;
         }

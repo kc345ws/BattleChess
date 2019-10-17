@@ -96,4 +96,23 @@ public class ArmySkillBase :ArmyBase
         return null;
     }
 
+    public OtherArmyCtrl getOtherArmyCtrlByMouse()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                bool isCollider = Physics.Raycast(ray, out hit, 1000, LayerMask.GetMask("OtherArmy"));
+                if (isCollider)
+                {
+                    //selectArmyCtrl = hit.collider.gameObject.GetComponent<ArmyCtrl>();
+
+                    return hit.collider.gameObject.GetComponent<OtherArmyCtrl>();
+                }
+            }
+        }
+        return null;
+    }
 }
