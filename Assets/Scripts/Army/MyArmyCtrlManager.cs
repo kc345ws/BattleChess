@@ -79,12 +79,18 @@ public class MyArmyCtrlManager : ArmyBase
                     Destroy(item.ArmymapPointCtrl.LandArmy);
                     item.ArmymapPointCtrl.RemoveLandArmy();
                 }
-                
-                
+
+                //死亡后所有单位可交互
+                foreach (var army in CardCtrllist)
+                {
+                    army.canBeSeletced = true;//所有单位可交互
+                }
+
                 isdead = true;
                 break;
             }
             index++;
+
         }
         if (isdead)
         {

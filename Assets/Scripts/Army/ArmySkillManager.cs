@@ -59,11 +59,9 @@ public class ArmySkillManager : ArmyBase
                     {
                         //item.armySkill.UseSkill();
                         item.armySkill.ProcessOtherDead();
-                    }
+                        
+                    }               
                 }
-
-
-
                 break;
         }
     }

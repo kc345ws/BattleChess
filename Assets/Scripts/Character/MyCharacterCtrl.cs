@@ -186,14 +186,14 @@ public class MyCharacterCtrl : CharacterBase
             Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
 
 
-            if(defenseCtrl.armyState.Race == RaceType.ORC &&
+            if (defenseCtrl.armyState.Race == RaceType.ORC &&
                 defenseCtrl.armyState.Name == OrcArmyCardType.Pangolin)
             {
                 Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "穿山甲发动反击背刺");
                 //如果是兽族穿山甲
-                attackCtrl.armyState.Hp --;//受到技能伤害
+                attackCtrl.armyState.Hp--;//受到技能伤害
                 SkillDto skillDto = new SkillDto(defenseCtrl.armyState.Race, defenseCtrl.armyState.Name
-                    , OrcArmyCardType.Pangolin, attackCtrl.armyState.Position);
+                    , attackCtrl.armyState.Name, attackCtrl.armyState.Position);
 
                 socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_USE_SKILL_CREQ, skillDto);
                 Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
@@ -286,7 +286,7 @@ public class MyCharacterCtrl : CharacterBase
                 //如果是兽族穿山甲
                 attackCtrl.armyState.Hp--;//受到技能伤害
                 SkillDto skillDto = new SkillDto(defenseCtrl.armyState.Race, defenseCtrl.armyState.Name
-                    , OrcArmyCardType.Pangolin, attackCtrl.armyState.Position);
+                    , attackCtrl.armyState.Name, attackCtrl.armyState.Position);
 
                 socketMsg.Change(OpCode.FIGHT, FightCode.ARMY_USE_SKILL_CREQ, skillDto);
                 Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
