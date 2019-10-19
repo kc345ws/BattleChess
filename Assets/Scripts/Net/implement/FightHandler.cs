@@ -2,6 +2,7 @@
 using Protocol.Code;
 using Protocol.Constants;
 using Protocol.Constants.Map;
+using Protocol.Constants.Orc.OtherCard;
 using Protocol.Dto.Fight;
 using System.Collections;
 using System.Collections.Generic;
@@ -91,6 +92,25 @@ public class FightHandler : HandlerBase
 
             case FightCode.ARMY_USE_SKILL_SBOD:
                 processArmySkill(message as SkillDto);
+                break;
+
+            case FightCode.USE_OTHERCARD_SRES://处理非指令卡的服务器回复
+                processOtherCardSRES(message as CardDto);
+                break;
+        }
+    }
+
+    private void processOtherCardSRES(CardDto cardDto)
+    {
+        switch (cardDto.Race)
+        {
+            case RaceType.ORC:
+                switch (cardDto.Name)
+                {
+                    case OrcOtherCardType.Totem_summon://召唤图腾
+                        Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "牌库没有中高阶单位了");
+                        break;
+                }
                 break;
         }
     }

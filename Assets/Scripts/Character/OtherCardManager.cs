@@ -106,6 +106,11 @@ public class OtherCardManager : CharacterBase
             //如果使用先祖头盔
             StartCoroutine(AncestorHelmets());
         }
+        else if(name == OrcOtherCardType.Totem_summon)
+        {
+            //召唤图腾
+            StartCoroutine(Totem_Summon());
+        }
     }
 
     #region 兽族
@@ -167,6 +172,23 @@ public class OtherCardManager : CharacterBase
     }
 
 
+    /// <summary>
+    /// 召唤图腾
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator Totem_Summon()
+    {
+        if (selectOtherCardCtrl == null)
+        {
+            Dispatch(AreoCode.UI, UIEvent.PROMPT_PANEL_EVENTCODE, "请先选择非指令卡");
+            yield break;
+        }
 
+        //发送消息给服务器
+        socketMsg.Change(OpCode.FIGHT, FightCode.USE_OTHERCARD_CREQ, selectOtherCardCtrl.cardDto);
+        Dispatch(AreoCode.NET, NetEvent.SENDMSG, socketMsg);
+        //移除卡牌     
+        Dispatch(AreoCode.CHARACTER, CharacterEvent.REMOVE_MY_CARDS, selectOtherCardCtrl.cardDto);
+    }
     #endregion
 }
